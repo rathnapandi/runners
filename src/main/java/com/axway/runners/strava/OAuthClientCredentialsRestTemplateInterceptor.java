@@ -1,5 +1,6 @@
 package com.axway.runners.strava;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
@@ -12,6 +13,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -19,6 +21,9 @@ import java.util.Collections;
 
 public class OAuthClientCredentialsRestTemplateInterceptor implements ClientHttpRequestInterceptor {
     private StravaOauthClientConfig stravaOauthClientConfig;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
 
     public OAuthClientCredentialsRestTemplateInterceptor(StravaOauthClientConfig stravaOauthClientConfig){
@@ -30,7 +35,8 @@ public class OAuthClientCredentialsRestTemplateInterceptor implements ClientHttp
 
 
         //request.getHeaders().add(HttpHeaders.AUTHORIZATION, "Bearer " + "");
-        return execution.execute(request, body);
+        ClientHttpResponse response = execution.execute(request, body);
+        return response;
     }
 
 

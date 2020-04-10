@@ -1,5 +1,6 @@
 package com.axway.runners;
 
+import com.axway.runners.service.UserService;
 import com.axway.runners.strava.OAuthToken;
 import com.axway.runners.strava.StravaOauthClientConfig;
 import org.slf4j.Logger;
@@ -18,10 +19,10 @@ import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Map;
 
 @RestController
 public class HomeController {
-
 
 
     private Logger logger = LoggerFactory.getLogger(HomeController.class);
@@ -30,18 +31,37 @@ public class HomeController {
     private RestTemplate restTemplate;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private StravaOauthClientConfig stravaOauthClientConfig;
 
     //@Autowired
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping("/")
     public RedirectView home(OAuth2AuthenticationToken authToken) {
-//      //  ..logger.info(authToken.toString());
-//        logger.info(authToken.getAuthorities().toString());
-//        logger.info(authToken.getPrincipal().getAttributes().toString());
-//       // logger.info();
-//        return "Hello " + authToken.getPrincipal().getName() + "Your email id is : "+authToken.getPrincipal().getAttributes().get("unique_name");
-       return new RedirectView("/app/public/index.html");
+        Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
+        String email = (String) attributes.get("unique_name");
+        String countryCode = (String) attributes.get("ctry");
+        String firstName = (String) attributes.get("given_name");
+        String lastName = (String) attributes.get("family_name");
+
+        User user = new User();
+        user.setCountryCode(countryCode);
+        user.setEmail(email);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        User existingUser = userService.getUser(email);
+        if (existingUser == null) {
+            logger.info("Storing the user : {}" , email);
+            userService.save(user);
+
+        }else{
+            logger.info("User {} already exists", email);
+        }
+
+
+        return new RedirectView("/app/public/index.html");
 
     }
 
@@ -58,9 +78,9 @@ public class HomeController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping("/strava/login")
     public RedirectView stravaRedirect(OAuth2AuthenticationToken authToken) {
-     String uri = UriComponentsBuilder.fromHttpUrl(stravaOauthClientConfig.getAuthorization_uri()).queryParam("client_id",stravaOauthClientConfig.getClient_id() ).queryParam("redirect_uri", stravaOauthClientConfig.getRedirect_uri())
+        String uri = UriComponentsBuilder.fromHttpUrl(stravaOauthClientConfig.getAuthorization_uri()).queryParam("client_id", stravaOauthClientConfig.getClient_id()).queryParam("redirect_uri", stravaOauthClientConfig.getRedirect_uri())
                 .queryParam("response_type", stravaOauthClientConfig.getGrant_type()).queryParam("approval_prompt", "auto").queryParam("scope", stravaOauthClientConfig.getScope()).build().toUriString();
-    return new RedirectView(uri);
+        return new RedirectView(uri);
 
 
     }
@@ -83,17 +103,17 @@ public class HomeController {
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(
                 postParameters, headers);
         ResponseEntity<OAuthToken> token = restTemplate.exchange(stravaOauthClientConfig.getToken_uri(), HttpMethod.POST, request, OAuthToken.class);
-       // logger.info("Create Backend API Response code: {}", strResponse.getStatusCodeValue());
+        // logger.info("Create Backend API Response code: {}", strResponse.getStatusCodeValue());
         //return token.getBody();
 
         String accessToken = token.getBody().getAccess_token();
 
         headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer "+accessToken);
-        HttpEntity  requestGet = new HttpEntity(headers);
+        headers.add("Authorization", "Bearer " + accessToken);
+        HttpEntity requestGet = new HttpEntity(headers);
 
         URI uri = UriComponentsBuilder.fromUriString("https://www.strava.com/api/v3/athlete/activities").build().toUri();
-       // RequestEntity<?> requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
+        // RequestEntity<?> requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(uri, HttpMethod.GET, requestGet, String.class);
 
@@ -105,7 +125,7 @@ public class HomeController {
 
     ///strava/authorized
 
- //UriComponentsBuilder.fromHttpUrl(stravaOauthClientConfig.getAuthorization_uri()).queryParam("client_id",stravaOauthClientConfig.getClient_id(), )
+    //UriComponentsBuilder.fromHttpUrl(stravaOauthClientConfig.getAuthorization_uri()).queryParam("client_id",stravaOauthClientConfig.getClient_id(), )
 
     //https://www.strava.com/oauth/mobile/authorize?client_id=1234321&redirect_uri= YourApp%3A%2F%2Fwww.yourapp.com%2Fen-US&response_type=code&approval_prompt=auto&scope=activity%3Awrite%2Cread&state=test
 

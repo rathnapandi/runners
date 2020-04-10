@@ -21,36 +21,50 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping
-
-    public ResponseEntity<?> saveUser(OAuth2AuthenticationToken authToken){
-        Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
-        String email = (String) attributes.get("unique_name");
-        String countryCode = (String) attributes.get("ctry");
-        String firstName = (String) attributes.get("given_name");
-        String lastName = (String) attributes.get("family_name");
-
-        User user = new User();
-        user.setCountryCode(countryCode);
-        user.setEmail(email);
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        User existingUser = userService.getUser(email);
-        if(existingUser != null){
-            logger.info("User already exist");
-            return new ResponseEntity<User>(HttpStatus.CONFLICT);
-        }
-
-        userService.save(user);
-        return new ResponseEntity<User>(HttpStatus.CREATED);
-    }
+//    @PostMapping
+//
+//    public ResponseEntity<?> saveUser(OAuth2AuthenticationToken authToken){
+//        Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
+//        String email = (String) attributes.get("unique_name");
+//        String countryCode = (String) attributes.get("ctry");
+//        String firstName = (String) attributes.get("given_name");
+//        String lastName = (String) attributes.get("family_name");
+//
+//        User user = new User();
+//        user.setCountryCode(countryCode);
+//        user.setEmail(email);
+//        user.setFirstName(firstName);
+//        user.setLastName(lastName);
+//        User existingUser = userService.getUser(email);
+//        if(existingUser != null){
+//            logger.info("User already exist");
+//            return new ResponseEntity<User>(HttpStatus.CONFLICT);
+//        }
+//
+//        userService.save(user);
+//        return new ResponseEntity<User>(HttpStatus.CREATED);
+//    }
 
     @GetMapping(value = "/currentuser", produces = "application/json")
     @ResponseBody
     public User getUser(OAuth2AuthenticationToken authToken){
         Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
         String email = (String) attributes.get("unique_name");
-        return userService.getUser(email);
+        User user = userService.getUser(email);
+        if(user == null){
+
+            String countryCode = (String) attributes.get("ctry");
+            String firstName = (String) attributes.get("given_name");
+            String lastName = (String) attributes.get("family_name");
+
+            user = new User();
+            user.setCountryCode(countryCode);
+            user.setEmail(email);
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            return userService.save(user);
+        }
+        return  user;
     }
 
     @GetMapping( produces = "application/json")
