@@ -17,6 +17,8 @@ public class Event{
     private String id;
     private String name;
     private String description;
+    private String startDate;
+    private String endDate;
     private byte[] image;
     private List<String> tags;
     private Map<String, Object> metadata;
