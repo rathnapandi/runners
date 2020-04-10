@@ -28,22 +28,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private  CorsFilter corsFilter;
 
-    @Override
-    public void configure(WebSecurity web) {
-        web.ignoring()
-                .antMatchers(HttpMethod.OPTIONS, "/**")
-                .antMatchers("/app/**/*.{js,html}")
-                .antMatchers("/i18n/**")
-                .antMatchers("/content/**")
-                .antMatchers("/swagger-ui/index.html")
-                .antMatchers("/test/**");
-    }
+//    @Override
+//    public void configure(WebSecurity web) {
+//        web.ignoring()
+//                .antMatchers(HttpMethod.OPTIONS, "/**")
+//                .antMatchers("/app/**/*.{js,html}")
+//                .antMatchers("/i18n/**")
+//                .antMatchers("/content/**")
+//                .antMatchers("/swagger-ui/index.html")
+//                .antMatchers("/test/**");
+//    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 //        http
 //            .authorizeRequests()
-//                .antMatchers("/login").permitAll()
+//                .antMatchers("/**").permitAll()
 //            .anyRequest().authenticated()
 //            .and()
 //            .oauth2Login()
@@ -71,7 +71,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .antMatchers("/static/app/**").permitAll()
+                .antMatchers("/app/**").permitAll()
                 .antMatchers("/api/auth-info").permitAll()
                 .antMatchers("/api/**").authenticated()
                 .antMatchers("/management/health").permitAll()
@@ -86,40 +86,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
-//    private final AADB2COidcLoginConfigurer configurer;
-//
-//    public WebSecurityConfig(AADB2COidcLoginConfigurer configurer) {
-//        this.configurer = configurer;
-//    }
-//
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        http
-//                .authorizeRequests()
-//                .anyRequest()
-//                .authenticated()
-//                .and()
-//                .apply(configurer)
-//        ;
-//    }
 
-
-//    @Autowired
-//    private AADAuthenticationFilter aadAuthFilter;
-//
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//
-//        http.authorizeRequests().antMatchers("/home").permitAll();
-//        http.authorizeRequests().antMatchers("/api/**").authenticated();
-//
-//        http.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-//                .logoutSuccessUrl("/").deleteCookies("JSESSIONID").invalidateHttpSession(true);
-//
-//        http.authorizeRequests().anyRequest().permitAll();
-//
-//        http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
-//
-//        http.addFilterBefore(aadAuthFilter, UsernamePasswordAuthenticationFilter.class);
-//    }
 }

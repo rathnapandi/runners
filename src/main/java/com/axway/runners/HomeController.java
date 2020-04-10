@@ -35,12 +35,14 @@ public class HomeController {
     //@Autowired
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping("/")
-    public String helloWorld(OAuth2AuthenticationToken authToken) {
-      //  ..logger.info(authToken.toString());
-        logger.info(authToken.getAuthorities().toString());
-        logger.info(authToken.getPrincipal().getAttributes().toString());
-       // logger.info();
-        return "Hello " + authToken.getPrincipal().getName() + "Your email id is : "+authToken.getPrincipal().getAttributes().get("unique_name");
+    public RedirectView home(OAuth2AuthenticationToken authToken) {
+//      //  ..logger.info(authToken.toString());
+//        logger.info(authToken.getAuthorities().toString());
+//        logger.info(authToken.getPrincipal().getAttributes().toString());
+//       // logger.info();
+//        return "Hello " + authToken.getPrincipal().getName() + "Your email id is : "+authToken.getPrincipal().getAttributes().get("unique_name");
+       return new RedirectView("/app/public/index.html");
+
     }
 
 
