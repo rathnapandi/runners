@@ -1,25 +1,19 @@
 package com.axway.runners.strava;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpRequest;
+import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
-import org.springframework.security.oauth2.client.registration.ClientRegistration;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.Date;
 
 public class OAuthClientCredentialsRestTemplateInterceptor implements ClientHttpRequestInterceptor {
+    @Autowired
     private StravaOauthClientConfig stravaOauthClientConfig;
 
     @Autowired
@@ -34,9 +28,34 @@ public class OAuthClientCredentialsRestTemplateInterceptor implements ClientHttp
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
 
 
-        //request.getHeaders().add(HttpHeaders.AUTHORIZATION, "Bearer " + "");
+        HttpHeaders httpHeaders = request.getHeaders();
+        String accessToken = httpHeaders.getFirst("x-accessToken");
+        if(accessToken != null) {
+            long expiry_at = Long.parseLong( httpHeaders.getFirst("x-exp"));
+            System.out.println(new Date(expiry_at));
+            request.getHeaders().add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
+        }
         ClientHttpResponse response = execution.execute(request, body);
         return response;
+    }
+
+    private OAuthToken refreshToken(OAuthToken oldToken){
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> postParameters = new LinkedMultiValueMap<>();
+        postParameters.add("client_id", stravaOauthClientConfig.getClient_id());
+        postParameters.add("client_secret", stravaOauthClientConfig.getClient_secret());
+
+        postParameters.add("refresh_token", oldToken.getRefresh_token());
+        postParameters.add("grant_type", "refresh_token");
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(
+                postParameters, headers);
+        ResponseEntity<OAuthToken> token = restTemplate.exchange(stravaOauthClientConfig.getToken_uri(), HttpMethod.POST, request, OAuthToken.class);
+
+        return token.getBody();
     }
 
 

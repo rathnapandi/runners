@@ -17,8 +17,14 @@ public class EventService {
         this.eventRepository = eventRepository;
     }
 
-    public void saveEvent(Event event){
-        eventRepository.save(event);
+    public Event saveEvent(Event event){
+        return eventRepository.save(event);
+    }
+
+
+
+    public Event findById(String id){
+        return eventRepository.findById(id).get();
     }
 
     public Iterable<Event> findAll(){

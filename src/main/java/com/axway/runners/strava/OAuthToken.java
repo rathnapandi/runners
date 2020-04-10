@@ -2,6 +2,7 @@ package com.axway.runners.strava;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import org.springframework.data.annotation.Version;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data

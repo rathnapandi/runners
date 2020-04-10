@@ -4,8 +4,6 @@ import com.axway.runners.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,6 +49,7 @@ public class UserController {
         Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
         String email = (String) attributes.get("unique_name");
         User user = userService.getUser(email);
+        System.out.println(user);
         if(user == null){
 
             String countryCode = (String) attributes.get("ctry");
@@ -70,6 +69,7 @@ public class UserController {
     @GetMapping( produces = "application/json")
     @ResponseBody
     public Iterable<User> listUser(){
+
         return userService.findAll();
     }
 

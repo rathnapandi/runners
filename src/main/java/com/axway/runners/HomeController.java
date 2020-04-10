@@ -18,7 +18,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
 import java.util.Map;
 
 @RestController
@@ -53,10 +52,10 @@ public class HomeController {
         user.setLastName(lastName);
         User existingUser = userService.getUser(email);
         if (existingUser == null) {
-            logger.info("Storing the user : {}" , email);
+            logger.info("Storing the user : {}", email);
             userService.save(user);
 
-        }else{
+        } else {
             logger.info("User {} already exists", email);
         }
 
@@ -87,7 +86,7 @@ public class HomeController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping("/strava/authorized")
-    public String stravaAuthorize(@RequestParam String state, @RequestParam String code, @RequestParam String scope) {
+    public RedirectView stravaAuthorize(OAuth2AuthenticationToken authToken, @RequestParam String state, @RequestParam String code, @RequestParam String scope) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -103,21 +102,27 @@ public class HomeController {
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(
                 postParameters, headers);
         ResponseEntity<OAuthToken> token = restTemplate.exchange(stravaOauthClientConfig.getToken_uri(), HttpMethod.POST, request, OAuthToken.class);
+        if (token.getStatusCodeValue() != 200) {
+            logger.error("Error in receiving oauth token");
+            return new RedirectView("/error?msg=Unable to read token");
+        }
         // logger.info("Create Backend API Response code: {}", strResponse.getStatusCodeValue());
         //return token.getBody();
+        OAuthToken oAuthToken = token.getBody();
+        Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
+        String email = (String) attributes.get("unique_name");
+        User user = userService.getUser(email);
 
-        String accessToken = token.getBody().getAccess_token();
+        user.setOAuthToken(oAuthToken);
+        long time = System.currentTimeMillis();
+        user.setVersion(time);
 
-        headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + accessToken);
-        HttpEntity requestGet = new HttpEntity(headers);
 
-        URI uri = UriComponentsBuilder.fromUriString("https://www.strava.com/api/v3/athlete/activities").build().toUri();
-        // RequestEntity<?> requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
+        userService.save(user);
+//        System.out.println(updatedUser.getOAuthToken());
+//        logger.info(updatedUser.getVersion() + "");
 
-        ResponseEntity<String> responseEntity = restTemplate.exchange(uri, HttpMethod.GET, requestGet, String.class);
-
-        return responseEntity.getBody();
+        return new RedirectView("/app/public/index.html");
 
 
     }
