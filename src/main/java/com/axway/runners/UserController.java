@@ -21,14 +21,12 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping ("/save")
+    @PostMapping
 
     public ResponseEntity<?> saveUser(OAuth2AuthenticationToken authToken){
-
         Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
         String email = (String) attributes.get("unique_name");
         String countryCode = (String) attributes.get("ctry");
-
         String firstName = (String) attributes.get("given_name");
         String lastName = (String) attributes.get("family_name");
 
@@ -47,16 +45,17 @@ public class UserController {
         return new ResponseEntity<User>(HttpStatus.CREATED);
     }
 
-//    @GetMapping(value = "/users", produces = "application/json")
-//    @ResponseBody
-//    public User getUser(@RequestParam String email){
-//
-//        return userService.getUser(email);
-//    }
+    @GetMapping(value = "/currentuser", produces = "application/json")
+    @ResponseBody
+    public User getUser(OAuth2AuthenticationToken authToken){
+        Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
+        String email = (String) attributes.get("unique_name");
+        return userService.getUser(email);
+    }
 
     @GetMapping( produces = "application/json")
     @ResponseBody
-    public Iterable<User> listUser(OAuth2AuthenticationToken authToken){
+    public Iterable<User> listUser(){
         return userService.findAll();
     }
 
