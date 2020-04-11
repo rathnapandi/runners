@@ -23,8 +23,8 @@ public class Event{
     private String id;
     private String name;
     private String description;
-    private String startDate;
-    private String endDate;
+    private long startDate;
+    private long endDate;
 
 
     private byte[] image;
