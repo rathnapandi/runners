@@ -1,0 +1,18 @@
+header{
+    height:50px;
+    width:100%;
+    background-color: lightseagreen;
+}
+header>div{
+    display: flex;
+    width:20%;
+    height: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}
+.active{
+    background-color: black;
+    color: white;
+    padding: 5px;
+}

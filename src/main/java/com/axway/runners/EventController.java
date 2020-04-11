@@ -29,6 +29,7 @@ public class EventController {
     @PutMapping (value = "/{id}/participant", produces = "application/json")
     public Event addParticipant(@PathVariable String id, @RequestBody Participant participant, OAuth2AuthenticationToken authToken) {
         Event event = eventService.findById(id);
+        event.setVe
         event.addParticipant(participant);
         return eventService.saveEvent(event);
     }

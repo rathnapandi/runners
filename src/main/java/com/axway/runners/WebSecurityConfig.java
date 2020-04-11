@@ -43,10 +43,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         http
-                .csrf()
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and()
-                .addFilterBefore(corsFilter, CsrfFilter.class)
+                .csrf().disable()
+                //.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+               //.and()
+              // .addFilterBefore(corsFilter, CsrfFilter.class)
                 .exceptionHandling()
 
                 .and()
