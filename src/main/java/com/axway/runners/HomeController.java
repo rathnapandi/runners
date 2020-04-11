@@ -60,7 +60,7 @@ public class HomeController {
         }
 
 
-        return new RedirectView("/app/public/index.html");
+        return new RedirectView("/index.html");
 
     }
 
@@ -122,7 +122,7 @@ public class HomeController {
 //        System.out.println(updatedUser.getOAuthToken());
 //        logger.info(updatedUser.getVersion() + "");
 
-        return new RedirectView("/app/public/index.html");
+        return new RedirectView("/index.html");
 
 
     }

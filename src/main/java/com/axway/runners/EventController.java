@@ -44,13 +44,13 @@ public class EventController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping
     public Iterable<Event> listEvents(OAuth2AuthenticationToken authToken) {
-        //  ..logger.info(authToken.toString());
-        logger.info(authToken.getAuthorities().toString());
-        logger.info(authToken.getPrincipal().getAttributes().toString());
+//        //  ..logger.info(authToken.toString());
+//        logger.info(authToken.getAuthorities().toString());
+//        logger.info(authToken.getPrincipal().getAttributes().toString());
 
-        Event event = new Event();
-        event.setName("Axway Run");
-        event.setDescription("Axway run");
+//        Event event = new Event();
+//        event.setName("Axway Run");
+//        event.setDescription("Axway run");
        // eventService.saveEvent(event);
 
         Iterable<Event> events = eventService.findAll();
