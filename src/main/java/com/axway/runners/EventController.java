@@ -52,7 +52,6 @@ public class EventController {
     @GetMapping
     public Iterable<Event> listEvents(OAuth2AuthenticationToken authToken) {
 
-
         Iterable<Event> events = eventService.findAll();
         return events;
     }

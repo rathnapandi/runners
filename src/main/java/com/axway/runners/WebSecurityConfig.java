@@ -25,8 +25,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService;;
 
-    @Autowired
-    private  CorsFilter corsFilter;
+//    @Autowired
+//    private  CorsFilter corsFilter;
 
 
 
