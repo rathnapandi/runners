@@ -31,7 +31,7 @@ pipeline {
                            script{
                                 sh "printenv"
                            }
-                          withCredentials([usernamePassword(credentialsId: 'axwaydmz', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) { {
+                          withCredentials([usernamePassword(credentialsId: 'axwaydmz')]) {
 
                                   stage("Upload and start the Application") {
 
