@@ -24,7 +24,6 @@ public class StravaConfiguration {
         @Bean
         public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder){
 
-            System.out.println("config :" + stravaOauthClientConfig);
             return restTemplateBuilder
                     .additionalInterceptors(new OAuthClientCredentialsRestTemplateInterceptor(stravaOauthClientConfig))
                     .setReadTimeout(Duration.ofSeconds(5))

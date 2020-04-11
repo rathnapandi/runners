@@ -36,4 +36,8 @@ public class EventService {
         Iterable<Event> events = eventRepository.findAll();
         return events;
     }
+
+    public void deleteAll(){
+        eventRepository.deleteAll();
+    }
 }

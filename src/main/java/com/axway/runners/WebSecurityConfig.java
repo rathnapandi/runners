@@ -43,10 +43,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         http
-                .csrf()
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and()
-                .addFilterBefore(corsFilter, CsrfFilter.class)
+                .csrf().disable()
+                //.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                //.and()
+                //.addFilterBefore(corsFilter, CsrfFilter.class)
                 .exceptionHandling()
 
                 .and()
@@ -66,6 +66,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/auth-info").permitAll()
                 .antMatchers("/api/**").authenticated()
                 .antMatchers("/management/health").permitAll()
+                .antMatchers("/management/events/**").permitAll()
                 .antMatchers("/management/info").permitAll()
                 .antMatchers("/management/prometheus").permitAll()
 
