@@ -31,7 +31,7 @@ public class CallbackController {
             logger.info("Invalid token");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>("{ \"hub.challenge\":\"" + verify_token + "\" }", HttpStatus.OK);
+        return new ResponseEntity<>("{ \"hub.challenge\":\"" + hub_challenge + "\" }", HttpStatus.OK);
     }
 
 
