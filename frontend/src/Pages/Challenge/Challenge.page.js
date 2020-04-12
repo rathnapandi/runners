@@ -203,7 +203,7 @@ export default Challenege;
 const ChallengeHead = () => {
     return(
         <div style={{color:'green',margin:'10px'}}>
-            <h3 style={{margin:'0',padding:'10px 5px'}}>Challenge Name</h3>
+            <h3 style={{margin:'0',padding:'10px 5px'}}>FitTogether</h3>
         </div>
     )
 }
