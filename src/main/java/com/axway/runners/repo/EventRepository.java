@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EventRepository extends ElasticsearchCrudRepository<Event, String>{
+   // public Event findByParticipants(String email);
 }

@@ -31,17 +31,17 @@ public class Event{
     private List<String> tags;
     private Map<String, Object> metadata;
     private List<Feed> feeds;
-    private List<Participant> participants;
+   // private List<Participant> participants;
 
     @Version
     private Long version;
 
-    public void addParticipant(Participant participant){
-        if( participants == null){
-            participants = new ArrayList<>();
-        }
-        participants.add(participant);
-    }
+//    public void addParticipant(Participant participant){
+//        if( participants == null){
+//            participants = new ArrayList<>();
+//        }
+//        participants.add(participant);
+//    }
 
     public void addFeed(Feed feed){
         if( feeds == null){

@@ -27,19 +27,16 @@ public class ManagementController {
     }
     @GetMapping("/management/events")
     public Iterable<Event> listEvents(OAuth2AuthenticationToken authToken) {
-//        //  ..logger.info(authToken.toString());
-//        logger.info(authToken.getAuthorities().toString());
-//        logger.info(authToken.getPrincipal().getAttributes().toString());
-
-//        Event event = new Event();
-//        event.setName("Axway Run");
-//        event.setDescription("Axway run");
-        // eventService.saveEvent(event);
 
         Iterable<Event> events = eventService.findAll();
         return events;
-        // logger.info();
-        // return "Hello " + authToken.getPrincipal().getName() + "Your email id is : " + authToken.getPrincipal().getAttributes().get("unique_name") + "and accessing from " + authToken.getPrincipal().getAttributes().get("ctry");
+    }
+
+    @GetMapping("/management/events/participant")
+    public Iterable<Event> getParticipant(OAuth2AuthenticationToken authToken) {
+
+        Iterable<Event> events = eventService.findAll();
+        return events;
     }
 
     @PutMapping ("/management/events/{id}")
