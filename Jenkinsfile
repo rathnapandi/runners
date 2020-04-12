@@ -8,7 +8,21 @@ pipeline {
     }
 
     stages {
-        stage('Build project') { // for display purposes
+        stage('Setup') {
+
+            steps {
+                withCredentials([file(credentialsId: 'runnersenv', variable: 'env')]) {
+
+                    sh '''
+                            cp $env runners.env
+                           
+                        '''
+                }
+
+            }
+        }
+
+    stage('Build project') { // for display purposes
             steps {
                 withMaven(maven: 'apache-maven-3.6.3', jdk: 'jdk8') {
                     sh 'mvn -Dmaven.test.skip=true clean package'
@@ -30,6 +44,9 @@ pipeline {
                         remote.knownHosts = '/home/axway/.ssh/known_hosts'
                         remote.port = 10022
                         sshPut remote: remote, from: 'target/runners.jar', into: '.'
+                        sshPut remote: remote, from: 'runners.env', into: '.'
+                        sshCommand remote: remote, command: "source runners.env", failOnError:false
+                        sshCommand remote: remote, command: 'pkill -f \'java -jar\'', failOnError:false
                         sshCommand remote: remote, command: 'pkill -f \'java -jar\'', failOnError:false
                         sshCommand remote: remote, command: 'nohup java -jar runners.jar  &' , failOnError:false
                     }
