@@ -48,13 +48,13 @@ public class StravaClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-        MultiValueMap<String, String> postParameters = new LinkedMultiValueMap<>();
+        MultiValueMap<String, Object> postParameters = new LinkedMultiValueMap<>();
         postParameters.add("client_id", stravaOauthClientConfig.getClient_id());
         postParameters.add("client_secret", stravaOauthClientConfig.getClient_secret());
 
         postParameters.add("callback_url", stravaOauthClientConfig.getCallback_url());
         postParameters.add("verify_token", userId);
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(
+        HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(
                 postParameters, headers);
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
         int statusCode = response.getStatusCodeValue();
