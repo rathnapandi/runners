@@ -21,9 +21,9 @@ pipeline {
                     sh "printenv"
                 }
                 withCredentials([usernamePassword(credentialsId: 'axwaydmz')]) {
-                    sshPut remote: remote, from: 'abc.sh', into: '.'
-                    sshCommand remote: remote, command: 'pid=\$(lsof -i:8989 -t); kill -TERM \$pid || kill -KILL \$pid'
-                    sshCommand remote: remote, command: 'nohup ./mvnw spring-boot:run  &'
+                    sshPut remote: remote, from: '${WORKSPACE}/target/runners.jar', into: '.'
+                    sshCommand remote: remote, command: 'pid=\$(lsof -i:8080 -t); kill -TERM \$pid || kill -KILL \$pid'
+                    sshCommand remote: remote, command: 'nohup java -jar runners.jar  &'
 
                 }
 
