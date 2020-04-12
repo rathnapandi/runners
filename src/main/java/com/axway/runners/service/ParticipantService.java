@@ -5,6 +5,8 @@ import com.axway.runners.repo.ParticipantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ParticipantService {
 
@@ -18,6 +20,10 @@ public class ParticipantService {
 
     public Participant findById(String id){
         return participantRepository.findById(id).get();
+    }
+
+    public List<Participant> findParticipantsByEventId(String eventId){
+        return participantRepository.findParticipantsByEventId(eventId);
     }
 
     public Participant saveParticipant(Participant participant){
