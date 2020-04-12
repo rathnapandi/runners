@@ -4,10 +4,11 @@
 .div-app{
   background-size: auto;
     background-repeat: no-repeat ;
-    height: 100vh;
+    background-size: contain;
     width: 100%;
     background-position: center;
     opacity: 0.9;
+    /* background-color: lightblue; */
 }
 .App-logo {
   animation: App-logo-spin infinite 20s linear;

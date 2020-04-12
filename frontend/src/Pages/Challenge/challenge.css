@@ -7,7 +7,6 @@
     margin-bottom: 20px;
     display: flex;
     flex-direction: column;
-    height: 110px;
     justify-content: space-evenly;
 }
 .placeholder-div{
