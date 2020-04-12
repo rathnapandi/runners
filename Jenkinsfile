@@ -47,7 +47,7 @@ pipeline {
                         sshPut remote: remote, from: 'runners.env', into: '.'
                         sshCommand remote: remote, command: 'pkill -f \'java -jar\'', failOnError:false
                         sshCommand remote: remote, command: 'pkill -f \'java -jar\'', failOnError:false
-                        sshScript remote: remote, script: "run.sh"
+                        sshCommand remote: remote, command: "sh run.sh"
                     }
 
 
