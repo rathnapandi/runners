@@ -12,5 +12,7 @@ public class OAuthToken {
     private long expires_in;
     private String access_token;
     private String refresh_token;
+    private String athleteId;
+    private String callBackUniqueCode;
 
 }
