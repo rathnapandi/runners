@@ -23,7 +23,7 @@ public class CallbackController {
 
 
     @GetMapping(value = "/callback", produces = "application/json")
-    public ResponseEntity<?> validateSubscription(@PathVariable String id, @RequestParam(value = "hub.verify_token") String verify_token,
+    public ResponseEntity<?> callback( @RequestParam(value = "hub.verify_token") String verify_token,
                                                   @RequestParam(value = "hub.challenge") String hub_challenge, @RequestParam(value = "hub.mode") String hub_mode) {
         logger.info("Strava challenge code : {}", verify_token);
         User user = userService.findById(verify_token);
