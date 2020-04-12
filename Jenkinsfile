@@ -27,6 +27,8 @@ pipeline {
                         remote.host = '208.67.130.105'
                         remote.user = username
                         remote.password = password
+                        remote.knownHosts = '.ssh/known_hosts'
+                        remote.port = 10022
                         sshPut remote: remote, from: 'target/runners.jar', into: '.'
                         sshCommand remote: remote, command: 'pid=\$(lsof -i:8080 -t); kill -TERM \$pid || kill -KILL \$pid'
                         sshCommand remote: remote, command: 'nohup java -jar runners.jar  &'
