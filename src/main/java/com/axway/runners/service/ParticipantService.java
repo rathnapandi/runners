@@ -14,9 +14,9 @@ public class ParticipantService {
     private ParticipantRepository participantRepository;
 
 
-    public Participant findParticipantByEventId(String id){
-        return participantRepository.findParticipantByEventId();
-    }
+//    public Participant findParticipantByEvent(String id){
+//        return participantRepository.findParticipantByEventId();
+//    }
 
     public Participant findById(String id){
         return participantRepository.findById(id).get();

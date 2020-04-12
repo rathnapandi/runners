@@ -6,6 +6,6 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchCrudReposi
 import java.util.List;
 
 public interface ParticipantRepository extends ElasticsearchCrudRepository<Participant, String> {
-    public Participant findParticipantByEventId();
+    //public Participant findParticipantByEventId();
     public List<Participant> findParticipantsByEventId(String eventId);
 }

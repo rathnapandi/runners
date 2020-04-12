@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -34,14 +35,21 @@ public class EventController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PostMapping (value = "/{id}/participant", produces = "application/json")
+    @PostMapping (value = "/{id}/participants", produces = "application/json")
     public Participant addParticipant(@PathVariable String id, @RequestBody Participant participant, OAuth2AuthenticationToken authToken) {
         return participantService.saveParticipant(participant);
 
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PutMapping (value = "/{id}/participant/{participantId}", produces = "application/json")
+    @GetMapping (value = "/{id}/participants", produces = "application/json")
+    public List<Participant> listParticipants(@PathVariable String id, OAuth2AuthenticationToken authToken) {
+        return participantService.findParticipantsByEventId(id);
+
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @PutMapping (value = "/{id}/participants/{participantId}", produces = "application/json")
     public ResponseEntity<?> updateParticipant(@PathVariable String id, @PathVariable String participantId, @RequestBody Participant participant, OAuth2AuthenticationToken authToken) {
 
        Participant existingParticipant =  participantService.findById(participantId);
