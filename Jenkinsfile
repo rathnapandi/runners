@@ -23,6 +23,7 @@ pipeline {
                 }
                 withCredentials([usernamePassword(credentialsId: 'axwaydmz', usernameVariable: 'username', passwordVariable: 'password')]) {
                     script {
+                        remote.name= 'vm'
                         remote.host = '208.67.130.105'
                         remote.user = username
                         remote.password = password
