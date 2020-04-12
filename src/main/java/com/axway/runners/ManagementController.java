@@ -1,6 +1,7 @@
 package com.axway.runners;
 
 import com.axway.runners.service.EventService;
+import com.axway.runners.service.ParticipantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,9 @@ public class ManagementController {
 
     @Autowired
     private EventService eventService;
+
+    @Autowired
+    private ParticipantService participantService;
 
     @PostMapping("/management/events")
     public ResponseEntity<?> createEvent(@RequestHeader("Host") String host , @RequestBody Event event){
@@ -50,6 +54,19 @@ public class ManagementController {
             existingEvent.setEndDate(event.getEndDate());
             Event updatedEvent = eventService.saveEvent(existingEvent);
             return new ResponseEntity<Event>(updatedEvent, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<Event>(HttpStatus.EXPECTATION_FAILED);
+
+    }
+
+    @DeleteMapping  ("/management/participants")
+    public ResponseEntity<?> deleteParticipants(@RequestHeader("Host") String host ){
+
+        if(host.contains("localhost")){
+
+            participantService.deleteAll();
+            return new ResponseEntity<Event>( HttpStatus.ACCEPTED);
         }
 
         return new ResponseEntity<Event>(HttpStatus.EXPECTATION_FAILED);

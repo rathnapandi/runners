@@ -23,6 +23,7 @@ public class User {
     @Field(type = FieldType.Nested, includeInParent = true)
     private OAuthToken oAuthToken;
     private Map<String, Object> metadata;
+    private String athleteId;
     @Version
     private Long version;
 }

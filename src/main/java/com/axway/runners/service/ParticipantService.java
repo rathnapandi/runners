@@ -26,6 +26,10 @@ public class ParticipantService {
         return participantRepository.findParticipantsByEventId(eventId);
     }
 
+    public void deleteAll(){
+        participantRepository.deleteAll();
+    }
+
     public Participant saveParticipant(Participant participant){
         return participantRepository.save(participant);
     }

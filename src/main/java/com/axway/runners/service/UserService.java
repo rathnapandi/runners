@@ -21,6 +21,14 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
+    public User findById(String id){
+        return userRepository.findById(id).get();
+    }
+
+    public User findByAthleteId(String athleteId){
+        return userRepository.findByAthleteId(athleteId);
+    }
+
     public Iterable<User> findAll(){
         return userRepository.findAll();
     }

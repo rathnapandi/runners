@@ -2,6 +2,7 @@ package com.axway.runners;
 
 import com.axway.runners.service.UserService;
 import com.axway.runners.strava.OAuthToken;
+import com.axway.runners.strava.StravaClient;
 import com.axway.runners.strava.StravaOauthClientConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,9 @@ public class HomeController {
     private UserService userService;
 
     @Autowired
+    private StravaClient stravaClient;
+
+    @Autowired
     private StravaOauthClientConfig stravaOauthClientConfig;
 
     //@Autowired
@@ -58,8 +62,6 @@ public class HomeController {
         } else {
             logger.info("User {} already exists", email);
         }
-
-
         return new RedirectView("/index.html");
 
     }
@@ -88,26 +90,13 @@ public class HomeController {
     @RequestMapping("/strava/authorized")
     public RedirectView stravaAuthorize(OAuth2AuthenticationToken authToken, @RequestParam String state, @RequestParam String code, @RequestParam String scope) {
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        MultiValueMap<String, String> postParameters = new LinkedMultiValueMap<>();
-        postParameters.add("client_id", stravaOauthClientConfig.getClient_id());
-        postParameters.add("client_secret", stravaOauthClientConfig.getClient_secret());
-
-        postParameters.add("code", code);
-        postParameters.add("grant_type", "authorization_code");
-
-
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(
-                postParameters, headers);
-        ResponseEntity<OAuthToken> token = restTemplate.exchange(stravaOauthClientConfig.getToken_uri(), HttpMethod.POST, request, OAuthToken.class);
+        ResponseEntity<OAuthToken> token = stravaClient.createToken(code);
         if (token.getStatusCodeValue() != 200) {
             logger.error("Error in receiving oauth token");
             return new RedirectView("/error?msg=Unable to read token");
         }
-        // logger.info("Create Backend API Response code: {}", strResponse.getStatusCodeValue());
-        //return token.getBody();
+
         OAuthToken oAuthToken = token.getBody();
         Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
         String email = (String) attributes.get("unique_name");
@@ -115,13 +104,11 @@ public class HomeController {
 
         user.setOAuthToken(oAuthToken);
         long time = System.currentTimeMillis();
+        String athleteId = stravaClient.getAthlete(oAuthToken);
+        user.setAthleteId(athleteId);
         user.setVersion(time);
-
-
         userService.save(user);
-//        System.out.println(updatedUser.getOAuthToken());
-//        logger.info(updatedUser.getVersion() + "");
-
+        stravaClient.createSubscription(user.getId());
         return new RedirectView("/index.html");
 
 

@@ -6,4 +6,6 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchCrudReposi
 public interface UserRepository extends ElasticsearchCrudRepository<User, String> {
 
     User findByEmail(String email);
+    User findByAthleteId(String athleteId);
+
 }

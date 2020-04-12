@@ -21,6 +21,7 @@ public class Participant {
     private long startTime;
     private long endTime;
     private String note;
+    private String type;
     @Version
     private Long version;
     
