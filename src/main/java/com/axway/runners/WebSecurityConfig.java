@@ -68,6 +68,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .antMatchers("/api/**").authenticated()
                 .antMatchers("/callback/**").permitAll()
+                .antMatchers("/callback").permitAll()
                 .antMatchers("/management/health").permitAll()
                 .antMatchers("/management/events/**").permitAll()
                 .antMatchers("/management/info").permitAll()

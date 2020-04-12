@@ -1,5 +1,6 @@
 package com.axway.runners.strava;
 
+
 import com.axway.runners.User;
 import com.axway.runners.service.UserService;
 import org.slf4j.Logger;
@@ -8,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 @RestController
 public class CallbackController {
@@ -16,15 +16,12 @@ public class CallbackController {
     private static Logger logger = LoggerFactory.getLogger(CallbackController.class);
 
     @Autowired
-    private RestTemplate restTemplate;
-
-    @Autowired
     private UserService userService;
 
 
     @GetMapping(value = "/callback", produces = "application/json")
-    public ResponseEntity<?> callback( @RequestParam(value = "hub.verify_token") String verify_token,
-                                                  @RequestParam(value = "hub.challenge") String hub_challenge, @RequestParam(value = "hub.mode") String hub_mode) {
+    public ResponseEntity<?> callback(@RequestParam(value = "hub.verify_token") String verify_token,
+                                      @RequestParam(value = "hub.challenge") String hub_challenge, @RequestParam(value = "hub.mode") String hub_mode) {
         logger.info("Strava challenge code : {}", verify_token);
         User user = userService.findById(verify_token);
         if (user == null) {
@@ -35,8 +32,8 @@ public class CallbackController {
     }
 
 
-    @PostMapping(value = "/callback ", produces = "application/json")
-    public ResponseEntity<?> callBack(@RequestBody StravaAthlete stravaAthlete) {
+    @PostMapping(value = "/callback")
+    public ResponseEntity<?> receiveCallBack(@RequestBody StravaAthlete stravaAthlete) {
         logger.info("Event from strava : {}", stravaAthlete);
         String athleteId = stravaAthlete.getOwner_id() + "";
         User user = userService.findByAthleteId(athleteId);

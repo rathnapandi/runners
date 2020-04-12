@@ -52,6 +52,8 @@ public class ManagementController {
             existingEvent.setVersion(System.currentTimeMillis());
             existingEvent.setStartDate(event.getStartDate());
             existingEvent.setEndDate(event.getEndDate());
+            existingEvent.setName(event.getName());
+            existingEvent.setDescription(event.getDescription());
             Event updatedEvent = eventService.saveEvent(existingEvent);
             return new ResponseEntity<Event>(updatedEvent, HttpStatus.OK);
         }
