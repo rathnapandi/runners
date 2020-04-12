@@ -13,7 +13,7 @@ public class StravaAthlete {
     private String object_type;
     private long owner_id;
     private long subscription_id;
-    private String updates;
+    private StravaAthlete updates;
     private String title;
 
 }
