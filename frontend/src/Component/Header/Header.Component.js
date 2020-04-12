@@ -4,6 +4,9 @@ import './header.style.css';
 const Header = () => {
     return(
         <header>
+        <div>
+
+        </div>
             <div>
                 <nav>
                     <NavLink exact activeClassName='active' to='/'>Home</NavLink>
