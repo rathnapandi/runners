@@ -30,8 +30,8 @@ pipeline {
                         remote.knownHosts = '/home/axway/.ssh/known_hosts'
                         remote.port = 10022
                         sshPut remote: remote, from: 'target/runners.jar', into: '.'
-                        sshCommand remote: remote, command: 'pid=\$(lsof -i:8080 -t); kill -TERM \$pid || kill -KILL \$pid'
-                        sshCommand remote: remote, command: 'nohup java -jar runners.jar  &'
+                        sshCommand remote: remote, command: 'pkill -f \'java -jar\'', failOnError:false
+                        sshCommand remote: remote, command: 'nohup java -jar runners.jar  &' , failOnError:false
                     }
 
 
