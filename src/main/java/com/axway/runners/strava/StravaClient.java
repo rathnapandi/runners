@@ -56,7 +56,7 @@ public class StravaClient {
         postParameters.add("verify_token", userId);
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(
                 postParameters, headers);
-        ResponseEntity<String> response = restTemplate.exchange(stravaOauthClientConfig.getToken_uri(), HttpMethod.POST, request, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
         int statusCode = response.getStatusCodeValue();
         if (statusCode == 200) {
             logger.info("Strava subscription is successfully registered");
