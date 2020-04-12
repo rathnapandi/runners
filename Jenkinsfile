@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Build project') { // for display purposes
             steps {
-                withMaven{
+                withMaven(maven: 'apache-maven-3.6.3', jdk: 'jdk8') {
                     sh 'mvn -Dmaven.test.skip=true clean package'
                 }
             }
