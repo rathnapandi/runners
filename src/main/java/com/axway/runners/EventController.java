@@ -59,7 +59,7 @@ public class EventController {
        existingParticipant.setEndTime(participant.getEndTime());
        existingParticipant.setStartTime(participant.getStartTime());
        existingParticipant.setVersion(System.currentTimeMillis());
-       return new ResponseEntity<Participant>(participantService.saveParticipant(participant), HttpStatus.OK);
+       return new ResponseEntity<Participant>(participantService.saveParticipant(existingParticipant), HttpStatus.OK);
     }
 
 
