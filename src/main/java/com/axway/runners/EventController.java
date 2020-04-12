@@ -57,7 +57,7 @@ public class EventController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @DeleteMapping (value = "/{id}/participant/{participantId}", produces = "application/json")
-    public ResponseEntity<?> deleteParticipant(@PathVariable String id, @PathVariable String participantId, @RequestBody Participant participant, OAuth2AuthenticationToken authToken) {
+    public ResponseEntity<?> deleteParticipant(@PathVariable String id, @PathVariable String participantId,  OAuth2AuthenticationToken authToken) {
 
         Participant existingParticipant =  participantService.findById(participantId);
         if( existingParticipant == null){
