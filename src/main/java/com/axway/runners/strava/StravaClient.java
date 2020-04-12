@@ -46,7 +46,7 @@ public class StravaClient {
     public boolean createSubscription(String userId){
         String url = "https://www.strava.com/api/v3/push_subscriptions";
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
         MultiValueMap<String, String> postParameters = new LinkedMultiValueMap<>();
         postParameters.add("client_id", stravaOauthClientConfig.getClient_id());
