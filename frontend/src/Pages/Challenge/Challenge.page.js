@@ -144,7 +144,7 @@ class Challenege extends React.Component {
         }
     }
     handleRedirect = () =>{
-        window.open("https://www.strava.com/login", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
+        window.open("strava/login", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
     }
     render(){
         const {choice,eventInfo,isUpdate,startTime,duration} = this.state
