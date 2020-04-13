@@ -66,6 +66,7 @@ public class CallbackController {
             feed.setSenderName(user.getFirstName() + " " + user.getLastName());
             feed.setMessage(feed.getSenderName() + " completed the activity at: " + new Date(eventTime));
             feed.setTimeStamp(Long.toString(eventTime));
+            event.setVersion(System.currentTimeMillis());
             event.addFeed(feed);
             eventService.saveEvent(event);
 
