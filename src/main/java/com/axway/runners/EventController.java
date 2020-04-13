@@ -23,6 +23,9 @@ public class EventController {
     private EventService eventService;
 
     @Autowired
+    private AxwayClient axwayClient;
+
+    @Autowired
     private ParticipantService participantService;
 
     private Logger logger = LoggerFactory.getLogger(EventController.class);
@@ -37,7 +40,8 @@ public class EventController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping (value = "/{id}/participants", produces = "application/json")
     public Participant addParticipant(@PathVariable String id, @RequestBody Participant participant, OAuth2AuthenticationToken authToken) {
-        return participantService.saveParticipant(participant);
+        Participant savedParticipant = participantService.saveParticipant(participant);
+        return savedParticipant;
 
     }
 
