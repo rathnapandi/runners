@@ -4,8 +4,8 @@ import logo from '../../images/test_logo.PNG';
 import bar from '../../images/bar_banner.png';
 import './header2.style.css'
 const Header2 = ({userName}) =>{
-	const text1 = "We don't run to add days to our life,"
-	const text2 = "We run to add life to our days together"
+	const text1 = "If you want to go fast, go alone,"
+	const text2 = "If you want to go far, go together!"
 	return(
 		<div>
 		<div className="div-Header2">
@@ -18,8 +18,8 @@ const Header2 = ({userName}) =>{
 			<div className="div4-Header2">
 				<div className="div4-Header2-div">
                 					{userName && <span>{`${userName.firstName} ${userName.lastName}`} </span>}
-                					 <NavLink to='/'><span>&#9632;</span>Support</NavLink>
-                					 <NavLink to='/'><span>&#9632;</span>Logout</NavLink>
+                					 <NavLink to='/'><span>|</span>Support</NavLink>
+                					 <NavLink to='/'><span>|</span>Logout</NavLink>
                 				</div>
 				<div className="div4-Header2-div2">
 
