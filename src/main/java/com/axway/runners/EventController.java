@@ -23,6 +23,9 @@ public class EventController {
     private EventService eventService;
 
     @Autowired
+    private AxwayClient axwayClient;
+
+    @Autowired
     private ParticipantService participantService;
 
     private Logger logger = LoggerFactory.getLogger(EventController.class);
@@ -37,7 +40,9 @@ public class EventController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping (value = "/{id}/participants", produces = "application/json")
     public Participant addParticipant(@PathVariable String id, @RequestBody Participant participant, OAuth2AuthenticationToken authToken) {
-        return participantService.saveParticipant(participant);
+        Participant savedParticipant = participantService.saveParticipant(participant);
+        axwayClient.sendEmail(participant);
+        return savedParticipant;
 
     }
 
@@ -59,7 +64,9 @@ public class EventController {
        existingParticipant.setEndTime(participant.getEndTime());
        existingParticipant.setStartTime(participant.getStartTime());
        existingParticipant.setVersion(System.currentTimeMillis());
-       return new ResponseEntity<Participant>(participantService.saveParticipant(existingParticipant), HttpStatus.OK);
+       Participant updatedParticipant = participantService.saveParticipant(existingParticipant);
+       axwayClient.sendEmail(existingParticipant);
+       return new ResponseEntity<Participant>(updatedParticipant, HttpStatus.OK);
     }
 
 
