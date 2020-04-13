@@ -1,6 +1,8 @@
 package com.axway.runners.strava;
 
+import com.axway.runners.APIClientErrorHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,12 +24,14 @@ public class StravaConfiguration {
     private StravaOauthClientConfig stravaOauthClientConfig;
 
         @Bean
+        @Qualifier("stravaClient")
         public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder){
 
             return restTemplateBuilder
                     .additionalInterceptors(new OAuthClientCredentialsRestTemplateInterceptor(stravaOauthClientConfig))
                     .setReadTimeout(Duration.ofSeconds(5))
                     .setConnectTimeout(Duration.ofSeconds(1))
+                    .errorHandler(new APIClientErrorHandler())
                     .build();
         }
 

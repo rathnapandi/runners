@@ -1,6 +1,8 @@
 package com.axway.runners.strava;
 
 
+import com.axway.runners.AxwayClient;
+import com.axway.runners.Feed;
 import com.axway.runners.User;
 import com.axway.runners.service.UserService;
 import org.slf4j.Logger;
@@ -21,6 +23,9 @@ public class CallbackController {
 
     @Value("${strava.client.key}")
     private String stravaKey;
+
+    @Autowired
+    private AxwayClient axwayClient;
 
 
     @GetMapping(value = "/callback", produces = "application/json")
@@ -43,6 +48,16 @@ public class CallbackController {
         User user = userService.findByAthleteId(athleteId);
         if (user != null) {
             logger.info("User : {}", user.getFirstName() + " " + user.getLastName() + " completed the run");
+            Feed feed = new Feed();
+
+            feed.setSenderName(user.getFirstName() + " " + user.getLastName());
+            long eventTime = stravaAthlete.getEvent_time();
+            long objectID = stravaAthlete.getObject_id();
+            try {
+                axwayClient.postMessageToTeams(user, "Run completed");
+            }catch (Exception e){
+
+            }
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }

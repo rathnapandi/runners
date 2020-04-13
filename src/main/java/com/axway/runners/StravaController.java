@@ -3,6 +3,7 @@ package com.axway.runners;
 import com.axway.runners.service.UserService;
 import com.axway.runners.strava.OAuthToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -29,6 +30,7 @@ public class StravaController {
     private UserService userService;
 
     @Autowired
+    @Qualifier("stravaClient")
     private RestTemplate restTemplate;
 
 

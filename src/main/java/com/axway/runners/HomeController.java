@@ -28,8 +28,7 @@ public class HomeController {
 
     private Logger logger = LoggerFactory.getLogger(HomeController.class);
 
-    @Autowired
-    private RestTemplate restTemplate;
+
 
     @Autowired
     private UserService userService;
@@ -75,7 +74,7 @@ public class HomeController {
     @RequestMapping("/strava")
     public String strava(OAuth2AuthenticationToken authToken) {
         //  ..logger.info(authToken.toString());
-        logger.info(restTemplate.getClass().getCanonicalName());
+       // logger.info(restTemplate.getClass().getCanonicalName());
         return "<a href=strava/login>Connect to strava</a>";
 
     }
