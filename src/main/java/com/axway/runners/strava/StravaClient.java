@@ -3,6 +3,7 @@ package com.axway.runners.strava;
 import com.axway.runners.APIClientExcepton;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.PathNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +84,7 @@ public class StravaClient {
                 if (eventId != null)
                     return true;
             }
-        }catch (APIClientExcepton e){
+        }catch (APIClientExcepton | PathNotFoundException e){
             return false;
         }
         return false;
