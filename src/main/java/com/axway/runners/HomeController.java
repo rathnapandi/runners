@@ -29,7 +29,6 @@ public class HomeController {
     private Logger logger = LoggerFactory.getLogger(HomeController.class);
 
 
-
     @Autowired
     private UserService userService;
 
@@ -74,7 +73,7 @@ public class HomeController {
     @RequestMapping("/strava")
     public String strava(OAuth2AuthenticationToken authToken) {
         //  ..logger.info(authToken.toString());
-       // logger.info(restTemplate.getClass().getCanonicalName());
+        // logger.info(restTemplate.getClass().getCanonicalName());
         return "<a href=strava/login>Connect to strava</a>";
 
     }
@@ -87,10 +86,8 @@ public class HomeController {
         String email = (String) attributes.get("unique_name");
         User user = userService.getUser(email);
         OAuthToken oAuthToken = user.getOAuthToken();
-        if( oAuthToken != null){
-            if(oAuthToken.isSubscribedForCallback()){
-                return new RedirectView("/success.html");
-            }
+        if (oAuthToken != null) {
+            return new RedirectView("/success.html");
         }
         String uri = UriComponentsBuilder.fromHttpUrl(stravaOauthClientConfig.getAuthorization_uri()).queryParam("client_id", stravaOauthClientConfig.getClient_id()).queryParam("redirect_uri", stravaOauthClientConfig.getRedirect_uri())
                 .queryParam("response_type", stravaOauthClientConfig.getGrant_type()).queryParam("approval_prompt", "auto").queryParam("scope", stravaOauthClientConfig.getScope()).build().toUriString();
@@ -122,7 +119,7 @@ public class HomeController {
         user.setVersion(time);
 
         boolean subscription = stravaClient.getSubscription();
-        if(!subscription){
+        if (!subscription) {
             stravaClient.createSubscription(stravaKey);
         }
 
