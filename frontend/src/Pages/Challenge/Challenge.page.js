@@ -111,9 +111,10 @@ class Challenege extends React.Component {
 
     handleClick = async() =>{
         const {eventInfo,currentuser,startTime,duration} = this.state
+        
         const obj = {
             eventId:eventInfo.id,
-            eventname:eventInfo.name,
+            eventName:eventInfo.name,
             startTime:startTime,
             endTime:moment(Number(startTime)).add(Number(duration),'minutes').valueOf(),
             ...currentuser
