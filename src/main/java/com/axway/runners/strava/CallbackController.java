@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
+import java.time.Instant;
 
 @RestController
 public class CallbackController {
@@ -64,14 +65,19 @@ public class CallbackController {
             long objectID = stravaAthlete.getObject_id();
 
             feed.setSenderName(user.getFirstName() + " " + user.getLastName());
-            feed.setMessage(feed.getSenderName() + " completed the activity at: " + new Date(eventTime));
+
+            Instant instant = Instant.ofEpochSecond(eventTime);
+            java.util.Date date = new java.util.Date();
+            date.setTime(instant.toEpochMilli());
+
+            feed.setMessage(feed.getSenderName() + " completed the activity at: " + date);
             feed.setTimeStamp(Long.toString(eventTime));
             event.setVersion(System.currentTimeMillis());
             event.addFeed(feed);
             eventService.saveEvent(event);
 
             try {
-                axwayClient.postMessageToTeams(user, feed.getMessage(), stravaAthlete);
+                axwayClient.postMessageToTeams(user, feed.getMessage(), stravaAthlete, date.toString());
             }catch (Exception e){
                 logger.error("Unhandled exception: " + e.getMessage());
             }

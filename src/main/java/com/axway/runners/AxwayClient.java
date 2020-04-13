@@ -6,13 +6,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,15 +26,15 @@ public class AxwayClient {
     @Qualifier("axwayClient")
     private RestTemplate restTemplateAxway;
 
-    public void postMessageToTeams(User user, String msg, StravaAthlete stravaAthlete){
+    public void postMessageToTeams(User user, String msg, StravaAthlete stravaAthlete, String dateStr){
         String teamsURL= "https://prod-e4ec6c3369cdafa50169ce18e33d00bb.apicentral.axwayamplify.com/Fitogether-Notify_sandbox_flow_434167-/executions";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         Map<String, Object> map = new HashMap<>();
         map.put("userName", user.getFirstName() + " " + user.getLastName());
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(stravaAthlete.getEvent_time());
-        map.put("event_time", calendar.getTime().toString());
+        //Calendar calendar = Calendar.getInstance();
+        //calendar.setTimeInMillis(stravaAthlete.getEvent_time());
+        map.put("event_time", dateStr);
         map.put("object_id", stravaAthlete.getObject_id());
         map.put("owner_id", stravaAthlete.getOwner_id());
 
