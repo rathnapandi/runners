@@ -2,10 +2,13 @@ package com.axway.runners;
 
 import com.axway.runners.strava.OAuthToken;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.convert.support.DefaultConversionService;
+import org.springframework.core.env.Environment;
 import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.convert.WritingConverter;
 import org.springframework.core.convert.converter.Converter;
@@ -23,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 @Configuration
+
 @EnableElasticsearchRepositories(basePackages = "com.axway.runners.repo")
 //@ComponentScan(basePackages = { "com.axway.runners.service" })
 public class ElasticConfiguration extends  AbstractElasticsearchConfiguration {
@@ -35,12 +39,23 @@ public class ElasticConfiguration extends  AbstractElasticsearchConfiguration {
     @Value("${elasticsearch.password}")
     private String password;
 
+    @Autowired
+    private Environment environment;
+
     @Override
     public RestHighLevelClient elasticsearchClient() {
+
+        String[] profiles = environment.getActiveProfiles();
+//        for (String profile: profiles
+//             ) {
+//            System.out.println("Profile : "+ profile);
+//        }
 
         ClientConfiguration clientConfiguration = ClientConfiguration.builder().connectedTo(elasticsearchHost).usingSsl().withBasicAuth(username, password).build();
         return RestClients.create(clientConfiguration).rest();
     }
+
+
 
     @Bean
     @Override
