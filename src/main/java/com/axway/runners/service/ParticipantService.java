@@ -22,9 +22,15 @@ public class ParticipantService {
         return participantRepository.findById(id).get();
     }
 
+    public Participant findByEmail(String email) {
+        return participantRepository.findByEmail(email);
+    }
+
     public List<Participant> findParticipantsByEventId(String eventId){
         return participantRepository.findParticipantsByEventId(eventId);
     }
+
+
 
     public void deleteAll(){
         participantRepository.deleteAll();
