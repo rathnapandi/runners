@@ -1,5 +1,6 @@
 package com.axway.runners.strava;
 
+import com.axway.runners.APIClientExcepton;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import org.slf4j.Logger;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -32,7 +34,7 @@ public class StravaClient {
         URI uri = UriComponentsBuilder.fromUriString("https://www.strava.com/api/v3/athlete").build().toUri();
         // RequestEntity<?> requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
 
-        ResponseEntity<String> responseEntity = restTemplate.exchange(uri, HttpMethod.GET, requestGet, String.class);
+        ResponseEntity<String> responseEntity = restTemplate.getForEntity(uri, String.class);
         int statusCode = responseEntity.getStatusCodeValue();
         if (statusCode == 200) {
             DocumentContext documentContext = JsonPath.parse(responseEntity.getBody());
@@ -43,7 +45,7 @@ public class StravaClient {
 
     }
 
-    public boolean createSubscription(String userId){
+    public boolean createSubscription(String uniqueKey){
         String url = "https://www.strava.com/api/v3/push_subscriptions";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -53,7 +55,7 @@ public class StravaClient {
         postParameters.add("client_secret", stravaOauthClientConfig.getClient_secret());
 
         postParameters.add("callback_url", stravaOauthClientConfig.getCallback_url());
-        postParameters.add("verify_token", userId);
+        postParameters.add("verify_token", uniqueKey);
         HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(
                 postParameters, headers);
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
@@ -62,6 +64,27 @@ public class StravaClient {
             logger.info("Strava subscription is successfully registered");
             logger.info("Response from Strava : {}", response.getBody());
             return true;
+        }
+        return false;
+    }
+
+    public boolean getSubscription(String userId){
+        String url = "https://www.strava.com/api/v3/push_subscriptions";
+        URI uri = UriComponentsBuilder.fromUriString(url).queryParam("client_id", stravaOauthClientConfig.getClient_id())
+                .queryParam("client_secret", stravaOauthClientConfig.getClient_secret()).build().toUri();
+        try {
+
+            ResponseEntity<String> response = restTemplate.getForEntity(uri, String.class);
+            int statusCode = response.getStatusCodeValue();
+            if (statusCode == 200) {
+
+                logger.info("Response from Strava : {}", response.getBody());
+                String eventId = JsonPath.parse(response.getBody()).read("$.[0].id", String.class);
+                if (eventId != null)
+                    return true;
+            }
+        }catch (APIClientExcepton e){
+            return false;
         }
         return false;
     }

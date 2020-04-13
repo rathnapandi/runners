@@ -12,5 +12,6 @@ public class OAuthToken {
     private long expires_in;
     private String access_token;
     private String refresh_token;
+    private boolean subscribedForCallback;
 
 }

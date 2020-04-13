@@ -7,6 +7,7 @@ import com.axway.runners.strava.StravaOauthClientConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -38,6 +39,9 @@ public class HomeController {
 
     @Autowired
     private StravaOauthClientConfig stravaOauthClientConfig;
+
+    @Value("${strava.client.key}")
+    private String stravaKey;
 
     //@Autowired
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -79,6 +83,16 @@ public class HomeController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping("/strava/login")
     public RedirectView stravaRedirect(OAuth2AuthenticationToken authToken) {
+
+        Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
+        String email = (String) attributes.get("unique_name");
+        User user = userService.getUser(email);
+        OAuthToken oAuthToken = user.getOAuthToken();
+        if( oAuthToken != null){
+            if(oAuthToken.isSubscribedForCallback()){
+                return new RedirectView("/index.html");
+            }
+        }
         String uri = UriComponentsBuilder.fromHttpUrl(stravaOauthClientConfig.getAuthorization_uri()).queryParam("client_id", stravaOauthClientConfig.getClient_id()).queryParam("redirect_uri", stravaOauthClientConfig.getRedirect_uri())
                 .queryParam("response_type", stravaOauthClientConfig.getGrant_type()).queryParam("approval_prompt", "auto").queryParam("scope", stravaOauthClientConfig.getScope()).build().toUriString();
         return new RedirectView(uri);
@@ -107,8 +121,13 @@ public class HomeController {
         String athleteId = stravaClient.getAthlete(oAuthToken);
         user.setAthleteId(athleteId);
         user.setVersion(time);
+
+        boolean subscription = stravaClient.createSubscription(stravaKey);
+        if(subscription){
+            oAuthToken.setSubscribedForCallback(true);
+        }
+
         userService.save(user);
-        stravaClient.createSubscription(user.getId());
         return new RedirectView("/index.html");
 
 
