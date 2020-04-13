@@ -41,6 +41,7 @@ public class EventController {
     @PostMapping (value = "/{id}/participants", produces = "application/json")
     public Participant addParticipant(@PathVariable String id, @RequestBody Participant participant, OAuth2AuthenticationToken authToken) {
         Participant savedParticipant = participantService.saveParticipant(participant);
+        axwayClient.sendEmail(participant);
         return savedParticipant;
 
     }
@@ -63,7 +64,9 @@ public class EventController {
        existingParticipant.setEndTime(participant.getEndTime());
        existingParticipant.setStartTime(participant.getStartTime());
        existingParticipant.setVersion(System.currentTimeMillis());
-       return new ResponseEntity<Participant>(participantService.saveParticipant(existingParticipant), HttpStatus.OK);
+       Participant updatedParticipant = participantService.saveParticipant(existingParticipant);
+       axwayClient.sendEmail(existingParticipant);
+       return new ResponseEntity<Participant>(updatedParticipant, HttpStatus.OK);
     }
 
 
