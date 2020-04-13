@@ -13,7 +13,7 @@ class WrapperTimePicker extends React.Component {
     }
     validDate = (current) =>{
         const{startDate,endDate} = this.state
-        if(moment(current).isAfter(startDate) && moment(current).isBefore(endDate))
+        if(moment(current).isSameOrAfter(startDate,'x') && moment(current).isSameOrBefore(endDate,'x'))
         return true;
         return false;
     }
@@ -29,25 +29,7 @@ class WrapperTimePicker extends React.Component {
                             }
                   isValidDate={this.validDate}
                 />
-            {/* <DateTimePicker
-            disableClock = {true}
-            clearIcon = {null}
-            className='class1'
-            minutePlaceholder='mm'
-            hourPlaceholder='hh'
-            disableCalendar={true}
-            // onChange= {time => this.setState({time},() =>{
-            //         this.props.yourChoiceTime(
-            //             moment(`${moment(Number(this.props.startDate)).format('DD.MM.YYYY')} ${this.state.time}`,
-            //             "DD.MM.YYYY HH:mm")
-            //             .toDate()
-            //             .valueOf()
-            //         )
-            // })}
-            // value={this.state.time}
-            // minTime = {startDate}
-            // maxTime = {endDate}
-        /> */}
+
         </div>
         )
     }

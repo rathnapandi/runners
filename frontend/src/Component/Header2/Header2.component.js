@@ -3,7 +3,7 @@ import {NavLink} from 'react-router-dom'
 import logo from '../../images/test_logo.PNG';
 import bar from '../../images/bar_banner.png';
 import './header2.style.css'
-const Header2 = () =>{
+const Header2 = ({userName}) =>{
 	const text1 = "We don't run to add days to our life,"
 	const text2 = "We run to add life to our days together"
 	return(
@@ -16,11 +16,11 @@ const Header2 = () =>{
 			<img src={bar} alt="bar_image" width="100px" height="auto"/>
 			</div>
 			<div className="div4-Header2">
-				{/* <div className="div4-Header2-div">
-					<span>HI</span>
-					<NavLink to='/'><span>&#9632;</span>Logout</NavLink>
-					<NavLink to='/'><span>&#9632;</span>Support</NavLink>
-				</div> */}
+				<div className="div4-Header2-div">
+                					{userName && <span>{`${userName.firstName} ${userName.lastName}`} </span>}
+                					 <NavLink to='/'><span>&#9632;</span>Support</NavLink>
+                					 <NavLink to='/'><span>&#9632;</span>Logout</NavLink>
+                				</div>
 				<div className="div4-Header2-div2">
 
 					<p>{text1.toUpperCase()}</p>
