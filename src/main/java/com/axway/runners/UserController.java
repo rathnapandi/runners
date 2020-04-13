@@ -1,6 +1,7 @@
 package com.axway.runners;
 
 import com.axway.runners.service.UserService;
+import com.axway.runners.strava.OAuthToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,13 +50,12 @@ public class UserController {
         Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
         String email = (String) attributes.get("unique_name");
         User user = userService.getUser(email);
-        System.out.println(user);
+
         if(user == null){
 
             String countryCode = (String) attributes.get("ctry");
             String firstName = (String) attributes.get("given_name");
             String lastName = (String) attributes.get("family_name");
-
             user = new User();
             user.setCountryCode(countryCode);
             user.setEmail(email);
@@ -63,15 +63,18 @@ public class UserController {
             user.setLastName(lastName);
             return userService.save(user);
         }
+        OAuthToken oAuthToken = user.getOAuthToken();
+        oAuthToken.setAccess_token("");
+        oAuthToken.setAccess_token("");
         return  user;
     }
 
-    @GetMapping( produces = "application/json")
-    @ResponseBody
-    public Iterable<User> listUser(){
-
-        return userService.findAll();
-    }
+//    @GetMapping( produces = "application/json")
+//    @ResponseBody
+//    public Iterable<User> listUser(){
+//
+//        return userService.findAll();
+//    }
 
     @GetMapping("/{id}")
 
