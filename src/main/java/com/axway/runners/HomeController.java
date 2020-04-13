@@ -85,10 +85,8 @@ public class HomeController {
         Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
         String email = (String) attributes.get("unique_name");
         User user = userService.getUser(email);
-        OAuthToken oAuthToken = user.getOAuthToken();
-        if (oAuthToken != null) {
-            return new RedirectView("/success.html");
-        }
+       // OAuthToken oAuthToken = user.getOAuthToken();
+
         String uri = UriComponentsBuilder.fromHttpUrl(stravaOauthClientConfig.getAuthorization_uri()).queryParam("client_id", stravaOauthClientConfig.getClient_id()).queryParam("redirect_uri", stravaOauthClientConfig.getRedirect_uri())
                 .queryParam("response_type", stravaOauthClientConfig.getGrant_type()).queryParam("approval_prompt", "auto").queryParam("scope", stravaOauthClientConfig.getScope()).build().toUriString();
         return new RedirectView(uri);
@@ -124,8 +122,7 @@ public class HomeController {
         }
 
         userService.save(user);
-        return new RedirectView("/index.html");
-
+        return new RedirectView("/success.html");
 
     }
 
