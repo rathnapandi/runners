@@ -60,7 +60,7 @@ public class AxwayClient {
         calendar.setTimeInMillis(participant.getStartTime());
         map.put("startTime", calendar.getTime());
         calendar.setTimeInMillis(participant.getEndTime());
-        map.put("endTime", participant.getEndTime());
+        map.put("endTime", calendar.getTime());
         map.put("countryCode", participant.getCountryCode());
         postMessage(url, map, headers);
         return CompletableFuture.completedFuture(null);
