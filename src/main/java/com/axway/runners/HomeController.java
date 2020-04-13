@@ -89,7 +89,7 @@ public class HomeController {
         OAuthToken oAuthToken = user.getOAuthToken();
         if( oAuthToken != null){
             if(oAuthToken.isSubscribedForCallback()){
-                return new RedirectView("/index.html");
+                return new RedirectView("/success.html");
             }
         }
         String uri = UriComponentsBuilder.fromHttpUrl(stravaOauthClientConfig.getAuthorization_uri()).queryParam("client_id", stravaOauthClientConfig.getClient_id()).queryParam("redirect_uri", stravaOauthClientConfig.getRedirect_uri())
