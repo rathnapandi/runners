@@ -111,11 +111,10 @@ class Challenege extends React.Component {
 
     handleClick = async() =>{
         const {eventInfo,currentuser,startTime,duration} = this.state
-        console.log(eventInfo.name);
-
+        
         const obj = {
             eventId:eventInfo.id,
-            eventname:eventInfo.name,
+            eventName:eventInfo.name,
             startTime:startTime,
             endTime:moment(Number(startTime)).add(Number(duration),'minutes').valueOf(),
             ...currentuser
@@ -192,7 +191,7 @@ class Challenege extends React.Component {
                         </div>
 
                       <div style={{display:'flex',flexDirection:'column'}}>
-                       { authToken === 0 && <button style={{marginBottom:'5px'}} onClick={this.handleRedirect}>Connect to Strava</button>}
+                       {  <button style={{marginBottom:'5px'}} onClick={this.handleRedirect}>Connect to Strava</button>}
                        {
                            isUpdate ?
                            <button onClick = {this.handleUpdate}>Update</button>
