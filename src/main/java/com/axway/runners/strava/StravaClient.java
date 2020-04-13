@@ -32,9 +32,9 @@ public class StravaClient {
         HttpHeaders headers = setHeader(oAuthToken);
         HttpEntity requestGet = new HttpEntity(headers);
         URI uri = UriComponentsBuilder.fromUriString("https://www.strava.com/api/v3/athlete").build().toUri();
-        // RequestEntity<?> requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
+         RequestEntity<?> requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
 
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity(uri, String.class);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(uri, HttpMethod.GET, requestGet, String.class);
         int statusCode = responseEntity.getStatusCodeValue();
         if (statusCode == 200) {
             DocumentContext documentContext = JsonPath.parse(responseEntity.getBody());
