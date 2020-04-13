@@ -64,7 +64,8 @@ public class CallbackController {
             logger.info("User : {}", user.getFirstName() + " " + user.getLastName() + " completed the run");
             Feed feed = new Feed();
             long eventTime = stravaAthlete.getEvent_time();
-           // long objectID = stravaAthlete.getObject_id();
+            String objType = stravaAthlete.getObject_type();
+            long objectID = stravaAthlete.getObject_id();
 
             feed.setSenderName(user.getFirstName() + " " + user.getLastName());
 
@@ -79,7 +80,11 @@ public class CallbackController {
             eventService.saveEvent(event);
 
             try {
-                String activityDetail = stravaClient.getActivities(user.getOAuthToken(), user.getEmail(), eventTime);
+                String activityDetail = "";
+
+                if(objType.trim().equals("activity")) {
+                    activityDetail = stravaClient.getActivities(user.getOAuthToken(), user.getEmail(), objectID);
+                }
                 axwayClient.postMessageToTeams(user, feed.getMessage(), stravaAthlete, date.toString(), activityDetail);
             }catch (Exception e){
                 logger.error("Unhandled exception: " + e.getMessage());

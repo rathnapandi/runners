@@ -120,7 +120,6 @@ public class HomeController {
         if (!subscription) {
             stravaClient.createSubscription(stravaKey);
         }
-
         userService.save(user);
         return new RedirectView("/success.html");
 

@@ -46,13 +46,12 @@ public class StravaClient {
 
     }
 
-    public String getActivities(OAuthToken oAuthToken, String email, long eventTime) {
+    public String getActivities(OAuthToken oAuthToken, String email, long id) {
         try {
             HttpHeaders headers = setHeader(oAuthToken, email);
             HttpEntity requestGet = new HttpEntity(headers);
-            URI uri = UriComponentsBuilder.fromUriString("https://www.strava.com/api/v3/athlete/activities").queryParam("before", eventTime -5)
-                    .queryParam("after", eventTime + 5).build().toUri();
-            // RequestEntity<?> requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
+            URI uri = UriComponentsBuilder.fromUriString("https://www.strava.com/api/v3/athlete/activities/"+id).build().toUri();
+
             ResponseEntity<String> responseEntity = restTemplate.exchange(uri, HttpMethod.GET, requestGet, String.class);
             int statusCode = responseEntity.getStatusCodeValue();
             logger.info("Get Activities Response code : {}", statusCode);
