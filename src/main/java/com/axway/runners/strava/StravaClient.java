@@ -50,8 +50,8 @@ public class StravaClient {
         try {
             HttpHeaders headers = setHeader(oAuthToken, email);
             HttpEntity requestGet = new HttpEntity(headers);
-            URI uri = UriComponentsBuilder.fromUriString("https://www.strava.com/api/v3/athlete/activities/"+id).build().toUri();
-
+            URI uri = UriComponentsBuilder.fromUriString("https://www.strava.com/api/v3/activities/"+id).build().toUri();
+            logger.info("Strava uri : {}", uri.toString());
             ResponseEntity<String> responseEntity = restTemplate.exchange(uri, HttpMethod.GET, requestGet, String.class);
             int statusCode = responseEntity.getStatusCodeValue();
             logger.info("Get Activities Response code : {}", statusCode);

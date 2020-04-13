@@ -81,7 +81,7 @@ public class CallbackController {
 
             try {
                 String activityDetail = "";
-
+                logger.info("Activity Type : {}", objType);
                 if(objType.trim().equals("activity")) {
                     activityDetail = stravaClient.getActivities(user.getOAuthToken(), user.getEmail(), objectID);
                 }
