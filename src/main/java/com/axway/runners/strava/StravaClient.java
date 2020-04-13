@@ -68,7 +68,7 @@ public class StravaClient {
         return false;
     }
 
-    public boolean getSubscription(String userId){
+    public boolean getSubscription(){
         String url = "https://www.strava.com/api/v3/push_subscriptions";
         URI uri = UriComponentsBuilder.fromUriString(url).queryParam("client_id", stravaOauthClientConfig.getClient_id())
                 .queryParam("client_secret", stravaOauthClientConfig.getClient_secret()).build().toUri();

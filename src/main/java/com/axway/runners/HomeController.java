@@ -122,9 +122,9 @@ public class HomeController {
         user.setAthleteId(athleteId);
         user.setVersion(time);
 
-        boolean subscription = stravaClient.createSubscription(stravaKey);
-        if(subscription){
-            oAuthToken.setSubscribedForCallback(true);
+        boolean subscription = stravaClient.getSubscription();
+        if(!subscription){
+            stravaClient.createSubscription(stravaKey);
         }
 
         userService.save(user);
