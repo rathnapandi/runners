@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -30,12 +29,11 @@ public class StravaClient {
 
     private static Logger logger = LoggerFactory.getLogger(StravaClient.class);
 
-    public String getAthlete(OAuthToken oAuthToken) {
+    public String getAthlete(OAuthToken oAuthToken, String email) {
 
-        HttpHeaders headers = setHeader(oAuthToken);
+        HttpHeaders headers = setHeader(oAuthToken, email);
         HttpEntity requestGet = new HttpEntity(headers);
         URI uri = UriComponentsBuilder.fromUriString("https://www.strava.com/api/v3/athlete").build().toUri();
-         RequestEntity<?> requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(uri, HttpMethod.GET, requestGet, String.class);
         int statusCode = responseEntity.getStatusCodeValue();
@@ -48,7 +46,28 @@ public class StravaClient {
 
     }
 
-    public boolean createSubscription(String uniqueKey){
+    public String getActivities(OAuthToken oAuthToken, String email, long eventTime) {
+        try {
+            HttpHeaders headers = setHeader(oAuthToken, email);
+            HttpEntity requestGet = new HttpEntity(headers);
+            URI uri = UriComponentsBuilder.fromUriString("https://www.strava.com/api/v3/athlete/activities").queryParam("before", eventTime -5)
+                    .queryParam("after", eventTime + 5).build().toUri();
+            // RequestEntity<?> requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
+            ResponseEntity<String> responseEntity = restTemplate.exchange(uri, HttpMethod.GET, requestGet, String.class);
+            int statusCode = responseEntity.getStatusCodeValue();
+            logger.info("Get Activities Response code : {}", statusCode);
+            if (statusCode == 200) {
+                return responseEntity.getBody();
+            }
+        } catch (APIClientExcepton e) {
+            logger.error("Error from strava : {}", e.getMessage());
+            return null;
+        }
+        return null;
+
+    }
+
+    public boolean createSubscription(String uniqueKey) {
         String url = "https://www.strava.com/api/v3/push_subscriptions";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -71,7 +90,7 @@ public class StravaClient {
         return false;
     }
 
-    public boolean getSubscription(){
+    public boolean getSubscription() {
         String url = "https://www.strava.com/api/v3/push_subscriptions";
         URI uri = UriComponentsBuilder.fromUriString(url).queryParam("client_id", stravaOauthClientConfig.getClient_id())
                 .queryParam("client_secret", stravaOauthClientConfig.getClient_secret()).build().toUri();
@@ -86,13 +105,13 @@ public class StravaClient {
                 if (eventId != null)
                     return true;
             }
-        }catch (APIClientExcepton | PathNotFoundException e){
+        } catch (APIClientExcepton | PathNotFoundException e) {
             return false;
         }
         return false;
     }
 
-    public ResponseEntity<OAuthToken> createToken(String code){
+    public ResponseEntity<OAuthToken> createToken(String code) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
@@ -111,12 +130,13 @@ public class StravaClient {
 
     }
 
-    private HttpHeaders setHeader(OAuthToken oAuthToken) {
+    private HttpHeaders setHeader(OAuthToken oAuthToken, String email) {
         String accessToken = oAuthToken.getAccess_token();
 
         HttpHeaders headers = new HttpHeaders();
         //headers.add("Authorization", "Bearer " + accessToken);
         headers.add("x-accessToken", accessToken);
+        headers.add("x_email", email);
         headers.add("x-refreshToken", oAuthToken.getRefresh_token());
         headers.add("x-exp", oAuthToken.getExpires_at() + "");
         return headers;
