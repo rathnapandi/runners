@@ -71,7 +71,7 @@ public class CallbackController {
             eventService.saveEvent(event);
 
             try {
-                axwayClient.postMessageToTeams(user, "Run completed");
+                axwayClient.postMessageToTeams(user, feed.getMessage(), stravaAthlete);
             }catch (Exception e){
                 logger.error("Unhandled exception: " + e.getMessage());
             }
