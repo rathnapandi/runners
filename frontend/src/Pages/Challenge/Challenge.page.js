@@ -12,6 +12,7 @@ class Challenege extends React.Component {
         currentuser:null,
         eventInfo:null,
         choice:'',
+        prevSetTime:null,
         duration:'30',
         startTime:undefined,
         startDate:undefined,
@@ -19,7 +20,9 @@ class Challenege extends React.Component {
         groups:[],
         items:[],
         isUpdate:false,
-        pId:''
+        pId:'',
+        authToken:null,
+        messageDisplay:false
     }
 
     eventCallFunc = async (num) => {
@@ -60,13 +63,17 @@ class Challenege extends React.Component {
             items.push({
                 id:pItem.id,
                 group:pItem.id,
-                title:'Runners Schedule',
+                title:`${pItem.firstName} ${pItem.lastName}-${moment(pItem.startTime).format('h:mm a')} to ${moment(pItem.endTime).format('h:mm a')}`,
                 start_time:pItem.startTime,
                 end_time:pItem.endTime
             })
             if(currentuser.email === pItem.email)
             this.setState({isUpdate:true,
                 startTime:pItem.startTime,
+                prevSetTime:{
+                    startTime:pItem.startTime,
+                    endTime:pItem.endTime
+                },
                 duration:moment(pItem.endTime).diff(pItem.startTime,'minutes').toString(),
                 pId:pItem.id
             })
@@ -81,7 +88,7 @@ class Challenege extends React.Component {
               },
         })
         const data = await resp.json()
-        const {email,id,firstName,lastName,countryCode} = data
+        const {email,id,firstName,lastName,countryCode,oauthToken:{expires_at}} = data
         this.setState({
             currentuser: {
             email,
@@ -89,8 +96,10 @@ class Challenege extends React.Component {
             lastName,
             countryCode
             },
-            pId:id
+            pId:id,
+            authToken:expires_at
         })
+        this.props.sentName({firstName,lastName})
         await this.eventCallFunc()
         await this.participantCallFunc()
     }
@@ -138,6 +147,9 @@ class Challenege extends React.Component {
                 },
                 body:JSON.stringify(obj)
             })
+            this.setState({messageDisplay:true},() => setTimeout(() =>{
+                this.setState({messageDisplay:false})
+            },1500))
             await this.participantCallFunc()
         }catch(e){
             console.log(e)
@@ -147,7 +159,7 @@ class Challenege extends React.Component {
         window.open("strava/login", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
     }
     render(){
-        const {choice,eventInfo,isUpdate,startTime,duration} = this.state
+        const {choice,eventInfo,isUpdate,startTime,duration,authToken,messageDisplay,prevSetTime} = this.state
         console.log(duration,startTime);
         return(
             <div className='challenge-div'>
@@ -156,21 +168,29 @@ class Challenege extends React.Component {
 
                {eventInfo && <Timing startDate={eventInfo.startDate} endDate={eventInfo.endDate}/>}
 
-                {eventInfo && <PlaceChoice choiceClick = {this.handleChoice}/>}
+               {eventInfo && <PlaceChoice choiceClick = {this.handleChoice}/>}
                 {
                     choice === 'runner' &&
                     <div className='challenge-div2'>
-                        <DurationChoice choiceClick = {this.handleDuration} dur={duration}/>
-                      { eventInfo &&
-                        <WrapperTimePicker
+                       {eventInfo && <DurationChoice choiceClick = {this.handleDuration} dur={duration}/>}
+
+                      <div style={{display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
+                       {eventInfo&& <WrapperTimePicker
                             yourChoiceTime = {this.handleTime}
                             startDate={eventInfo.startDate}
                             endDate={eventInfo.endDate}
                             sTime={startTime}
                         />
-                    }
+                       }
+                        {prevSetTime && <div style={{position:'relative',left:'20px',color:'green'}}>
+                            <span>Your current run schedule</span>
+                            <span>{`${moment(prevSetTime.startTime).format('MM/D/YYYY h:mm a')} to ${moment(prevSetTime.endTime).format('h:mm a')}`}</span>
+                        </div>
+                        }
+                        </div>
+
                       <div style={{display:'flex',flexDirection:'column'}}>
-                        <button style={{marginBottom:'5px'}} onClick={this.handleRedirect}>Connect</button>
+                       { authToken === 0 && <button style={{marginBottom:'5px'}} onClick={this.handleRedirect}>Connect to Strava</button>}
                        {
                            isUpdate ?
                            <button onClick = {this.handleUpdate}>Update</button>
@@ -179,6 +199,11 @@ class Challenege extends React.Component {
                        }
 
                       </div>
+                     { messageDisplay &&
+                        <div style={{textAlign:'center',margin:'5px 0'}}>
+                        <span>Your run schedule is updated !!</span>
+                        </div>
+                     }
                     </div>
                 }
                 {
@@ -191,7 +216,7 @@ class Challenege extends React.Component {
 
                 {
                     choice === 'cheerer' &&
-                    <a href='link.com' target='_blank'>Click Here</a>
+                    <a href='https://teams.microsoft.com/l/channel/19%3a83d56744389742bb8a1f544e1c4d024f%40thread.tacv2/General?groupId=22fa248e-04a6-4727-825e-5c31b8eb8234&tenantId=300f59df-78e6-436f-9b27-b64973e34f7d' target='_blank'>Checkout Teams Channel</a>
                 }
             </div>
         )

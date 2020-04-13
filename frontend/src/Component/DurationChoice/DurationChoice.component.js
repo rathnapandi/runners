@@ -10,7 +10,7 @@ class PlaceChoice extends React.Component {
         console.log(choice);
         return(
             <form>
-                <div>
+                <div style={{textAlign:'center'}}>
                     <label htmlFor='choice'>Duration:</label>
                     <span><input type='radio' name='choice' value='30' onClick={this.handleClick} defaultChecked={choice === '30'}/>30 min</span>
                     <span><input type='radio' name='choice' value='60' onClick={this.handleClick} defaultChecked={choice === '60'}/>1 hr</span>
