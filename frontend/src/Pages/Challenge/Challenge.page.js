@@ -229,15 +229,15 @@ export default Challenege;
 const ChallengeHead = () => {
     return(
         <div style={{color:'green',margin:'10px'}}>
-            <h3 style={{margin:'0',padding:'10px 5px'}}>FitTogether</h3>
+            <h3 style={{margin:'0',padding:'10px 5px'}}>FiTogether</h3>
         </div>
     )
 }
 
 const Description = ({description}) => {
     return(
-        <div style={{display:'flex',flexDirection:'column',width:'max-content',background:'lightblue',boxShadow:'6px 4px 5px',padding:'5px 10px',borderRadius:'10px'}}>
-            <span style={{color:'green',margin:'5px 0',textAlign:'center'}}>Description:</span>
+        <div style={{display:'flex',flexDirection:'column',width:'max-content',background:'lightgrey',boxShadow:'6px 4px 5px',padding:'5px 10px',borderRadius:'10px'}}>
+            <span style={{margin:'5px 0',textAlign:'center'}}>Description:</span>
             <span>{description}</span>
         </div>
     )
@@ -245,7 +245,7 @@ const Description = ({description}) => {
 
 const Timing = ({startDate,endDate}) =>{
     return(
-        <div style={{display:'flex',flexDirection:'row',justifyContent:'space-evenly', width:'50%',margin:'10px 0',background:'lightblue',padding:'10px',borderRadius:'10px'}}>
+        <div style={{display:'flex',flexDirection:'row',justifyContent:'space-evenly', width:'50%',margin:'10px 0',background:'lightgrey',padding:'10px',borderRadius:'10px'}}>
             <span>Start time:<span style={{color:'green'}}>{moment(Number(startDate)).format('Do MMM YYYY, HH:mm')}</span></span>
             <span >End time:<span style={{color:'green'}}>{moment(Number(endDate)).format('Do MMM YYYY, HH:mm')}</span></span>
         </div>
