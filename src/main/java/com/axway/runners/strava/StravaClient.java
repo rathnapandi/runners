@@ -64,17 +64,17 @@ public class StravaClient {
                 String distance = documentContext.read("distance", String.class);
 
                 String type = documentContext.read("type", String.class);
-                String locationcountry = documentContext.read("locationcountry", String.class);
+                String locationcountry = documentContext.read("location_country", String.class);
 
-                String movingtime = documentContext.read("movingtime", String.class);
+                String movingtime = documentContext.read("moving_time", String.class);
                 responseMap.put("name", name);
                 responseMap.put("distance", distance);
                 responseMap.put("type", type);
-                responseMap.put("locationcountry", locationcountry);
-                responseMap.put("movingtime", movingtime);
+                responseMap.put("location_country", locationcountry);
+                responseMap.put("moving_time", movingtime);
                 return responseMap;
             }
-        } catch (APIClientExcepton e) {
+        } catch (APIClientExcepton  | PathNotFoundException e) {
             logger.error("Error from strava : {}", e.getMessage());
             return null;
         }
