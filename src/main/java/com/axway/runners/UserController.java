@@ -64,8 +64,10 @@ public class UserController {
             return userService.save(user);
         }
         OAuthToken oAuthToken = user.getOAuthToken();
-        oAuthToken.setAccess_token("");
-        oAuthToken.setRefresh_token("");
+        if( oAuthToken != null) {
+            oAuthToken.setAccess_token("");
+            oAuthToken.setRefresh_token("");
+        }
         return  user;
     }
 
