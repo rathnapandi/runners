@@ -30,7 +30,7 @@ public class AxwayClient {
     private RestTemplate restTemplateAxway;
 
     @Async
-    public CompletableFuture<Void> postMessageToTeams(User user, String msg, StravaAthlete stravaAthlete, String dateStr, String activityDetail) {
+    public CompletableFuture<Void> postMessageToTeams(User user, String msg, StravaAthlete stravaAthlete, String dateStr, Map<String, String> activityDetail) {
         String teamsURL = "https://prod-e4ec6c3369cdafa50169ce18e33d00bb.apicentral.axwayamplify.com/Fitogether-Notify_sandbox_flow_434167-/executions";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -40,7 +40,9 @@ public class AxwayClient {
         map.put("event_time", dateStr);
         map.put("object_id", stravaAthlete.getObject_id());
         map.put("owner_id", stravaAthlete.getOwner_id());
-        map.put("activityDetail", activityDetail);
+        if( activityDetail != null) {
+            map.put("activityDetail", activityDetail);
+        }
         postMessage(teamsURL, map, headers);
         return CompletableFuture.completedFuture(null);
 

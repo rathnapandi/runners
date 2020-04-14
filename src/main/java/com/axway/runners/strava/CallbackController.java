@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.util.Map;
 
 @RestController
 public class CallbackController {
@@ -80,7 +81,7 @@ public class CallbackController {
             eventService.saveEvent(event);
 
             try {
-                String activityDetail = "";
+                Map<String, String> activityDetail = null;
                 logger.info("Activity Type : {}", objType);
                 if(objType.trim().equals("activity")) {
                     activityDetail = stravaClient.getActivities(user.getOAuthToken(), user.getEmail(), objectID);

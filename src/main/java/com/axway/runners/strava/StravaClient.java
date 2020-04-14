@@ -16,6 +16,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class StravaClient {
@@ -46,7 +48,7 @@ public class StravaClient {
 
     }
 
-    public String getActivities(OAuthToken oAuthToken, String email, long id) {
+    public Map<String, String> getActivities(OAuthToken oAuthToken, String email, long id) {
         try {
             HttpHeaders headers = setHeader(oAuthToken, email);
             HttpEntity requestGet = new HttpEntity(headers);
@@ -56,7 +58,21 @@ public class StravaClient {
             int statusCode = responseEntity.getStatusCodeValue();
             logger.info("Get Activities Response code : {}", statusCode);
             if (statusCode == 200) {
-                return responseEntity.getBody();
+                Map<String, String > responseMap = new HashMap<>();
+                DocumentContext documentContext = JsonPath.parse(responseEntity.getBody());
+                String name = documentContext.read("name", String.class);
+                String distance = documentContext.read("distance", String.class);
+
+                String type = documentContext.read("type", String.class);
+                String locationcountry = documentContext.read("locationcountry", String.class);
+
+                String movingtime = documentContext.read("movingtime", String.class);
+                responseMap.put("name", name);
+                responseMap.put("distance", distance);
+                responseMap.put("type", type);
+                responseMap.put("locationcountry", locationcountry);
+                responseMap.put("movingtime", movingtime);
+                return responseMap;
             }
         } catch (APIClientExcepton e) {
             logger.error("Error from strava : {}", e.getMessage());
