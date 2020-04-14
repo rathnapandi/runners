@@ -88,7 +88,7 @@ class Challenege extends React.Component {
               },
         })
         const data = await resp.json()
-            const {email,id,firstName,lastName,countryCode,oauthToken:{expires_at}} = data
+            const {email,id,firstName,lastName,countryCode,oauthToken} = data
         this.setState({
             currentuser: {
             email,
