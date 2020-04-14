@@ -88,7 +88,7 @@ class Challenege extends React.Component {
               },
         })
         const data = await resp.json()
-        const {email,id,firstName,lastName,countryCode,oauthToken:{expires_at}} = data
+            const {email,id,firstName,lastName,countryCode,oauthToken:{expires_at}} = data
         this.setState({
             currentuser: {
             email,
@@ -97,7 +97,7 @@ class Challenege extends React.Component {
             countryCode
             },
             pId:id,
-            authToken:expires_at
+            authToken:0
         })
         this.props.sentName({firstName,lastName})
         await this.eventCallFunc()
