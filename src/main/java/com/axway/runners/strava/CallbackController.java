@@ -85,8 +85,11 @@ public class CallbackController {
                 logger.info("Activity Type : {}", objType);
                 if(objType.trim().equals("activity")) {
                     activityDetail = stravaClient.getActivities(user.getOAuthToken(), user.getEmail(), objectID);
+                    axwayClient.postMessageToTeams(user, feed.getMessage(), stravaAthlete, date.toString(), activityDetail);
+                }else if(objType.trim().equals("athlete")){
+                    axwayClient.postMessageToTeams(user,  stravaAthlete);
                 }
-                axwayClient.postMessageToTeams(user, feed.getMessage(), stravaAthlete, date.toString(), activityDetail);
+
             }catch (Exception e){
                 logger.error("Unhandled exception: " + e.getMessage());
             }
