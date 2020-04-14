@@ -31,7 +31,7 @@ public class AxwayClient {
 
     @Async
     public CompletableFuture<Void> postMessageToTeams(User user, String msg, StravaAthlete stravaAthlete, String dateStr, Map<String, String> activityDetail) {
-        String teamsURL = "https://prod-e4ec6c3369cdafa50169ce18e33d00bb.apicentral.axwayamplify.com/Fitogether-Notify_sandbox_flow_434167-/executions";
+        String teamsURL = "https://prod-e4ec6c3369cdafa50169ce18e33d00bb.apicentral.axwayamplify.com/Fitogether-Notify_sandbox_flow_434478-/executions";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         Map<String, Object> map = new HashMap<>();
