@@ -51,7 +51,9 @@ public class ElasticConfiguration extends  AbstractElasticsearchConfiguration {
 //            System.out.println("Profile : "+ profile);
 //        }
 
-        ClientConfiguration clientConfiguration = ClientConfiguration.builder().connectedTo(elasticsearchHost).usingSsl().withBasicAuth(username, password).build();
+        //ClientConfiguration clientConfiguration = ClientConfiguration.builder().connectedTo(elasticsearchHost).usingSsl().withBasicAuth(username, password).build();
+        ClientConfiguration clientConfiguration = ClientConfiguration.builder().connectedTo(elasticsearchHost).build();
+
         return RestClients.create(clientConfiguration).rest();
     }
 
