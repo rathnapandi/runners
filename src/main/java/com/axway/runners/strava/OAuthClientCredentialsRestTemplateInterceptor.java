@@ -2,6 +2,8 @@ package com.axway.runners.strava;
 
 import com.axway.runners.User;
 import com.axway.runners.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpRequestExecution;
@@ -25,6 +27,8 @@ public class OAuthClientCredentialsRestTemplateInterceptor implements ClientHttp
     @Autowired
     private RestTemplate restTemplate;
 
+    private static Logger logger = LoggerFactory.getLogger(OAuthClientCredentialsRestTemplateInterceptor.class);
+
 
     public OAuthClientCredentialsRestTemplateInterceptor(StravaOauthClientConfig stravaOauthClientConfig){
         this.stravaOauthClientConfig = stravaOauthClientConfig;
@@ -40,11 +44,12 @@ public class OAuthClientCredentialsRestTemplateInterceptor implements ClientHttp
             long expiry_at = Long.parseLong( httpHeaders.getFirst("x-exp"));
             Instant instant = Instant.ofEpochSecond(expiry_at);
             if(System.currentTimeMillis() < instant.toEpochMilli()) {
-
                 removeHttpHeaders(httpHeaders);
                 httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
+                logger.info("Headers     : {}", request.getHeaders());
+
             }else {
-                String email = httpHeaders.getFirst("x-accessToken");
+                String email = httpHeaders.getFirst("x_email");
                 User user = userService.getUser(email);
                 OAuthToken oAuthToken = user.getOAuthToken();
 
@@ -53,7 +58,8 @@ public class OAuthClientCredentialsRestTemplateInterceptor implements ClientHttp
                 user.setVersion(System.currentTimeMillis());
                 userService.save(user);
                 removeHttpHeaders(httpHeaders);
-                httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
+                httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + newToken.getAccess_token());
+                logger.info("Headers     : {}", request.getHeaders());
             }
         }
         ClientHttpResponse response = execution.execute(request, body);
