@@ -61,11 +61,11 @@ public class StravaClient {
         long expiry_at = oAuthToken.getExpires_at();
         Instant instant = Instant.ofEpochSecond(expiry_at);
         if (System.currentTimeMillis() < instant.toEpochMilli()) {
-
+            logger.info("Strava Token is not expired");
             httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + oAuthToken.getAccess_token());
 
         } else {
-            logger.info("Token Expired Refreshing the token ");
+            logger.info("Strava Token Expired Refreshing the token ");
 
 
             OAuthToken newToken = refreshToken(oAuthToken);
@@ -102,10 +102,11 @@ public class StravaClient {
         try {
            // HttpHeaders headers = setHeader(oAuthToken, email);
             HttpHeaders headers = new HttpHeaders();
+            refreshToken(user, headers);
             HttpEntity requestGet = new HttpEntity(headers);
             URI uri = UriComponentsBuilder.fromUriString("https://www.strava.com/api/v3/activities/"+id).build().toUri();
             logger.info("Strava uri : {}", uri.toString());
-            refreshToken(user, headers);
+
             ResponseEntity<String> responseEntity = restTemplate.exchange(uri, HttpMethod.GET, requestGet, String.class);
             int statusCode = responseEntity.getStatusCodeValue();
             logger.info("Get Activities Response code : {}", statusCode);
