@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.util.Date;
 import java.util.Map;
 
 @RestController
@@ -71,11 +72,15 @@ public class CallbackController {
             feed.setSenderName(user.getFirstName() + " " + user.getLastName());
 
             Instant instant = Instant.ofEpochSecond(eventTime);
-            java.util.Date date = new java.util.Date();
+            Date date = new Date();
             date.setTime(instant.toEpochMilli());
 
             feed.setMessage(feed.getSenderName() + " completed the activity at: " + date);
             feed.setTimeStamp(Long.toString(eventTime));
+            if(objType.trim().equalsIgnoreCase("activity")) {
+                feed.setActivityId(Long.toString(objectID));
+            }
+            feed.setAthleteId(athleteId);
             event.setVersion(System.currentTimeMillis());
             event.addFeed(feed);
             eventService.saveEvent(event);
@@ -86,8 +91,11 @@ public class CallbackController {
                 if(objType.trim().equals("activity")) {
                     activityDetail = stravaClient.getActivities( user, objectID);
                     axwayClient.postMessageToTeams(user, feed.getMessage(), stravaAthlete, date.toString(), activityDetail);
+                    logger.info("Activity Notification sent out to IB: " + feed.getMessage() +"Keys: " + activityDetail.keySet().toString() +
+                            " Values: " + activityDetail.values().toString());
                 }else if(objType.trim().equals("athlete")){
                     axwayClient.postMessageToTeams(user, stravaAthlete);
+                    logger.info("Activity Notification sent out to IB: " + feed.getMessage());
                 }
 
             }catch (Exception e){
