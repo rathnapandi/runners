@@ -7,4 +7,6 @@ public class Feed {
     private String senderName;
     private String timeStamp;
     private String message;
+    private String activityId;
+    private String athleteId;
 }
