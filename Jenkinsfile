@@ -1,10 +1,14 @@
+import org.apache.coyote.http11.filters.IdentityInputFilter
+
 def remote = [:]
 pipeline {
 
     agent any
 
     parameters {
-        string(name: 'description', description: 'Build description')
+        string(name: 'sshHost', description: 'SSH Host name', default: 'localhost')
+        string(name: 'sshPort', description: 'SSH port', default: 10022)
+        string(name: 'sshKnownHosts', description: 'SSH Known Host File Location', default: '/home/axway/.ssh/known_hosts')
     }
 
     stages {
@@ -37,12 +41,12 @@ pipeline {
                 }
                 withCredentials([usernamePassword(credentialsId: 'axwaydmz', usernameVariable: 'username', passwordVariable: 'password')]) {
                     script {
-                        remote.name= 'vm'
-                        remote.host = '208.67.130.105'
+                        remote.name= sshHost
+                        remote.host = sshHost
                         remote.user = username
                         remote.password = password
-                        remote.knownHosts = '/home/axway/.ssh/known_hosts'
-                        remote.port = 10022
+                        remote.knownHosts = sshKnownHosts
+                        remote.port = sshPort
                         sshPut remote: remote, from: 'target/runners.jar', into: '.'
                         sshPut remote: remote, from: 'runners.env', into: '.'
                         sshCommand remote: remote, command: 'pkill -f \'java -jar\'', failOnError:false

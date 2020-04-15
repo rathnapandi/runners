@@ -45,14 +45,14 @@ public class ElasticConfiguration extends  AbstractElasticsearchConfiguration {
     @Override
     public RestHighLevelClient elasticsearchClient() {
 
-        String[] profiles = environment.getActiveProfiles();
-//        for (String profile: profiles
-//             ) {
-//            System.out.println("Profile : "+ profile);
-//        }
+        String profile = environment.getProperty("spring.profiles.active");
 
-        //ClientConfiguration clientConfiguration = ClientConfiguration.builder().connectedTo(elasticsearchHost).usingSsl().withBasicAuth(username, password).build();
-        ClientConfiguration clientConfiguration = ClientConfiguration.builder().connectedTo(elasticsearchHost).build();
+        ClientConfiguration clientConfiguration = null;
+        if( profile.equals("dev")){
+            clientConfiguration = ClientConfiguration.builder().connectedTo(elasticsearchHost).usingSsl().withBasicAuth(username, password).build();
+        }else{
+            clientConfiguration = ClientConfiguration.builder().connectedTo(elasticsearchHost).build();
+        }
 
         return RestClients.create(clientConfiguration).rest();
     }

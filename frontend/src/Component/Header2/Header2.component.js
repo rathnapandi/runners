@@ -8,14 +8,14 @@ const Header2 = ({userName}) =>{
 		<div>
 		<div className="div-Header2">
 			<div>
-			<img src={logo} alt="logo" width="250px" height="150px"/>
+			<img src={logo} alt="logo"  height="80"/>
 			</div>
 
 			<div className="div4-Header2">
 				<div className="div4-Header2-div">
                 					{userName && <span>{`${userName.firstName} ${userName.lastName}`} </span>}
-                					 <NavLink to='/'><span>|</span>Support</NavLink>
-                					 <NavLink to='/'><span>|</span>Logout</NavLink>
+                					 <a href='https://teams.microsoft.com/l/channel/19%3a83d56744389742bb8a1f544e1c4d024f%40thread.tacv2/General?groupId=22fa248e-04a6-4727-825e-5c31b8eb8234&tenantId=300f59df-78e6-436f-9b27-b64973e34f7d' target='_blank'><span>|</span>Support</a>
+                					 <a href='/logout'><span>|</span>Logout</a>
                 				</div>
 
 			</div>

@@ -161,10 +161,10 @@ class Challenege extends React.Component {
     }
     render(){
         const {choice,eventInfo,isUpdate,startTime,duration,authToken,messageDisplay,prevSetTime} = this.state
-        console.log(duration,startTime);
+        // console.log(duration,startTime);
         return(
             <div className='challenge-div'>
-                <ChallengeHead/>
+                <ChallengeHead />
                {eventInfo && <Description description={eventInfo.description}/>}
 
                {eventInfo && <Timing startDate={eventInfo.startDate} endDate={eventInfo.endDate}/>}
@@ -190,13 +190,13 @@ class Challenege extends React.Component {
                         }
                         </div>
 
-                      <div style={{display:'flex',flexDirection:'column'}}>
-                       {  <button style={{marginBottom:'5px'}} onClick={this.handleRedirect}>Connect to Strava</button>}
+                      <div style={{display:'flex',flexDirection:'row', justifyContent:'center'}} >
+                       {  <button style={{background:'#005e85', color : 'white', fontsize: '12px'}} onClick={this.handleRedirect}>Connect to Strava</button>}
                        {
                            isUpdate ?
-                           <button onClick = {this.handleUpdate}>Update</button>
+                           <button style={{background:'#005e85', color : 'white', fontsize: '12px'}} onClick = {this.handleUpdate} >Update</button>
                            :
-                           <button onClick = {this.handleClick}>Save</button>
+                           <button style={{background:'#005e85', color : 'white', fontsize: '12px'}} onClick = {this.handleClick}>Save</button>
                        }
 
                       </div>
@@ -226,10 +226,10 @@ class Challenege extends React.Component {
 
 export default Challenege;
 
-const ChallengeHead = () => {
+const ChallengeHead = ({firstName}) => {
     return(
         <div style={{color:'green',margin:'10px'}}>
-            <h3 style={{margin:'0',padding:'10px 5px'}}>FiTogether</h3>
+            <h1 style={{margin:'0',padding:'10px 5px'}}> Welcome to FiTogether</h1>
         </div>
     )
 }
@@ -237,7 +237,6 @@ const ChallengeHead = () => {
 const Description = ({description}) => {
     return(
         <div style={{display:'flex',flexDirection:'column',width:'max-content',background:'lightgrey',boxShadow:'6px 4px 5px',padding:'5px 10px',borderRadius:'10px'}}>
-            <span style={{margin:'5px 0',textAlign:'center'}}>Description:</span>
             <span>{description}</span>
         </div>
     )
@@ -246,8 +245,8 @@ const Description = ({description}) => {
 const Timing = ({startDate,endDate}) =>{
     return(
         <div style={{display:'flex',flexDirection:'row',justifyContent:'space-evenly', width:'50%',margin:'10px 0',background:'lightgrey',padding:'10px',borderRadius:'10px'}}>
-            <span>Start time:<span style={{color:'green'}}>{moment(Number(startDate)).format('Do MMM YYYY, HH:mm')}</span></span>
-            <span >End time:<span style={{color:'green'}}>{moment(Number(endDate)).format('Do MMM YYYY, HH:mm')}</span></span>
+            <span>Event Start Time: <span style={{color:'green'}}>{moment(Number(startDate)).format('Do MMM YYYY, HH:mm')}</span></span>
+            <span>Event End Time: <span style={{color:'green'}}>{moment(Number(endDate)).format('Do MMM YYYY, HH:mm')}</span></span>
         </div>
     )
 }

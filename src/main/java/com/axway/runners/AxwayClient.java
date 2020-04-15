@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -29,9 +30,18 @@ public class AxwayClient {
     @Qualifier("axwayClient")
     private RestTemplate restTemplateAxway;
 
+    @Value("${ib.notify.activities.url}")
+    private String notifyActivitiesURL;
+
+    @Value("${ib.notify.prerace.url}")
+    private String notifyPreRaceURL;
+
+    @Value("${ib.notify.email.url}")
+    private String emailURL;
+
     @Async
     public CompletableFuture<Void> postMessageToTeams(User user, String msg, StravaAthlete stravaAthlete, String dateStr, Map<String, String> activityDetail) {
-        String teamsURL = "https://prod-e4ec6c3369cdafa50169ce18e33d00bb.apicentral.axwayamplify.com/Fitogether-Notify_sandbox_flow_434478-/executions";
+       // String teamsURL = "https://prod-e4ec6c3369cdafa50169ce18e33d00bb.apicentral.axwayamplify.com/Fitogether-Notify-04132020_sandbox_flow_434712-/executions";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         Map<String, Object> map = new HashMap<>();
@@ -43,30 +53,27 @@ public class AxwayClient {
         if( activityDetail != null) {
             map.put("activityDetail", activityDetail);
         }
-        postMessage(teamsURL, map, headers);
+        postMessage(notifyActivitiesURL, map, headers);
         return CompletableFuture.completedFuture(null);
 
     }
 
     @Async
     public CompletableFuture<Void> postMessageToTeams(User user,  StravaAthlete stravaAthlete) {
-        String teamsURL = "https://prod-e4ec6c3369cdafa50169ce18e33d00bb.apicentral.axwayamplify.com/Fitogether-PreRace-Party_sandbox_flow_434470-/executions";
+       // String teamsURL = "https://prod-e4ec6c3369cdafa50169ce18e33d00bb.apicentral.axwayamplify.com/Fitogether-PreRace-Party_sandbox_flow_434470-/executions";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         Map<String, Object> map = new HashMap<>();
         map.put("userName", user.getFirstName() + " " + user.getLastName());
-
         map.put("owner_id", stravaAthlete.getOwner_id());
-
-        postMessage(teamsURL, map, headers);
+        postMessage(notifyPreRaceURL, map, headers);
         return CompletableFuture.completedFuture(null);
 
     }
 
     @Async
     public CompletableFuture<Void> sendEmail(Participant participant) {
-        String url = "https://prod-e4ec6c3369cdafa50169ce18e33d00bb.apicentral.axwayamplify.com/Fitogether-Registration-Notify_sandbox_flow_434454-/executions";
-
+       // String url = "https://prod-e4ec6c3369cdafa50169ce18e33d00bb.apicentral.axwayamplify.com/Fitogether-Registration-Notify_sandbox_flow_434454-/executions";
         Calendar calendar = Calendar.getInstance();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -79,7 +86,7 @@ public class AxwayClient {
         calendar.setTimeInMillis(participant.getEndTime());
         map.put("endTime", calendar.getTime());
         map.put("countryCode", participant.getCountryCode());
-        postMessage(url, map, headers);
+        postMessage(emailURL, map, headers);
         return CompletableFuture.completedFuture(null);
 
     }

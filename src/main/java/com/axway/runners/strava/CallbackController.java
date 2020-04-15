@@ -87,7 +87,7 @@ public class CallbackController {
                     activityDetail = stravaClient.getActivities( user, objectID);
                     axwayClient.postMessageToTeams(user, feed.getMessage(), stravaAthlete, date.toString(), activityDetail);
                 }else if(objType.trim().equals("athlete")){
-                    axwayClient.postMessageToTeams(user,  stravaAthlete);
+                    axwayClient.postMessageToTeams(user, stravaAthlete);
                 }
 
             }catch (Exception e){
