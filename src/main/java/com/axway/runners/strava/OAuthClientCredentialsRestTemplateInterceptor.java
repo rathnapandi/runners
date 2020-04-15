@@ -37,33 +37,37 @@ public class OAuthClientCredentialsRestTemplateInterceptor implements ClientHttp
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
 
+        try {
+            HttpHeaders httpHeaders = request.getHeaders();
+            String accessToken = httpHeaders.getFirst("x-accessToken");
+            if (accessToken != null) {
+                long expiry_at = Long.parseLong(httpHeaders.getFirst("x-exp"));
+                Instant instant = Instant.ofEpochSecond(expiry_at);
+                if (System.currentTimeMillis() < instant.toEpochMilli()) {
+                    removeHttpHeaders(httpHeaders);
+                    httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
+                    logger.info("Headers     : {}", request.getHeaders());
 
-        HttpHeaders httpHeaders = request.getHeaders();
-        String accessToken = httpHeaders.getFirst("x-accessToken");
-        if(accessToken != null) {
-            long expiry_at = Long.parseLong( httpHeaders.getFirst("x-exp"));
-            Instant instant = Instant.ofEpochSecond(expiry_at);
-            if(System.currentTimeMillis() < instant.toEpochMilli()) {
-                removeHttpHeaders(httpHeaders);
-                httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
-                logger.info("Headers     : {}", request.getHeaders());
+                } else {
+                    String email = httpHeaders.getFirst("x_email");
+                    User user = userService.getUser(email);
+                    OAuthToken oAuthToken = user.getOAuthToken();
 
-            }else {
-                String email = httpHeaders.getFirst("x_email");
-                User user = userService.getUser(email);
-                OAuthToken oAuthToken = user.getOAuthToken();
-
-                OAuthToken newToken = refreshToken(oAuthToken);
-                user.setOAuthToken(newToken);
-                user.setVersion(System.currentTimeMillis());
-                userService.save(user);
-                removeHttpHeaders(httpHeaders);
-                httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + newToken.getAccess_token());
-                logger.info("Headers     : {}", request.getHeaders());
+                    OAuthToken newToken = refreshToken(oAuthToken);
+                    user.setOAuthToken(newToken);
+                    user.setVersion(System.currentTimeMillis());
+                    userService.save(user);
+                    removeHttpHeaders(httpHeaders);
+                    httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + newToken.getAccess_token());
+                    logger.info("Headers     : {}", request.getHeaders());
+                }
             }
+            ClientHttpResponse response = execution.execute(request, body);
+            return response;
+        }catch (RuntimeException e){
+            logger.error("Error : {}", e);
+            return execution.execute(request, body);
         }
-        ClientHttpResponse response = execution.execute(request, body);
-        return response;
     }
 
     private void removeHttpHeaders(HttpHeaders headers){
