@@ -4,9 +4,9 @@ pipeline {
     agent any
 
     parameters {
-        string(name: 'sshHost', description: 'SSH Host name', default: 'localhost')
-        string(name: 'sshPort', description: 'SSH port', default: 10022)
-        string(name: 'sshKnownHosts', description: 'SSH Known Host File Location', default: '/home/axway/.ssh/known_hosts')
+        string(name: 'sshHost', description: 'SSH Host name', defaultValue: 'localhost')
+        string(name: 'sshPort', description: 'SSH port', defaultValue: 10022)
+        string(name: 'sshKnownHosts', description: 'SSH Known Host File Location', defaultValue: '/home/axway/.ssh/known_hosts')
     }
 
     stages {
