@@ -1,5 +1,3 @@
-import org.apache.coyote.http11.filters.IdentityInputFilter
-
 def remote = [:]
 pipeline {
 
