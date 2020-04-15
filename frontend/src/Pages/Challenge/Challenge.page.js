@@ -190,7 +190,7 @@ class Challenege extends React.Component {
                         }
                         </div>
 
-                      <div style={{display:'flex',flexDirection:'row',justify-content: 'center'}} >
+                      <div style={{display:'flex',flexDirection:'row',justifyContent: 'center'}} >
                        {  <button style={{background:'#005e85', color : 'white', fontsize: '12px',marginRight:'5px',width:'max-content'}} onClick={this.handleRedirect}>Connect to Strava</button>}
                        <span>&nbsp;&nbsp;</span>
                        {
