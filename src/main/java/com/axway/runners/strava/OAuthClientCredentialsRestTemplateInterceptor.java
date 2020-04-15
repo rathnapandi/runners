@@ -30,71 +30,21 @@ public class OAuthClientCredentialsRestTemplateInterceptor implements ClientHttp
     private static Logger logger = LoggerFactory.getLogger(OAuthClientCredentialsRestTemplateInterceptor.class);
 
 
-    public OAuthClientCredentialsRestTemplateInterceptor(StravaOauthClientConfig stravaOauthClientConfig){
+    public OAuthClientCredentialsRestTemplateInterceptor(StravaOauthClientConfig stravaOauthClientConfig) {
         this.stravaOauthClientConfig = stravaOauthClientConfig;
     }
 
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
 
-        try {
-            HttpHeaders httpHeaders = request.getHeaders();
-            String accessToken = httpHeaders.getFirst("x-accessToken");
-            if (accessToken != null) {
-                long expiry_at = Long.parseLong(httpHeaders.getFirst("x-exp"));
-                Instant instant = Instant.ofEpochSecond(expiry_at);
-                if (System.currentTimeMillis() < instant.toEpochMilli()) {
-                    removeHttpHeaders(httpHeaders);
-                    httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
-                    logger.info("Headers     : {}", request.getHeaders());
+        logger.info("Request Headers     : {}", request.getHeaders());
+        ClientHttpResponse response = execution.execute(request, body);
+        logger.info("Response Headers     : {}", response.getHeaders());
+        return response;
 
-                } else {
-                    String email = httpHeaders.getFirst("x_email");
-                    User user = userService.getUser(email);
-                    OAuthToken oAuthToken = user.getOAuthToken();
-
-                    OAuthToken newToken = refreshToken(oAuthToken);
-                    user.setOAuthToken(newToken);
-                    user.setVersion(System.currentTimeMillis());
-                    userService.save(user);
-                    removeHttpHeaders(httpHeaders);
-                    httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + newToken.getAccess_token());
-                    logger.info("Headers     : {}", request.getHeaders());
-                }
-            }
-            ClientHttpResponse response = execution.execute(request, body);
-            return response;
-        }catch (RuntimeException e){
-            logger.error("Error : {}", e);
-            return execution.execute(request, body);
-        }
     }
 
-    private void removeHttpHeaders(HttpHeaders headers){
-        headers.remove("x-accessToken");
-        headers.remove("x_email");
-        headers.remove("x-refreshToken");
-        headers.remove("x-exp");
-    }
 
-    private OAuthToken refreshToken(OAuthToken oldToken){
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        MultiValueMap<String, String> postParameters = new LinkedMultiValueMap<>();
-        postParameters.add("client_id", stravaOauthClientConfig.getClient_id());
-        postParameters.add("client_secret", stravaOauthClientConfig.getClient_secret());
-
-        postParameters.add("refresh_token", oldToken.getRefresh_token());
-        postParameters.add("grant_type", "refresh_token");
-
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(
-                postParameters, headers);
-        ResponseEntity<OAuthToken> token = restTemplate.exchange(stravaOauthClientConfig.getToken_uri(), HttpMethod.POST, request, OAuthToken.class);
-
-        return token.getBody();
-    }
 
 
 

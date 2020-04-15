@@ -1,6 +1,8 @@
 package com.axway.runners.strava;
 
 import com.axway.runners.APIClientExcepton;
+import com.axway.runners.User;
+import com.axway.runners.service.UserService;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
@@ -16,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,14 +32,18 @@ public class StravaClient {
     @Autowired
     private StravaOauthClientConfig stravaOauthClientConfig;
 
+    @Autowired
+    private UserService userService;
+
     private static Logger logger = LoggerFactory.getLogger(StravaClient.class);
 
-    public String getAthlete(OAuthToken oAuthToken, String email) {
+    public String getAthlete(User user) {
 
-        HttpHeaders headers = setHeader(oAuthToken, email);
+        HttpHeaders headers = new HttpHeaders();
+        refreshToken(user, headers);
         HttpEntity requestGet = new HttpEntity(headers);
         URI uri = UriComponentsBuilder.fromUriString("https://www.strava.com/api/v3/athlete").build().toUri();
-
+        //refreshToken()
         ResponseEntity<String> responseEntity = restTemplate.exchange(uri, HttpMethod.GET, requestGet, String.class);
         int statusCode = responseEntity.getStatusCodeValue();
         if (statusCode == 200) {
@@ -48,12 +55,57 @@ public class StravaClient {
 
     }
 
-    public Map<String, String> getActivities(OAuthToken oAuthToken, String email, long id) {
+    public void refreshToken(User user, HttpHeaders httpHeaders){
+        OAuthToken oAuthToken = user.getOAuthToken();
+
+        long expiry_at = oAuthToken.getExpires_at();
+        Instant instant = Instant.ofEpochSecond(expiry_at);
+        if (System.currentTimeMillis() < instant.toEpochMilli()) {
+
+            httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + oAuthToken.getAccess_token());
+
+        } else {
+            logger.info("Token Expired Refreshing the token ");
+
+
+            OAuthToken newToken = refreshToken(oAuthToken);
+            user.setOAuthToken(newToken);
+            user.setVersion(System.currentTimeMillis());
+            userService.save(user);
+
+            httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + newToken.getAccess_token());
+
+        }
+    }
+
+    private OAuthToken refreshToken(OAuthToken oldToken) {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> postParameters = new LinkedMultiValueMap<>();
+        postParameters.add("client_id", stravaOauthClientConfig.getClient_id());
+        postParameters.add("client_secret", stravaOauthClientConfig.getClient_secret());
+
+        postParameters.add("refresh_token", oldToken.getRefresh_token());
+        postParameters.add("grant_type", "refresh_token");
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(
+                postParameters, headers);
+        ResponseEntity<OAuthToken> token = restTemplate.exchange(stravaOauthClientConfig.getToken_uri(), HttpMethod.POST, request, OAuthToken.class);
+
+        return token.getBody();
+    }
+
+
+    public Map<String, String> getActivities(User user, long id) {
         try {
-            HttpHeaders headers = setHeader(oAuthToken, email);
+           // HttpHeaders headers = setHeader(oAuthToken, email);
+            HttpHeaders headers = new HttpHeaders();
             HttpEntity requestGet = new HttpEntity(headers);
             URI uri = UriComponentsBuilder.fromUriString("https://www.strava.com/api/v3/activities/"+id).build().toUri();
             logger.info("Strava uri : {}", uri.toString());
+            refreshToken(user, headers);
             ResponseEntity<String> responseEntity = restTemplate.exchange(uri, HttpMethod.GET, requestGet, String.class);
             int statusCode = responseEntity.getStatusCodeValue();
             logger.info("Get Activities Response code : {}", statusCode);
@@ -145,15 +197,15 @@ public class StravaClient {
 
     }
 
-    private HttpHeaders setHeader(OAuthToken oAuthToken, String email) {
-        String accessToken = oAuthToken.getAccess_token();
-
-        HttpHeaders headers = new HttpHeaders();
-        //headers.add("Authorization", "Bearer " + accessToken);
-        headers.add("x-accessToken", accessToken);
-        headers.add("x_email", email);
-        headers.add("x-refreshToken", oAuthToken.getRefresh_token());
-        headers.add("x-exp", oAuthToken.getExpires_at() + "");
-        return headers;
-    }
+//    private HttpHeaders setHeader(OAuthToken oAuthToken, String email) {
+//        String accessToken = oAuthToken.getAccess_token();
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        //headers.add("Authorization", "Bearer " + accessToken);
+//        headers.add("x-accessToken", accessToken);
+//        headers.add("x_email", email);
+//        headers.add("x-refreshToken", oAuthToken.getRefresh_token());
+//        headers.add("x-exp", oAuthToken.getExpires_at() + "");
+//        return headers;
+//    }
 }

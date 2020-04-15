@@ -112,7 +112,7 @@ public class HomeController {
 
         user.setOAuthToken(oAuthToken);
         long time = System.currentTimeMillis();
-        String athleteId = stravaClient.getAthlete(oAuthToken, email);
+        String athleteId = stravaClient.getAthlete(user);
         user.setAthleteId(athleteId);
         user.setVersion(time);
 
