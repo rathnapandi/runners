@@ -37,6 +37,7 @@ public class OAuthClientCredentialsRestTemplateInterceptor implements ClientHttp
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
 
+        logger.info("Request URI : {}", request.getURI());
         logger.info("Request Headers     : {}", request.getHeaders());
         ClientHttpResponse response = execution.execute(request, body);
         logger.info("Response Headers     : {}", response.getHeaders());
