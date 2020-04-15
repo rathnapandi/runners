@@ -5,7 +5,7 @@ pipeline {
 
     parameters {
         string(name: 'sshHost', description: 'SSH Host name', defaultValue: 'localhost')
-        string(name: 'sshPort', description: 'SSH port', defaultValue: 10022)
+        string(name: 'sshPort', description: 'SSH port', defaultValue: '10022')
         string(name: 'sshKnownHosts', description: 'SSH Known Host File Location', defaultValue: '/home/axway/.ssh/known_hosts')
     }
 
