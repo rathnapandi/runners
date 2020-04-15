@@ -43,7 +43,7 @@ pipeline {
                         remote.user = username
                         remote.password = password
                         remote.knownHosts = sshKnownHosts
-                        remote.port = sshPort
+                        remote.port = 10022
                         sshPut remote: remote, from: 'target/runners.jar', into: '.'
                         sshPut remote: remote, from: 'runners.env', into: '.'
                         sshCommand remote: remote, command: 'pkill -f \'java -jar\'', failOnError:false
