@@ -14,7 +14,6 @@ pipeline {
 
             steps {
                 withCredentials([file(credentialsId: 'runnersenv', variable: 'env')]) {
-
                     sh '''
                             cp $env runners.env
                            
