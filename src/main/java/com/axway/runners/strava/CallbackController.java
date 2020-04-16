@@ -75,31 +75,38 @@ public class CallbackController {
             Date date = new Date();
             date.setTime(instant.toEpochMilli());
 
-            feed.setMessage(feed.getSenderName() + " completed the activity at: " + date);
-            feed.setTimeStamp(Long.toString(eventTime));
-            if(objType.trim().equalsIgnoreCase("activity")) {
-                feed.setActivityId(Long.toString(objectID));
-            }
-            feed.setAthleteId(athleteId);
-            event.setVersion(System.currentTimeMillis());
-            event.addFeed(feed);
-            eventService.saveEvent(event);
-
             try {
                 Map<String, String> activityDetail = null;
                 logger.info("Activity Type : {}", objType);
                 if(objType.trim().equals("activity")) {
                     activityDetail = stravaClient.getActivities( user, objectID);
-                    axwayClient.postMessageToTeams(user, feed.getMessage(), stravaAthlete, date.toString(), activityDetail);
+                    feed.setActivityId(Long.toString(objectID));
+                    feed.setDistance(null == activityDetail.get("distance") ? 0 : Float.parseFloat(activityDetail.get("distance"))/1000);
+                    feed.setDuration(null == activityDetail.get("moving_time") ? 0 : Float.parseFloat(activityDetail.get("moving_time"))/60);
+                    feed.setDescription(null == activityDetail.get("name") ? "Untitled" : activityDetail.get("name"));
+                    feed.setCountry(null == activityDetail.get("location_country") ? "" : activityDetail.get("location_country"));
+                    feed.setType(null == activityDetail.get("type") ? "" : activityDetail.get("type"));
+                    feed.setEventTime(eventTime);
+                    axwayClient.postMessageToTeams(user,
+                            feed.getMessage(),
+                            stravaAthlete,
+                            date.toString(),
+                            activityDetail);
                     logger.info("Activity Notification sent out to IB: " + feed.getMessage() +"Keys: " + activityDetail.keySet().toString() +
                             " Values: " + activityDetail.values().toString());
                 }else if(objType.trim().equals("athlete")){
                     axwayClient.postMessageToTeams(user, stravaAthlete);
                     logger.info("Activity Notification sent out to IB: " + feed.getMessage());
                 }
-
-            }catch (Exception e){
-                logger.error("Unhandled exception: " + e.getMessage());
+                feed.setMessage(feed.getSenderName() + " completed the activity at: " + date);
+                feed.setTimeStamp(Long.toString(eventTime));
+                feed.setEventDateTime(date);
+                feed.setAthleteId(athleteId);
+                event.setVersion(System.currentTimeMillis());
+                event.addFeed(feed);
+                eventService.saveEvent(event);
+            } catch (NumberFormatException e) {
+                logger.error("NumberFormat Exception: " + e.getMessage());
             }
         } else {
             logger.error("Error parsing the User's activity. Activity is not Synchronized");
