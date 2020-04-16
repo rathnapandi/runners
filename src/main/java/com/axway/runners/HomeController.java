@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -122,6 +123,19 @@ public class HomeController {
         }
         userService.save(user);
         return new RedirectView("/success.html");
+
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("/strava/deauthorize")
+    public ResponseEntity<?> stravaDauthorize(OAuth2AuthenticationToken authToken) {
+
+
+        Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
+        String email = (String) attributes.get("unique_name");
+        User user = userService.getUser(email);
+        stravaClient.deAuthorize(user);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }
 
