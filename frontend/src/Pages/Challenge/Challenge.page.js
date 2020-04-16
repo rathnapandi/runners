@@ -156,6 +156,27 @@ class Challenege extends React.Component {
             console.log(e)
         }
     }
+
+    handleStravaDeAuthorize = async() =>{
+        const {eventInfo,startTime,duration,pId} = this.state
+        const obj = {
+            eventId:eventInfo.id,
+            startTime,
+            endTime:moment(Number(startTime)).add(Number(duration),'minutes').valueOf()
+        }
+        try{
+            await fetch(`/strava/deauthorize`,{
+                method:'GET',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify(obj)
+            })
+            alert("Strava is disconnected from the App")
+        }catch(e){
+            console.log(e)
+        }
+    }
     handleRedirect = () =>{
         window.open("strava/login", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
     }
@@ -192,6 +213,8 @@ class Challenege extends React.Component {
 
                       <div style={{display:'flex',flexDirection:'row',justifyContent: 'center'}} >
                        {  <button style={{background:'#005e85', color : 'white', fontsize: '12px',marginRight:'5px',width:'max-content'}} onClick={this.handleRedirect}>Connect to Strava</button>}
+                          <span>&nbsp;&nbsp;</span>
+                          {   <button style={{background:'#005e85', color : 'white', fontsize: '12px'}} onClick = {this.handleStravaDeAuthorize} >Disconnect from Strava</button>}
                        <span>&nbsp;&nbsp;</span>
                        {
                            isUpdate ?
