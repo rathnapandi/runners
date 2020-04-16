@@ -22,9 +22,14 @@ public class ParticipantService {
         return participantRepository.findById(id).get();
     }
 
-    public Participant findByEmail(String email) {
+    public List<Participant> findByEmail(String email) {
         return participantRepository.findByEmail(email);
     }
+
+
+//    public Participant findByEmailAndEventId(String email, String eventId) {
+//        return participantRepository.findByEmailAndEventId(email, eventId);
+//    }
 
     public List<Participant> findParticipantsByEventId(String eventId){
         return participantRepository.findParticipantsByEventId(eventId);

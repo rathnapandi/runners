@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface ParticipantRepository extends ElasticsearchCrudRepository<Participant, String> {
     //public Participant findParticipantByEventId();
-    Participant findByEmail(String email);
-    public List<Participant> findParticipantsByEventId(String eventId);
+    List<Participant> findByEmail(String email);
+    List<Participant> findParticipantsByEventId(String eventId);
+    //Participant findByEmailAndEventId(String email, String eventId);
 }
