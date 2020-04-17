@@ -13,6 +13,7 @@ class Challenege extends React.Component {
         eventInfo:null,
         selectedEvent:null,
         choice:'',
+        id:'',
         prevSetTime:null,
         duration:'30',
         startTime:undefined,
@@ -39,7 +40,8 @@ class Challenege extends React.Component {
                            name:event.name,
                            description:event.description,
                            startDate:event.startDate,
-                           endDate:event.endDate
+                           endDate:event.endDate,
+                           image: event.image
                       })
                   })
                   this.setState({eventInfo:events})
@@ -184,7 +186,8 @@ console.log(id);
         const that = this;
         this.setState(state => ({
             selectedEvent:state.eventInfo.find(event => event.id === id),
-                        startTime:state.eventInfo.find(event => event.id === id).startDate,
+             startTime:state.eventInfo.find(event => event.id === id).startDate,
+             id:state.eventInfo.find(event => event.id === id).id,
             isUpdate:false,
             choice:'',
             duration:'30',
@@ -194,11 +197,10 @@ console.log(id);
             }
     render(){
         const {choice,eventInfo,selectedEvent,isUpdate,startTime,duration,authToken,messageDisplay,prevSetTime} = this.state
-        console.log(duration,startTime);
-        console.log(selectedEvent);
+        console.log(choice);
         return(
             <div className='challenge-div'>
-                {eventInfo && <ChallengeHead events={eventInfo} selectEvent={this.handleEvent}/>}
+                {eventInfo && <ChallengeHead events={eventInfo} selectEvent={this.handleEvent} id={this.state.id}/>}
                {selectedEvent && <Description description={selectedEvent.description}/>}
 
              {selectedEvent && <Timing startDate={selectedEvent.startDate} endDate={selectedEvent.endDate}/>}
@@ -259,20 +261,30 @@ console.log(id);
 
 export default Challenege;
 
-const ChallengeHead = ({events,selectEvent}) => {
+const ChallengeHead = ({events,selectEvent,id}) => {
     return(
-        <div style={{display:'flex'}}>
-            { events.map((event,i) =>{
+        <div style={{display:'flex',flexWrap:'wrap'}}>
+        {
+            events.map((event,i) =>{
                 return(
-                    <div key ={i} style={{color:'green',margin:'10px'}} onClick={() => selectEvent(event.id)}>
-                        <h3 style={{margin:'0',padding:'10px 5px'}}>{event.name}</h3>
+                    <div
+                    key = {i}
+                    onClick={() => selectEvent(event.id)}
+                    className={`${id === event.id ? "clicked":""}`}
+                    style={{color:'green',margin:'10px',width:'200px',boxShadow: '2px 3px 4px lightblue',textAlign: 'center'}}>
+                        <div style={{width:'200px'}}>
+                            <img src={`data:image/jpg;base64,${event.image}`} alt='' style={{height:'auto',width:'100%'}}/>
+                        </div>
+                      <span>Event Start time: <span>{moment(Number(event.startDate)).format('Do MMM YYYY, HH:mm')}</span></span>
+                    <h3 style={{margin:'0',padding:'10px 5px'}}>{event.name}</h3>
                     </div>
                 )
             })
-            }
+        }
         </div>
     )
 }
+
 
 
 
