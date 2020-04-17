@@ -11,12 +11,11 @@ class Challenege extends React.Component {
     state = {
         currentuser:null,
         eventInfo:null,
+        selectedEvent:null,
         choice:'',
         prevSetTime:null,
         duration:'30',
         startTime:undefined,
-        startDate:undefined,
-        endDate:undefined,
         groups:[],
         items:[],
         isUpdate:false,
@@ -25,7 +24,8 @@ class Challenege extends React.Component {
         messageDisplay:false
     }
 
-    eventCallFunc = async (num) => {
+    eventCallFunc = async () => {
+        let events = []
         const resp = await fetch('/api/events',{
             method:'GET',
             headers: {
@@ -33,22 +33,22 @@ class Challenege extends React.Component {
               },
         })
         const eventInfo = await resp.json()
-        const {id,name,description,startDate,endDate} = eventInfo.content[0]
-        this.setState({
-            eventInfo:{
-                id,
-                name,
-                description,
-                startDate,
-                endDate
-            },
-            startTime:startDate
-        })
-    }
+          eventInfo.content.forEach(event => {
+                      events.push({
+                          id:event.id,
+                           name:event.name,
+                           description:event.description,
+                           startDate:event.startDate,
+                           endDate:event.endDate
+                      })
+                  })
+                  this.setState({eventInfo:events})
+              }
     participantCallFunc = async () =>{
-        let groups = [],items= []
-        const {eventInfo:{id},currentuser} = this.state
-        const resp = await fetch(`/api/events/${id}/participants`,{
+
+        let groups = [],items= [];
+                       const {selectedEvent:{id},currentuser} = this.state
+                               const resp = await fetch(`/api/events/${id}/participants`,{
             method:'GET',
             headers:{
                 'Content-Type':'application/json'
@@ -101,7 +101,7 @@ class Challenege extends React.Component {
         })
         this.props.sentName({firstName,lastName})
         await this.eventCallFunc()
-        await this.participantCallFunc()
+
     }
     handleChoice = (choice) => this.setState({choice})
 
@@ -110,17 +110,16 @@ class Challenege extends React.Component {
     handleTime = startTime => this.setState({startTime})
 
     handleClick = async() =>{
-        const {eventInfo,currentuser,startTime,duration} = this.state
-        
+        const {selectedEvent,currentuser,startTime,duration} = this.state
         const obj = {
-            eventId:eventInfo.id,
-            eventName:eventInfo.name,
+            eventId:selectedEvent.id,
+            eventname:selectedEvent.name,
             startTime:startTime,
             endTime:moment(Number(startTime)).add(Number(duration),'minutes').valueOf(),
             ...currentuser
         }
         try{
-            const presponse = await fetch(`/api/events/${eventInfo.id}/participants`,{
+            const presponse = await fetch(`/api/events/${selectedEvent.id}/participants`,{
             method:'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -133,15 +132,15 @@ class Challenege extends React.Component {
             console.log(e)
         }
     }
-    handleUpdate = async() =>{
-        const {eventInfo,startTime,duration,pId} = this.state
-        const obj = {
-            eventId:eventInfo.id,
-            startTime,
-            endTime:moment(Number(startTime)).add(Number(duration),'minutes').valueOf()
-        }
-        try{
-            await fetch(`/api/events/${eventInfo.id}/participants/${pId}`,{
+ handleUpdate = async() =>{
+         const {selectedEvent,startTime,duration,pId} = this.state
+         const obj = {
+             eventId:selectedEvent.id,
+             startTime,
+             endTime:moment(Number(startTime)).add(Number(duration),'minutes').valueOf()
+         }
+         try{
+             await fetch(`/api/events/${selectedEvent.id}/participants/${pId}`,{
                 method:'PUT',
                 headers:{
                     'Content-Type':'application/json'
@@ -180,36 +179,46 @@ class Challenege extends React.Component {
     handleRedirect = () =>{
         window.open("strava/login", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
     }
+  handleEvent = async (id) => {
+console.log(id);
+        const that = this;
+        this.setState(state => ({
+            selectedEvent:state.eventInfo.find(event => event.id === id),
+                        startTime:state.eventInfo.find(event => event.id === id).startDate,
+            isUpdate:false,
+            choice:'',
+            duration:'30',
+            prevSetTime:null
+        }));
+                await this.participantCallFunc();
+            }
     render(){
-        const {choice,eventInfo,isUpdate,startTime,duration,authToken,messageDisplay,prevSetTime} = this.state
-        // console.log(duration,startTime);
+        const {choice,eventInfo,selectedEvent,isUpdate,startTime,duration,authToken,messageDisplay,prevSetTime} = this.state
+        console.log(duration,startTime);
+        console.log(selectedEvent);
         return(
             <div className='challenge-div'>
-                <ChallengeHead />
-               {eventInfo && <Description description={eventInfo.description}/>}
+                {eventInfo && <ChallengeHead events={eventInfo} selectEvent={this.handleEvent}/>}
+               {selectedEvent && <Description description={selectedEvent.description}/>}
 
-               {eventInfo && <Timing startDate={eventInfo.startDate} endDate={eventInfo.endDate}/>}
+             {selectedEvent && <Timing startDate={selectedEvent.startDate} endDate={selectedEvent.endDate}/>}
 
-               {eventInfo && <PlaceChoice choiceClick = {this.handleChoice}/>}
+               {selectedEvent &&<PlaceChoice choiceClick = {this.handleChoice} ch ={choice}/>}
                 {
                     choice === 'runner' &&
                     <div className='challenge-div2'>
-                       {eventInfo && <DurationChoice choiceClick = {this.handleDuration} dur={duration}/>}
-
-                      <div style={{display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-                       {eventInfo&& <WrapperTimePicker
-                            yourChoiceTime = {this.handleTime}
-                            startDate={eventInfo.startDate}
-                            endDate={eventInfo.endDate}
-                            sTime={startTime}
-                        />
-                       }
-                        {prevSetTime && <div style={{position:'relative',left:'20px',color:'green'}}>
-                            <span>Your current run schedule</span>
-                            <span>{`${moment(prevSetTime.startTime).format('MM/D/YYYY h:mm a')} to ${moment(prevSetTime.endTime).format('h:mm a')}`}</span>
-                        </div>
-                        }
-                        </div>
+                                           {selectedEvent && <DurationChoice choiceClick = {this.handleDuration} dur={duration}/>}
+                                           { prevSetTime && <div style={{textAlign:'center',color:'green',padding:'5px 0'}}>
+                                                <span>* Your current run Schedule is</span>
+                                                <span>{`${moment(prevSetTime.startTime).format('MM/D/YYYY h:mm a')} to ${moment(prevSetTime.endTime).format('h:mm a')}`}</span>
+                                            </div>}
+                                           {selectedEvent && <WrapperTimePicker
+                                                                       yourChoiceTime = {this.handleTime}
+                                                                       startDate={selectedEvent.startDate}
+                                                                       endDate={selectedEvent.endDate}
+                                                                       sTime={startTime}
+                                                                   />
+                                                                  }
 
                       <div style={{display:'flex',flexDirection:'row',justifyContent: 'center'}} >
                        {  <button style={{background:'#005e85', color : 'white', fontsize: '12px',marginRight:'5px',width:'max-content'}} onClick={this.handleRedirect}>Connect to Strava</button>}
@@ -250,18 +259,27 @@ class Challenege extends React.Component {
 
 export default Challenege;
 
-const ChallengeHead = ({firstName}) => {
+const ChallengeHead = ({events,selectEvent}) => {
     return(
-        <div style={{color:'green',margin:'10px'}}>
-            <h1 style={{margin:'0',padding:'10px 5px'}}> Welcome to FiTogether</h1>
+        <div style={{display:'flex'}}>
+            { events.map((event,i) =>{
+                return(
+                    <div key ={i} style={{color:'green',margin:'10px'}} onClick={() => selectEvent(event.id)}>
+                        <h3 style={{margin:'0',padding:'10px 5px'}}>{event.name}</h3>
+                    </div>
+                )
+            })
+            }
         </div>
     )
 }
 
+
+
 const Description = ({description}) => {
     return(
         <div style={{display:'flex',flexDirection:'column',width:'max-content',background:'lightgrey',boxShadow:'6px 4px 5px',padding:'5px 10px',borderRadius:'10px'}}>
-            <span>{description}</span>
+             <span>{description}</span>
         </div>
     )
 }
@@ -269,8 +287,8 @@ const Description = ({description}) => {
 const Timing = ({startDate,endDate}) =>{
     return(
         <div style={{display:'flex',flexDirection:'row',justifyContent:'space-evenly', width:'50%',margin:'10px 0',background:'lightgrey',padding:'10px',borderRadius:'10px'}}>
-            <span>Event Start Time: <span style={{color:'green'}}>{moment(Number(startDate)).format('Do MMM YYYY, HH:mm')}</span></span>
-            <span>Event End Time: <span style={{color:'green'}}>{moment(Number(endDate)).format('Do MMM YYYY, HH:mm')}</span></span>
+           <span>Start time:<span style={{color:'green'}}>{moment(Number(startDate)).format('Do MMM YYYY, HH:mm')}</span></span>
+            <span >End time:<span style={{color:'green'}}>{moment(Number(endDate)).format('Do MMM YYYY, HH:mm')}</span></span>
         </div>
     )
 }
