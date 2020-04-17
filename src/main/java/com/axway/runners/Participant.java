@@ -18,8 +18,8 @@ public class Participant {
     private String eventName;
     private String eventId;
     private String countryCode;
-    private long startTime;
-    private long endTime;
+    private String startTime;
+    private String endTime;
     private String note;
     private String type;
     @Version
