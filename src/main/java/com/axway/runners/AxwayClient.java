@@ -81,9 +81,9 @@ public class AxwayClient {
         map.put("userName", participant.getFirstName() + " " + participant.getLastName());
         map.put("email", participant.getEmail());
         map.put("eventName", participant.getEventName());
-        calendar.setTimeInMillis(participant.getStartTime());
+        calendar.setTimeInMillis(Long.parseLong(participant.getStartTime()));
         map.put("startTime", calendar.getTime());
-        calendar.setTimeInMillis(participant.getEndTime());
+        calendar.setTimeInMillis(Long.parseLong(participant.getEndTime()));
         map.put("endTime", calendar.getTime());
         map.put("countryCode", participant.getCountryCode());
         postMessage(emailURL, map, headers);

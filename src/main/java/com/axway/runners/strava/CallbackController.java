@@ -63,7 +63,7 @@ public class CallbackController {
         User user = userService.findByAthleteId(athleteId);
         List<Participant> participants = participantService.findByEmail(user.getEmail());
         long currentTime = System.currentTimeMillis();
-        Optional<Participant> matchedParticipant = participants.parallelStream().filter(participant -> participant.getStartTime() <= currentTime && participant.getStartTime() >= currentTime).findFirst();
+        Optional<Participant> matchedParticipant = participants.parallelStream().filter(participant -> Long.parseLong(participant.getStartTime()) <= currentTime && Long.parseLong(participant.getStartTime()) >= currentTime).findFirst();
         if (matchedParticipant == null) {
             logger.info("No matching participant ");
         } else {
