@@ -8,7 +8,7 @@ import DurationChoice from '../../Component/DurationChoice/DurationChoice.compon
 import moment from 'moment-timezone';
 import './challenge.css'
 
-class Challenege extends React.Component {
+class Challenge extends React.Component {
     state = {
         currentuser: null,
         eventInfo: null,
@@ -40,8 +40,8 @@ class Challenege extends React.Component {
                 id: event.id,
                 name: event.name,
                 description: event.description,
-                startDate: event.startDate,
-                endDate: event.endDate,
+                startDate: Number(event.startDate),
+                endDate: Number(event.endDate),
                 image: event.image
             })
         })
@@ -67,19 +67,19 @@ class Challenege extends React.Component {
             items.push({
                 id: pItem.id,
                 group: pItem.id,
-                title: `${pItem.firstName} ${pItem.lastName}-${moment(pItem.startTime).format('h:mm a')} to ${moment(pItem.endTime).format('h:mm a')}`,
-                start_time: pItem.startTime,
-                end_time: pItem.endTime
+                title: `${pItem.firstName} ${pItem.lastName}-${moment(Number(pItem.startTime)).format('h:mm a')} to ${moment(Number(pItem.endTime)).format('h:mm a')}`,
+                start_time: Number(pItem.startTime),
+                end_time: Number(pItem.endTime)
             })
             if (currentuser.email === pItem.email)
                 this.setState({
                     isUpdate: true,
-                    startTime: pItem.startTime,
+                    startTime: Number(pItem.startTime),
                     prevSetTime: {
-                        startTime: pItem.startTime,
-                        endTime: pItem.endTime
+                        startTime: Number(pItem.startTime),
+                        endTime: Number(pItem.endTime)
                     },
-                    duration: moment(pItem.endTime).diff(pItem.startTime, 'minutes').toString(),
+                    duration: moment(Number(pItem.endTime)).diff(Number(pItem.startTime), 'minutes').toString(),
                     pId: pItem.id
                 })
         })
@@ -121,8 +121,8 @@ class Challenege extends React.Component {
         const obj = {
             eventId: selectedEvent.id,
             eventname: selectedEvent.name,
-            startTime: startTime,
-            endTime: moment(Number(startTime)).add(Number(duration), 'minutes').valueOf(),
+            startTime: String(startTime),
+            endTime: String(moment(Number(startTime)).add(Number(duration), 'minutes').valueOf()),
             ...currentuser
         }
         try {
@@ -133,7 +133,6 @@ class Challenege extends React.Component {
                 },
                 body: JSON.stringify(obj)
             })
-            console.log(await presponse.json());
             await this.participantCallFunc(selectedEvent.id)
         } catch (e) {
             console.log(e)
@@ -143,8 +142,8 @@ class Challenege extends React.Component {
         const {selectedEvent, startTime, duration, pId} = this.state
         const obj = {
             eventId: selectedEvent.id,
-            startTime,
-            endTime: moment(Number(startTime)).add(Number(duration), 'minutes').valueOf()
+            startTime: String(startTime),
+            endTime: String(moment(Number(startTime)).add(Number(duration), 'minutes').valueOf())
         }
         try {
             await fetch(`/api/events/${selectedEvent.id}/participants/${pId}`, {
@@ -208,7 +207,7 @@ class Challenege extends React.Component {
                     <div className='challenge-div2'>
                         {selectedEvent && <DurationChoice choiceClick={this.handleDuration} dur={duration}/>}
                         {prevSetTime && <div style={{textAlign: 'center', color: 'green', padding: '5px 0'}}>
-                            <span>* Your current run Schedule is</span>
+                            <span>* Your current run Schedule is </span>
                             <span>{`${moment(prevSetTime.startTime).format('MM/D/YYYY h:mm a')} to ${moment(prevSetTime.endTime).format('h:mm a')}`}</span>
                         </div>}
                         {selectedEvent && <WrapperTimePicker
@@ -253,6 +252,8 @@ class Challenege extends React.Component {
                     <WrapperCalendar
                         groups={this.state.groups}
                         items={this.state.items}
+                        startDate={selectedEvent.startDate}
+                        endDate={selectedEvent.endDate}
                     />
                 }
 
@@ -266,7 +267,7 @@ class Challenege extends React.Component {
     }
 }
 
-export default Challenege;
+export default Challenge;
 
 const ChallengeHead = ({events, selectEvent, id}) => {
     return (
