@@ -159,16 +159,11 @@ class Challenege extends React.Component {
     }
 
     handleStravaDeAuthorize = async() =>{
-        const {eventInfo,startTime,duration,pId} = this.state
-        const obj = {
-            eventId:eventInfo.id,
-            startTime,
-            endTime:moment(Number(startTime)).add(Number(duration),'minutes').valueOf()
-        }
+
         try{
             await fetch(`/strava/deauthorize`,{
-                method:'GET',
-                body:JSON.stringify(obj)
+                method:'GET'
+
             })
             alert("Strava is disconnected from the App")
         }catch(e){
