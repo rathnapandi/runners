@@ -27,7 +27,7 @@ public class Event{
     private long endDate;
 
 
-    private String image;
+    private byte[] image;
     private List<String> tags;
     private Map<String, Object> metadata;
     private List<Feed> feeds;
