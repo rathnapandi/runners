@@ -168,9 +168,6 @@ class Challenege extends React.Component {
         try{
             await fetch(`/strava/deauthorize`,{
                 method:'GET',
-                headers:{
-                    'Content-Type':'application/json'
-                },
                 body:JSON.stringify(obj)
             })
             alert("Strava is disconnected from the App")
