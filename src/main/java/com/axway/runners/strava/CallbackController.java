@@ -64,9 +64,7 @@ public class CallbackController {
         List<Participant> participants = participantService.findByEmail(user.getEmail());
         long currentTime = System.currentTimeMillis();
         Optional<Participant> matchedParticipant = participants.parallelStream().filter(participant -> Long.parseLong(participant.getStartTime()) <= currentTime && Long.parseLong(participant.getStartTime()) >= currentTime).findFirst();
-        if (matchedParticipant == null) {
-            logger.info("No matching participant ");
-        } else {
+        if (matchedParticipant.isPresent()) {
 
             Participant participant = matchedParticipant.get();
             Event event = eventService.findById(participant.getEventId());
@@ -122,6 +120,8 @@ public class CallbackController {
                 logger.error("Error parsing the User's activity. Activity is not Synchronized");
             }
 
+        } else {
+            logger.info("No matching participant ");
         }
 
         return new ResponseEntity<>(HttpStatus.OK);
