@@ -142,6 +142,7 @@ class Challenge extends React.Component {
         const {selectedEvent, startTime, duration, pId} = this.state
         const obj = {
             eventId: selectedEvent.id,
+            eventname: selectedEvent.name,
             startTime: String(startTime),
             endTime: String(moment(Number(startTime)).add(Number(duration), 'minutes').valueOf())
         }
