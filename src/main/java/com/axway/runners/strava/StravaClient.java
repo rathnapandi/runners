@@ -61,7 +61,7 @@ public class StravaClient {
         HttpHeaders headers = new HttpHeaders();
         refreshToken(user, headers);
 
-        URI uri = UriComponentsBuilder.fromUriString("https://www.strava.com/oauth/deauthorize").queryParam(user.getOAuthToken().getAccess_token()).build().toUri();
+        URI uri = UriComponentsBuilder.fromUriString("https://www.strava.com/oauth/deauthorize").queryParam("access_token", user.getOAuthToken().getAccess_token()).build().toUri();
         //refreshToken()
         //HttpEntity requestGet = new HttpEntity();
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(uri, String.class);
