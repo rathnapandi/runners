@@ -40,7 +40,9 @@ public class OAuthClientCredentialsRestTemplateInterceptor implements ClientHttp
         logger.info("Request URI : {}", request.getURI());
         logger.info("Request Headers     : {}", request.getHeaders());
         ClientHttpResponse response = execution.execute(request, body);
+        logger.info("Response status code : {} and Text : {}", response.getRawStatusCode(), response.getStatusText());
         logger.info("Response Headers     : {}", response.getHeaders());
+
         return response;
 
     }
