@@ -18,7 +18,7 @@ class App extends React.Component{
         <div className='div-app'>
             <Header2 userName={this.state.userName}/>
             <Switch>
-            <Route path='/iframe' component={Iframe}/>
+            <Route path='/Dashboard' component={Iframe}/>
             <Route path='/' render={({...props}) =><Challenge sentName ={this.handleName} {...props}/>}/>
             </Switch>
 
