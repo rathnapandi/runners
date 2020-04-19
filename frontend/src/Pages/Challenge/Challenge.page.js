@@ -120,7 +120,7 @@ class Challenge extends React.Component {
         const {selectedEvent, currentuser, startTime, duration} = this.state
         const obj = {
             eventId: selectedEvent.id,
-            eventname: selectedEvent.name,
+            eventName: selectedEvent.name,
             startTime: String(startTime),
             endTime: String(moment(Number(startTime)).add(Number(duration), 'minutes').valueOf()),
             ...currentuser
@@ -142,6 +142,7 @@ class Challenge extends React.Component {
         const {selectedEvent, startTime, duration, pId} = this.state
         const obj = {
             eventId: selectedEvent.id,
+            eventName: selectedEvent.name,
             startTime: String(startTime),
             endTime: String(moment(Number(startTime)).add(Number(duration), 'minutes').valueOf())
         }
