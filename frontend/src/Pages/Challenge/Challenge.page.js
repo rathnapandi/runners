@@ -194,7 +194,7 @@ class Challenge extends React.Component {
 
     render() {
         const {choice, eventInfo, selectedEvent, isUpdate, startTime, duration, authToken, messageDisplay, prevSetTime, id} = this.state
-        console.log(choice);
+        //console.log(choice);
         return (
             <div className='challenge-div'>
                 {eventInfo && <ChallengeHead events={eventInfo} selectEvent={this.handleEvent} id={id}/>}
