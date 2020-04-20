@@ -35,6 +35,9 @@ public class Main {
 
         System.out.println(calendar.getTimeInMillis());
         System.out.println(calendar.getTime());
+
+
+        System.out.println(new Date(Long.parseLong("1587736800001")));
         //system.out.println(UUID.randomUUID().toString());
 
 //        calendar = Calendar.getInstance();
