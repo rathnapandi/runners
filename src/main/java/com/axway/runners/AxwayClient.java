@@ -1,5 +1,6 @@
 package com.axway.runners;
 
+import com.axway.runners.ical.MSCalendarEvent;
 import com.axway.runners.strava.StravaAthlete;
 import com.axway.runners.strava.StravaClient;
 import org.slf4j.Logger;
@@ -25,6 +26,8 @@ public class AxwayClient {
 
     private static Logger logger = LoggerFactory.getLogger(StravaClient.class);
 
+    @Autowired
+    private MSCalendarEvent msCalendarEvent;
 
     @Autowired
     @Qualifier("axwayClient")
@@ -87,6 +90,8 @@ public class AxwayClient {
         map.put("endTime", calendar.getTime());
         map.put("countryCode", participant.getCountryCode());
         postMessage(emailURL, map, headers);
+
+        String ical = msCalendarEvent.createEvent(participant);
         return CompletableFuture.completedFuture(null);
 
     }

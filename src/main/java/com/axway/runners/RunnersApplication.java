@@ -1,5 +1,6 @@
 package com.axway.runners;
 
+import net.fortuna.ical4j.util.MapTimeZoneCache;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +14,7 @@ import java.util.concurrent.Executor;
 public class RunnersApplication {
 
 	public static void main(String[] args) {
+		System.setProperty("net.fortuna.ical4j.timezone.cache.impl", MapTimeZoneCache.class.getName());
 		SpringApplication.run(RunnersApplication.class, args);
 	}
 
