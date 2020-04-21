@@ -5,6 +5,17 @@ package com.axway.runners;
 //
 //import java.util.Calendar;
 
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.*;
+
 public class MSCalendarEventTest {
 
 
@@ -47,4 +58,99 @@ public class MSCalendarEventTest {
 //        System.out.println(ical);
 //
 //    }
+DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
+    @Test
+    public void testEmailMsg(){
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Participant participant = new Participant();
+
+        participant.setEventName("Test event");
+
+        participant.setFirstName("Rathna");
+        participant.setLastName("Natarajan");
+
+        participant.setEmail("rnatarajan@axway.com");
+
+
+        participant.setCountryCode("US");
+        Calendar calendar1 = Calendar.getInstance();
+        calendar1.setTimeZone(TimeZone.getTimeZone("America/Phoenix"));
+        calendar1.set(Calendar.MINUTE, 0);
+        calendar1.set(Calendar.HOUR_OF_DAY, 7);
+        calendar1.set(Calendar.SECOND, 0);
+        calendar1.set(Calendar.DATE, 24);
+        calendar1.set(Calendar.MILLISECOND, 1);
+        //calendar.set(Calendar.AM_PM, Calendar.AM);
+        participant.setStartTime(calendar1.getTimeInMillis() + "");
+
+
+
+
+
+        calendar1 = Calendar.getInstance();
+        calendar1.set(Calendar.MINUTE, 0);
+        calendar1.set(Calendar.HOUR_OF_DAY, 8);
+        calendar1.set(Calendar.SECOND, 0);
+        calendar1.set(Calendar.MILLISECOND, 0);
+        calendar1.set(Calendar.DATE, 24);
+        participant.setEndTime(calendar1.getTimeInMillis()+"");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(Long.parseLong(participant.getStartTime()));
+        OffsetDateTime utcStartTime  = calendar.toInstant().atOffset(ZoneOffset.UTC);
+
+        calendar.setTimeInMillis(Long.parseLong(participant.getEndTime()));
+
+        OffsetDateTime utcEndTime  = calendar.toInstant().atOffset(ZoneOffset.UTC);
+
+        String msg = "Thank you " + participant.getFirstName() + " " + participant.getLastName() +
+                " for registering with FiTogether \n\nWe are very excited you signed up with us. We are looking forward to your participation with this challenge\n\n " +
+                "Important details to keep in mind for the upcoming challenge event on "
+                + utcStartTime.getDayOfMonth() + "\n\nStart Time: " + utcStartTime.getHour()+ " " +utcStartTime.getMinute() +"\n\nEndTime: " + utcEndTime.getHour() + " " + utcEndTime.getMinute()
+                + "\n\nEvent Name: " + participant.getEventName() + "\n\nCountry: "
+                + participant.getCountryCode() + "\n\n\nSave the date!\n\n\n#TogetherWeCan & #TogetherWeWill";
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("{\"from\":\"axwaydemo.dss@gmail.com\",");
+        stringBuilder.append("\"to\"");
+        stringBuilder.append(":\"");
+        stringBuilder.append(participant.getEmail());
+        stringBuilder.append("\",");
+        stringBuilder.append("\"bcc\":\"axwaydemo.dss@gmail.com\",");
+        stringBuilder.append("\"subject\": \"Welcome to \"+ eventName +\"!\",");
+        stringBuilder.append("\"data\":\"");
+        stringBuilder.append(msg);
+        stringBuilder.append("\"}");
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        Map<String, Object> map = new HashMap<>();
+        map.put("body", stringBuilder.toString());
+
+        String ical = "BEGIN:VCALENDAR\n" +
+                "VERSION:2.0\n" +
+                "PRODID:-fitogether-demo-uid-name\n" +
+                "X-WR-CALNAME:" + participant.getEventName() + "\n" +
+                "NAME:" + participant.getEventName() +"\n" +
+                "CALSCALE:GREGORIAN\n" +
+                "BEGIN:VEVENT\n" +
+                "DTSTAMP:" + dateFormat.format(new Date(Instant.now().toEpochMilli())) + "\n" +
+                "UID:fit-together-demo-uid\n" +
+                "DTSTART;TZID=/Etc/UTC:" + dateFormat.format(new Date(utcStartTime.toInstant().toEpochMilli())) + "\n" +
+                "DTEND;TZID=/Etc/UTC:"+ dateFormat.format(new Date(utcEndTime.toInstant().toEpochMilli())) + "\n" +
+                "LOCATION=Virtual Run\n" +
+                "SUMMARY:Event Name\n" +
+                "DESCRIPTION:Event Description\n" +
+                "TRANSP:TRANSPARENT\n" +
+                "X-MICROSOFT-CDO-BUSYSTATUS:BUSY\n" +
+                "BEGIN:VALARM\n" +
+                "ACTION:DISPLAY\n" +
+                "DESCRIPTION:Event Name\n" +
+                "TRIGGER:-PT30M\n" +
+                "END:VALARM\n" +
+                "END:VEVENT\n" +
+                "END:VCALENDAR";
+
+        System.out.println(ical);
+        System.out.println(utcStartTime.getHour());
+
+    }
 }

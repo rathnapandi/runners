@@ -62,9 +62,13 @@ public class CallbackController {
         String athleteId = stravaAthlete.getOwner_id() + "";
         User user = userService.findByAthleteId(athleteId);
         List<Participant> participants = participantService.findByEmail(user.getEmail());
+        if(participants.isEmpty()){
+            logger.info("Runners is not registered to the app" );
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
         long currentTime = System.currentTimeMillis();
         Optional<Participant> matchedParticipant = participants.parallelStream().filter(participant -> Long.parseLong(participant.getStartTime()) <= currentTime && Long.parseLong(participant.getStartTime()) >= currentTime).findFirst();
-        if (matchedParticipant.isPresent()) {
+        if ( matchedParticipant.isPresent()) {
 
             Participant participant = matchedParticipant.get();
             Event event = eventService.findById(participant.getEventId());
