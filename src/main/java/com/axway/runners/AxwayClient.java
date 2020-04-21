@@ -113,7 +113,7 @@ public class AxwayClient {
         String ical = "BEGIN:VCALENDAR\n" +
                 "VERSION:2.0\n" +
                 "PRODID:-fitogether-demo-uid-name\n" +
-                "X-WR-CALNAME:" + participant.getEventName() + "\n" +
+     //           "X-WR-CALNAME:" + participant.getEventName() + "\n" +
                 "NAME:" + participant.getEventName() +"\n" +
                 "CALSCALE:GREGORIAN\n" +
                 "BEGIN:VEVENT\n" +
