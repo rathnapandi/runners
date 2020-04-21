@@ -8,7 +8,7 @@ class WrapperCalendar extends React.Component{
     render(){
         const {groups,items,startDate,endDate} = this.props
     return(
-        <div style={{width:'95vw'}}>
+        <div style={{width:'95vw',overflowY:'auto',height:'15em'}}>
                 <Timeline 
                 groups={groups}
                 items={items}
