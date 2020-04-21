@@ -138,6 +138,7 @@ public class CallbackController {
                 date.setTime(instant.toEpochMilli());
                 Map<String, String> activityDetail = stravaClient.getActivities(user, objectID);
                 UnMatchedEventFeed feed = new UnMatchedEventFeed();
+                feed.setSenderName(user.getFirstName() + " " + user.getLastName());
                 feed.setActivityId(Long.toString(objectID));
                 feed.setDistance(null == activityDetail.get("distance") ? 0 : Float.parseFloat(activityDetail.get("distance")) / 1000);
                 feed.setDuration(null == activityDetail.get("moving_time") ? 0 : Float.parseFloat(activityDetail.get("moving_time")) / 60);
