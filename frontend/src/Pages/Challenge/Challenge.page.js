@@ -51,7 +51,7 @@ class Challenge extends React.Component {
         this.setState({eventInfo: events})
     }
     participantCallFunc = async (eventId) => {
-        console.log("event id"+eventId)
+
 
         let groups = [], items = [];
         const { currentuser} = this.state
@@ -185,7 +185,7 @@ class Challenge extends React.Component {
         window.open("strava/login", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
     }
     handleEvent = async (id) => {
-        console.log(id);
+
         this.setState(state => ({
             selectedEvent: state.eventInfo.find(event => event.id === id),
             startTime: state.eventInfo.find(event => event.id === id).startDate,
@@ -203,7 +203,7 @@ class Challenge extends React.Component {
     render()
     {
         const {choice, eventInfo, selectedEvent, isUpdate, startTime, duration, authToken, messageDisplay, prevSetTime, id} = this.state
-        console.log(choice);
+
         if(this.state.active)
                 return(
                     <div style={{display:'flex',textAlign:'center',justifyContent:'center'}}>
