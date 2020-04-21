@@ -39,8 +39,10 @@ a span{
 
 }
 .button-folder {
+	width: 100px;
+	display: inline-block;
 	border:none;
-	margin-left: 5px;
+	text-align: center;
 	background: gray;
 	color: white;
 	padding: 6px 10px;

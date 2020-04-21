@@ -3,10 +3,12 @@ import React from 'react';
 import PlaceChoice from '../../Component/PlaceChoice/PlaceChoice.component';
 import WrapperCalendar from '../../Component/WrapperCalendar/WrapperCalendar.component';
 import WrapperTimePicker from '../../Component/WrapperTimePicker/WrapperTimePicker.component';
-import DurationChoice from '../../Component/DurationChoice/DurationChoice.component'
+import DurationChoice from '../../Component/DurationChoice/DurationChoice.component';
+
 
 import moment from 'moment-timezone';
 import './challenge.css'
+import './loader.css'
 
 class Challenge extends React.Component {
     state = {
@@ -23,7 +25,8 @@ class Challenge extends React.Component {
         isUpdate: false,
         pId: '',
         authToken: null,
-        messageDisplay: false
+        messageDisplay: false,
+        active:false
     }
 
     eventCallFunc = async () => {
@@ -48,7 +51,7 @@ class Challenge extends React.Component {
         this.setState({eventInfo: events})
     }
     participantCallFunc = async (eventId) => {
-        console.log("event id"+eventId)
+
 
         let groups = [], items = [];
         const { currentuser} = this.state
@@ -87,6 +90,7 @@ class Challenge extends React.Component {
     }
 
     async componentDidMount() {
+    this.setState({active:true});
         const resp = await fetch('/api/users/currentuser', {
             method: 'GET',
             headers: {
@@ -107,7 +111,7 @@ class Challenge extends React.Component {
         })
         this.props.sentName({firstName, lastName})
         await this.eventCallFunc()
-
+        this.setState({active:false});
     }
 
     handleChoice = (choice) => this.setState({choice})
@@ -118,6 +122,7 @@ class Challenge extends React.Component {
 
     handleClick = async () => {
         const {selectedEvent, currentuser, startTime, duration} = this.state
+        this.setState({active:true});
         const obj = {
             eventId: selectedEvent.id,
             eventName: selectedEvent.name,
@@ -125,6 +130,7 @@ class Challenge extends React.Component {
             endTime: String(moment(Number(startTime)).add(Number(duration), 'minutes').valueOf()),
             ...currentuser
         }
+        this.setState({active:true});
         try {
             const presponse = await fetch(`/api/events/${selectedEvent.id}/participants`, {
                 method: 'POST',
@@ -154,7 +160,7 @@ class Challenge extends React.Component {
                 },
                 body: JSON.stringify(obj)
             })
-            this.setState({messageDisplay: true}, () => setTimeout(() => {
+            this.setState({messageDisplay:true,active:false},() => setTimeout(() =>{
                 this.setState({messageDisplay: false})
             }, 1500))
             await this.participantCallFunc(selectedEvent.id)
@@ -179,7 +185,7 @@ class Challenge extends React.Component {
         window.open("strava/login", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
     }
     handleEvent = async (id) => {
-        console.log(id);
+
         this.setState(state => ({
             selectedEvent: state.eventInfo.find(event => event.id === id),
             startTime: state.eventInfo.find(event => event.id === id).startDate,
@@ -187,14 +193,25 @@ class Challenge extends React.Component {
             isUpdate: false,
             choice: '',
             duration: '30',
-            prevSetTime: null
+            prevSetTime: null,
+            active:true
         }));
         await this.participantCallFunc(id);
+        this.setState({active:false})
     }
 
-    render() {
+    render()
+    {
         const {choice, eventInfo, selectedEvent, isUpdate, startTime, duration, authToken, messageDisplay, prevSetTime, id} = this.state
-        //console.log(choice);
+
+        if(this.state.active)
+                return(
+                    <div style={{display:'flex',textAlign:'center',justifyContent:'center'}}>
+                        <div class="loader"></div>
+                    </div>
+                )
+                else
+
         return (
             <div className='challenge-div'>
                 {eventInfo && <ChallengeHead events={eventInfo} selectEvent={this.handleEvent} id={id}/>}
@@ -239,6 +256,7 @@ class Challenge extends React.Component {
                                     <button style={{background: '#005e85', color: 'white', fontsize: '12px'}}
                                             onClick={this.handleClick}>Save</button>
                             }
+
 
                         </div>
                         {messageDisplay &&
@@ -291,7 +309,7 @@ const ChallengeHead = ({events, selectEvent, id}) => {
                                 <img src={`data:image/jpg;base64,${event.image}`} alt=''
                                      style={{height: 'auto', width: '100%'}}/>
                             </div>
-                            <span>Event Start time: <span>{moment(Number(event.startDate)).format('Do MMM YYYY, HH:mm')}</span></span>
+                            <span>Event Start time : <span>{moment(Number(event.startDate)).format('Do MMM YYYY, HH:mm')}</span></span>
                             <h3 style={{margin: '0', padding: '10px 5px'}}>{event.name}</h3>
                         </div>
                     )
@@ -304,15 +322,7 @@ const ChallengeHead = ({events, selectEvent, id}) => {
 
 const Description = ({description}) => {
     return (
-        <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            width: 'max-content',
-            background: 'lightgrey',
-            boxShadow: '6px 4px 5px',
-            padding: '5px 10px',
-            borderRadius: '10px'
-        }}>
+       <div style={{display:'flex',flexDirection:'column',width:'max-content',padding:'5px 10px',borderRadius:'10px'}}>
             <span>{description}</span>
         </div>
     )
@@ -320,19 +330,9 @@ const Description = ({description}) => {
 
 const Timing = ({startDate, endDate}) => {
     return (
-        <div style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-evenly',
-            width: '50%',
-            margin: '10px 0',
-            background: 'lightgrey',
-            padding: '10px',
-            borderRadius: '10px'
-        }}>
-            <span>Start time:<span
-                style={{color: 'green'}}>{moment(Number(startDate)).format('Do MMM YYYY, HH:mm')}</span></span>
-            <span>End time:<span style={{color: 'green'}}>{moment(Number(endDate)).format('Do MMM YYYY, HH:mm')}</span></span>
+        <div style={{display:'flex',flexDirection:'row',justifyContent:'space-evenly', width:'50%',margin:'10px 0',padding:'10px',borderRadius:'10px'}}>
+            <span>Start time: <span>{moment(Number(startDate)).format('Do MMM YYYY, HH:mm')}</span></span>
+            <span>End time: <span>{moment(Number(endDate)).format('Do MMM YYYY, HH:mm')}</span></span>
         </div>
     )
 }
