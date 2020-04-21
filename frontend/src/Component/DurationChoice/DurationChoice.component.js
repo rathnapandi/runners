@@ -13,7 +13,7 @@ class PlaceChoice extends React.Component {
     render(){
         const {choice}= this.state
 
-        console.log(choice);
+       // console.log(choice);
         return(
             <form>
                 <div style={{textAlign:'center'}}>

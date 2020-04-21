@@ -12,7 +12,7 @@ class WrapperTimePicker extends React.Component {
         }
     }
     validDate = (current) =>{
-    console.log(current);
+    //console.log(current);
         const{startDate,endDate} = this.state
 
         if(moment(current).isSameOrAfter(startDate,'minute') && moment(current).isSameOrBefore(endDate,'minute'))
