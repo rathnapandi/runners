@@ -89,8 +89,8 @@ public class AxwayClient {
         String msg = "Thank you " + participant.getFirstName() + " " + participant.getLastName() +
                 " for registering with FiTogether \\n\\nWe are very excited you signed up with us. We are looking forward to your participation with this challenge\\n\\n " +
                 "Important details to keep in mind for the upcoming challenge event on "
-                + utcStartTime.getDayOfMonth() + "th "+ utcStartTime.getMonth() + "\\n\\nStart Time: " + utcStartTime.getHour()+ " " +utcStartTime.getMinute()
-                +"\\n\\nEndTime: " + utcEndTime.getHour() + " " + utcEndTime.getMinute()
+                + utcStartTime.getDayOfMonth() + "th "+ utcStartTime.getMonth() + "\\n\\nStart Time: " + utcStartTime.getHour()+ ":" +utcStartTime.getMinute() + " (UTC)"
+                +"\\n\\nEndTime: " + utcEndTime.getHour() + ":" + utcEndTime.getMinute() + " (UTC)"
                 + "\\n\\nEvent Name: " + participant.getEventName() + "\\n\\nCountry: "
                 + participant.getCountryCode() + "\\n\\n\\nSave the date!\\n\\n\\n#TogetherWeCan & #TogetherWeWill";
 
