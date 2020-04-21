@@ -2,6 +2,7 @@ package com.axway.runners.strava;
 
 
 import com.axway.runners.*;
+import com.axway.runners.repo.UnMatchedEventFeedRepository;
 import com.axway.runners.service.EventService;
 import com.axway.runners.service.ParticipantService;
 import com.axway.runners.service.UserService;
@@ -29,6 +30,9 @@ public class CallbackController {
 
     @Autowired
     private ParticipantService participantService;
+
+    @Autowired
+    private UnMatchedEventFeedRepository unMatchedEventFeedRepository;
 
     @Autowired
     private EventService eventService;
@@ -67,6 +71,9 @@ public class CallbackController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         long currentTime = System.currentTimeMillis();
+        long eventTime = stravaAthlete.getEvent_time();
+        String objType = stravaAthlete.getObject_type();
+        long objectID = stravaAthlete.getObject_id();
         Optional<Participant> matchedParticipant = participants.parallelStream().filter(participant -> Long.parseLong(participant.getStartTime()) <= currentTime && Long.parseLong(participant.getStartTime()) >= currentTime).findFirst();
         if ( matchedParticipant.isPresent()) {
 
@@ -74,12 +81,10 @@ public class CallbackController {
             Event event = eventService.findById(participant.getEventId());
             logger.info("User's event found : {}", participant.getEventName());
 
+
             if (user != null) {
                 logger.info("User : {}", user.getFirstName() + " " + user.getLastName() + " completed the run");
                 Feed feed = new Feed();
-                long eventTime = stravaAthlete.getEvent_time();
-                String objType = stravaAthlete.getObject_type();
-                long objectID = stravaAthlete.getObject_id();
 
                 feed.setSenderName(user.getFirstName() + " " + user.getLastName());
 
@@ -88,10 +93,10 @@ public class CallbackController {
                 date.setTime(instant.toEpochMilli());
 
                 try {
-                    Map<String, String> activityDetail = null;
+
                     logger.info("Activity Type : {}", objType);
                     if (objType.trim().equals("activity")) {
-                        activityDetail = stravaClient.getActivities(user, objectID);
+                        Map<String, String> activityDetail = stravaClient.getActivities(user, objectID);
                         feed.setActivityId(Long.toString(objectID));
                         feed.setDistance(null == activityDetail.get("distance") ? 0 : Float.parseFloat(activityDetail.get("distance")) / 1000);
                         feed.setDuration(null == activityDetail.get("moving_time") ? 0 : Float.parseFloat(activityDetail.get("moving_time")) / 60);
@@ -125,9 +130,32 @@ public class CallbackController {
             }
 
         } else {
-            logger.info("No matching participant ");
+            logger.info("No matching Event for the participant ");
+            if( user != null) {
+                logger.info("User is registered, so adding to unmatchedeventfeed");
+                Instant instant = Instant.ofEpochSecond(eventTime);
+                Date date = new Date();
+                date.setTime(instant.toEpochMilli());
+                Map<String, String> activityDetail = stravaClient.getActivities(user, objectID);
+                UnMatchedEventFeed feed = new UnMatchedEventFeed();
+                feed.setActivityId(Long.toString(objectID));
+                feed.setDistance(null == activityDetail.get("distance") ? 0 : Float.parseFloat(activityDetail.get("distance")) / 1000);
+                feed.setDuration(null == activityDetail.get("moving_time") ? 0 : Float.parseFloat(activityDetail.get("moving_time")) / 60);
+                feed.setDescription(null == activityDetail.get("name") ? "Untitled" : activityDetail.get("name"));
+                feed.setCountry(null == activityDetail.get("location_country") ? "" : activityDetail.get("location_country"));
+                feed.setType(null == activityDetail.get("type") ? "" : activityDetail.get("type"));
+                feed.setEventTime(eventTime);
+                feed.setMessage(feed.getSenderName() + " completed the activity at: " + date);
+                feed.setTimeStamp(Long.toString(eventTime));
+                feed.setEventDateTime(date);
+                feed.setAthleteId(athleteId);
+
+                unMatchedEventFeedRepository.save(feed);
+            }
         }
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+
 }
