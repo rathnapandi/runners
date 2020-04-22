@@ -77,15 +77,11 @@ public class CallbackController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         List<Participant> participants = participantService.findByEmail(user.getEmail());
-        if (participants.isEmpty()) {
-            logger.info("Runner is not registered to the event");
+
+        if (objType.trim().equals("athlete")) {
+            axwayClient.postMessageToTeams(user, stravaAthlete);
+            logger.info("Athlete Registration  Notification sent out to the Teams for the user : {} ", user.getFirstName() + " " + user.getLastName());
             return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            if (objType.trim().equals("athlete")) {
-                axwayClient.postMessageToTeams(user, stravaAthlete);
-                logger.info("Athlete Registration  Notification sent out to the Teams for the user : {} ", user.getFirstName() + " " + user.getLastName());
-                return new ResponseEntity<>(HttpStatus.OK);
-            }
         }
 
         Optional<Participant> matchedParticipant = participants.parallelStream().filter(participant -> Long.parseLong(participant.getStartTime())
@@ -104,10 +100,10 @@ public class CallbackController {
 
             try {
                 if (objType.trim().equals("activity")) {
-                   // IndexQuery indexQuery = new IndexQueryBuilder().withIndexName("event").withSource("feed").
+                    // IndexQuery indexQuery = new IndexQueryBuilder().withIndexName("event").withSource("feed").
 
-                    Event existingEvent = eventService.findByFeedsUsingCustomQuery(objectID+"");
-                    if( existingEvent != null){
+                    Event existingEvent = eventService.findByFeedsUsingCustomQuery(objectID + "");
+                    if (existingEvent != null) {
                         logger.info("The Activities are already updated, hence ignoring the transaction");
                         return new ResponseEntity<>(HttpStatus.OK);
                     }
@@ -116,7 +112,7 @@ public class CallbackController {
                     feed.setDistance(null == activityDetail.get("distance") ? 0 : Float.parseFloat(activityDetail.get("distance")) / 1000);
                     feed.setDuration(null == activityDetail.get("moving_time") ? 0 : Float.parseFloat(activityDetail.get("moving_time")) / 60);
                     feed.setDescription(null == activityDetail.get("name") ? "Untitled" : activityDetail.get("name"));
-                    feed.setCountry(null == activityDetail.get("location_country") ? "" : activityDetail.get("location_country"));
+                    feed.setCountry(null == activityDetail.get("location_country") ? "US" : activityDetail.get("location_country"));
                     feed.setType(null == activityDetail.get("type") ? "" : activityDetail.get("type"));
                     feed.setEventTime(eventTime);
                     axwayClient.postMessageToTeams(user, feed.getMessage(), stravaAthlete,
@@ -140,10 +136,10 @@ public class CallbackController {
             }
 
         } else {
-            logger.info("No matching Event for the participant");
+            logger.info("User is not registered to an event");
             if (objType.trim().equals("activity")) {
                 UnMatchedEventFeed existingFeed = unMatchedEventFeedRepository.findByActivityId(objectID + "");
-                if(existingFeed == null) {
+                if (existingFeed == null) {
                     logger.info("User is registered, so adding to unmatchedeventfeed");
                     Instant instant = Instant.ofEpochSecond(eventTime);
                     Date date = new Date();
@@ -155,7 +151,7 @@ public class CallbackController {
                     feed.setDistance(null == activityDetail.get("distance") ? 0 : Float.parseFloat(activityDetail.get("distance")) / 1000);
                     feed.setDuration(null == activityDetail.get("moving_time") ? 0 : Float.parseFloat(activityDetail.get("moving_time")) / 60);
                     feed.setDescription(null == activityDetail.get("name") ? "Untitled" : activityDetail.get("name"));
-                    feed.setCountry(null == activityDetail.get("location_country") ? "" : activityDetail.get("location_country"));
+                    feed.setCountry(null == activityDetail.get("location_country") ? "US" : activityDetail.get("location_country"));
                     feed.setType(null == activityDetail.get("type") ? "" : activityDetail.get("type"));
                     feed.setEventTime(eventTime);
                     feed.setMessage(feed.getSenderName() + " completed the activity at: " + date);
@@ -163,7 +159,7 @@ public class CallbackController {
                     feed.setEventDateTime(date);
                     feed.setAthleteId(athleteId);
                     unMatchedEventFeedRepository.save(feed);
-                }else{
+                } else {
                     logger.info("Activity id {} already added, hence ignoring it", objectID);
                 }
             }
