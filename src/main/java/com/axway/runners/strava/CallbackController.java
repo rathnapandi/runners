@@ -164,7 +164,7 @@ public class CallbackController {
                     feed.setAthleteId(athleteId);
                     unMatchedEventFeedRepository.save(feed);
                 }else{
-                    logger.info("Activity id {} already added ", objectID);
+                    logger.info("Activity id {} already added, hence ignoring it", objectID);
                 }
             }
         }
