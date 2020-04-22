@@ -12,4 +12,8 @@ public class UnMatchedEventFeedService {
     public UnMatchedEventFeed save(UnMatchedEventFeed unMatchedEventFeed){
         return unMatchedEventFeedRepository.save(unMatchedEventFeed);
     }
+
+    public UnMatchedEventFeed findByActivityId(String activityId){
+        return  unMatchedEventFeedRepository.findByActivityId(activityId);
+    }
 }

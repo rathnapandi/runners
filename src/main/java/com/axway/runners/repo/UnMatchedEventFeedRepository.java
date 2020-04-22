@@ -5,4 +5,5 @@ import com.axway.runners.UnMatchedEventFeed;
 import org.springframework.data.elasticsearch.repository.ElasticsearchCrudRepository;
 
 public interface UnMatchedEventFeedRepository extends ElasticsearchCrudRepository<UnMatchedEventFeed, String> {
+    UnMatchedEventFeed findByActivityId(String activityId);
 }

@@ -40,4 +40,8 @@ public class EventService {
     public void deleteAll(){
         eventRepository.deleteAll();
     }
+
+    public Event findByFeedsUsingCustomQuery(String activityId){
+        return eventRepository.findByFeedsUsingCustomQuery(activityId);
+    }
 }
