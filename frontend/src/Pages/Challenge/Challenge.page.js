@@ -5,6 +5,7 @@ import WrapperCalendar from '../../Component/WrapperCalendar/WrapperCalendar.com
 import WrapperTimePicker from '../../Component/WrapperTimePicker/WrapperTimePicker.component';
 import DurationChoice from '../../Component/DurationChoice/DurationChoice.component';
 
+import {Redirect} from 'react-router-dom';
 
 import moment from 'moment-timezone';
 import './challenge.css'
@@ -112,6 +113,15 @@ class Challenge extends React.Component {
         this.props.sentName({firstName, lastName})
         await this.eventCallFunc()
         this.setState({active:false});
+        setTimeout(() =>{
+
+                   this.props.history.push('/login.html');
+              // return <Redirect to='/login.html' />
+             //  document.location.replace('/login.html');
+             //  document.location.reload();
+                },
+                //5000)
+               moment(this.state.authToken).diff(moment().valueOf(),'seconds'))
     }
 
     handleChoice = (choice) => this.setState({choice})

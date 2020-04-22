@@ -5,6 +5,8 @@ import Header2 from './Component/Header2/Header2.component';
 
 import Challenge from './Pages/Challenge/Challenge.page';
 import Iframe from './Pages/Iframe/Iframe';
+import leaderboard from './Pages/Iframe/leaderboard';
+
 
 class App extends React.Component{
     state = {
@@ -19,6 +21,7 @@ class App extends React.Component{
             <Header2 userName={this.state.userName}/>
             <Switch>
             <Route path='/Dashboard' component={Iframe}/>
+            <Route path='/leaderboard' component={leaderboard}/>
             <Route path='/' render={({...props}) =><Challenge sentName ={this.handleName} {...props}/>}/>
             </Switch>
 
