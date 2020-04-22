@@ -10,8 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.elasticsearch.core.query.IndexQuery;
-import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,7 +51,6 @@ public class CallbackController {
     public ResponseEntity<?> callback(@RequestParam(value = "hub.verify_token") String verify_token,
                                       @RequestParam(value = "hub.challenge") String hub_challenge, @RequestParam(value = "hub.mode") String hub_mode) {
         logger.info("Strava challenge code : {}", verify_token);
-
         if (!verify_token.equals(stravaKey)) {
             logger.info("Invalid token");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -97,11 +94,8 @@ public class CallbackController {
             Instant instant = Instant.ofEpochSecond(eventTime);
             Date date = new Date();
             date.setTime(instant.toEpochMilli());
-
             try {
                 if (objType.trim().equals("activity")) {
-                    // IndexQuery indexQuery = new IndexQueryBuilder().withIndexName("event").withSource("feed").
-
                     Event existingEvent = eventService.findByFeedsUsingCustomQuery(objectID + "");
                     if (existingEvent != null) {
                         logger.info("The Activities are already updated, hence ignoring the transaction");
@@ -120,9 +114,6 @@ public class CallbackController {
                             activityDetail);
                     logger.info("Activity Notification sent out to IB: " + feed.getMessage() + "Keys: " + activityDetail.keySet().toString() +
                             " Values: " + activityDetail.values().toString());
-                } else if (objType.trim().equals("athlete")) {
-                    axwayClient.postMessageToTeams(user, stravaAthlete);
-                    logger.info("Activity Notification sent out to IB: " + feed.getMessage());
                 }
                 feed.setMessage(feed.getSenderName() + " completed the activity at: " + date);
                 feed.setTimeStamp(Long.toString(eventTime));
@@ -132,36 +123,39 @@ public class CallbackController {
                 event.addFeed(feed);
                 eventService.saveEvent(event);
             } catch (Exception e) {
-                logger.error("Error in processing : {} ", e.getMessage());
+                logger.error("Error in processing : {} ", e);
             }
-
         } else {
             logger.info("User is not registered to an event");
-            if (objType.trim().equals("activity")) {
-                UnMatchedEventFeed existingFeed = unMatchedEventFeedRepository.findByActivityId(objectID + "");
-                if (existingFeed == null) {
-                    logger.info("User is registered, so adding to unmatchedeventfeed");
-                    Instant instant = Instant.ofEpochSecond(eventTime);
-                    Date date = new Date();
-                    date.setTime(instant.toEpochMilli());
-                    Map<String, String> activityDetail = stravaClient.getActivities(user, objectID);
-                    UnMatchedEventFeed feed = new UnMatchedEventFeed();
-                    feed.setSenderName(user.getFirstName() + " " + user.getLastName());
-                    feed.setActivityId(Long.toString(objectID));
-                    feed.setDistance(null == activityDetail.get("distance") ? 0 : Float.parseFloat(activityDetail.get("distance")) / 1000);
-                    feed.setDuration(null == activityDetail.get("moving_time") ? 0 : Float.parseFloat(activityDetail.get("moving_time")) / 60);
-                    feed.setDescription(null == activityDetail.get("name") ? "Untitled" : activityDetail.get("name"));
-                    feed.setCountry(null == activityDetail.get("location_country") ? "US" : activityDetail.get("location_country"));
-                    feed.setType(null == activityDetail.get("type") ? "" : activityDetail.get("type"));
-                    feed.setEventTime(eventTime);
-                    feed.setMessage(feed.getSenderName() + " completed the activity at: " + date);
-                    feed.setTimeStamp(Long.toString(eventTime));
-                    feed.setEventDateTime(date);
-                    feed.setAthleteId(athleteId);
-                    unMatchedEventFeedRepository.save(feed);
-                } else {
-                    logger.info("Activity id {} already added, hence ignoring it", objectID);
+            try {
+                if (objType.trim().equals("activity")) {
+                    UnMatchedEventFeed existingFeed = unMatchedEventFeedRepository.findByActivityId(objectID + "");
+                    if (existingFeed == null) {
+                        logger.info("User is registered, so adding to unmatchedeventfeed");
+                        Instant instant = Instant.ofEpochSecond(eventTime);
+                        Date date = new Date();
+                        date.setTime(instant.toEpochMilli());
+                        Map<String, String> activityDetail = stravaClient.getActivities(user, objectID);
+                        UnMatchedEventFeed feed = new UnMatchedEventFeed();
+                        feed.setSenderName(user.getFirstName() + " " + user.getLastName());
+                        feed.setActivityId(Long.toString(objectID));
+                        feed.setDistance(null == activityDetail.get("distance") ? 0 : Float.parseFloat(activityDetail.get("distance")) / 1000);
+                        feed.setDuration(null == activityDetail.get("moving_time") ? 0 : Float.parseFloat(activityDetail.get("moving_time")) / 60);
+                        feed.setDescription(null == activityDetail.get("name") ? "Untitled" : activityDetail.get("name"));
+                        feed.setCountry(null == activityDetail.get("location_country") ? "US" : activityDetail.get("location_country"));
+                        feed.setType(null == activityDetail.get("type") ? "" : activityDetail.get("type"));
+                        feed.setEventTime(eventTime);
+                        feed.setMessage(feed.getSenderName() + " completed the activity at: " + date);
+                        feed.setTimeStamp(Long.toString(eventTime));
+                        feed.setEventDateTime(date);
+                        feed.setAthleteId(athleteId);
+                        unMatchedEventFeedRepository.save(feed);
+                    } else {
+                        logger.info("Activity id {} already added, hence ignoring it", objectID);
+                    }
                 }
+            } catch (Exception e) {
+                logger.error("Error in processing : {} ", e);
             }
         }
         return new ResponseEntity<>(HttpStatus.OK);
