@@ -73,6 +73,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/management/events/**").permitAll()
                 .antMatchers("/management/info").permitAll()
                 .antMatchers("/management/prometheus").permitAll()
+                .antMatchers("/index.html").authenticated()
 
                 .and()
                 .oauth2Login()
