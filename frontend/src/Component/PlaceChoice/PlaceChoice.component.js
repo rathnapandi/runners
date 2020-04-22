@@ -11,7 +11,7 @@ class PlaceChoice extends React.Component {
             <div className='placeholder-div'>
                 <form>
                     <div>
-                        <label htmlFor='choice'>Choice:</label>
+                        <label htmlFor='choice'><b>Choice:</b></label>
                         <span><input type='radio' name='choice' value='cheerer' onClick={this.handleClick} defaultChecked={choice === 'cheerer'}/>Cheerer</span>
                         <span><input type='radio' name='choice' value='runner' onClick={this.handleClick} defaultChecked={choice === 'runner'}/>Runner</span>
                     </div>

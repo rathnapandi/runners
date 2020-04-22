@@ -113,7 +113,7 @@ class Challenge extends React.Component {
         this.props.sentName({firstName, lastName})
         await this.eventCallFunc()
         this.setState({active:false});
-        setTimeout(() =>{
+       /* setTimeout(() =>{
 
                    this.props.history.push('/login.html');
               // return <Redirect to='/login.html' />
@@ -121,7 +121,7 @@ class Challenge extends React.Component {
              //  document.location.reload();
                 },
                 //5000)
-               moment(this.state.authToken).diff(moment().valueOf(),'seconds'))
+               moment(this.state.authToken).diff(moment().valueOf(),'seconds'))*/
     }
 
     handleChoice = (choice) => this.setState({choice})
@@ -255,7 +255,7 @@ class Challenge extends React.Component {
                                 width: 'max-content'
                             }} onClick={this.handleRedirect}>Connect to Strava</button>}
                             <span>&nbsp;&nbsp;</span>
-                            {<button style={{background: '#005e85', color: 'white', fontsize: '12px'}}
+                            {<button style={{background: '#005e85', color: 'white', fontsize: '12px',width: 'max-content'}}
                                      onClick={this.handleStravaDeAuthorize}>Disconnect from Strava</button>}
                             <span>&nbsp;&nbsp;</span>
                             {
@@ -332,7 +332,7 @@ const ChallengeHead = ({events, selectEvent, id}) => {
 
 const Description = ({description}) => {
     return (
-       <div style={{display:'flex',flexDirection:'column',width:'max-content',padding:'5px 10px',borderRadius:'10px'}}>
+       <div style={{display:'flex',flexDirection:'column',width:'max-content'}}>
             <span>{description}</span>
         </div>
     )
@@ -340,9 +340,9 @@ const Description = ({description}) => {
 
 const Timing = ({startDate, endDate}) => {
     return (
-        <div style={{display:'flex',flexDirection:'row',justifyContent:'space-evenly', width:'50%',margin:'10px 0',padding:'10px',borderRadius:'10px'}}>
-            <span>Start time: <span>{moment(Number(startDate)).format('Do MMM YYYY, HH:mm')}</span></span>
-            <span>End time: <span>{moment(Number(endDate)).format('Do MMM YYYY, HH:mm')}</span></span>
+        <div style={{display:'flex',flexDirection:'row',justifyContent:'space-evenly', width:'50%',margin:'10px 0'}}>
+            <span style={{fontWeight:'bold'}}>Start time: <span style={{fontWeight:'normal'}}>{moment(Number(startDate)).format('Do MMM YYYY, HH:mm')}</span></span>
+            <span style={{fontWeight:'bold'}}>End time: <span style={{fontWeight:'normal'}}>{moment(Number(endDate)).format('Do MMM YYYY, HH:mm')}</span></span>
         </div>
     )
 }
