@@ -120,13 +120,16 @@ public class CallbackController {
                 logger.info("feed successfully updated");
             }
         } catch (Exception e) {
-            logger.error("Error in processing : {} ", e);
+            logger.error("Error :", e);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     private  Map<String, String>  updateActivities(UnMatchedEventFeed feed, User user, long objectID){
         Map<String, String> activityDetail = stravaClient.getActivities(user, objectID);
+        if( activityDetail == null){
+            return null;
+        }
         feed.setSenderName(user.getFirstName() + " " + user.getLastName());
         feed.setActivityId(Long.toString(objectID));
         feed.setDistance(null == activityDetail.get("distance") ? 0 : Float.parseFloat(activityDetail.get("distance")) / 1000);
