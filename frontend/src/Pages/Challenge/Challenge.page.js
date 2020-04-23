@@ -256,7 +256,7 @@ console.log('Hello_01');
 
                         <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
                             {
-                            <button variant="outline-success" onClick={this.handleRedirect}>Connect to Strava</button>
+                            <button class='btn-primary' onClick={this.handleRedirect}>Connect to Strava</button>
 
 
                             /*<button style={{
@@ -270,7 +270,7 @@ console.log('Hello_01');
                             }
                             <span>&nbsp;&nbsp;</span>
                             {
-                            <button variant="outline-danger"
+                            <button class='btn-danger'
                                      onClick={this.handleStravaDeAuthorize}>Disconnect from Strava</button>
                             /* <button style={{background: '#005e85', color: 'white', fontsize: '12px',width: 'max-content'}}
                                                                   onClick={this.handleStravaDeAuthorize}>Disconnect from Strava</button>   */
@@ -279,9 +279,9 @@ console.log('Hello_01');
                             <span>&nbsp;&nbsp;</span>
                             {
                                 isUpdate ?
-                                  <button variant="outline-info" onClick={this.handleUpdate}>Update</button>
+                                  <button class='btn-success' onClick={this.handleUpdate}>Update</button>
                                    :
-                                  <button variant="outline-info" onClick={this.handleClick}>Save</button>
+                                  <button class='btn-success' onClick={this.handleClick}>Save</button>
 
                                   /*  <button style={{background: '#005e85', color: 'white', fontsize: '12px'}}
                                             onClick={this.handleUpdate}>Update</button>
@@ -339,11 +339,11 @@ const ChallengeHead = ({events, selectEvent, id}) => {
                             style={{
                                 color: 'green',
                                 margin: '10px',
-                                width: '200px',
+                                width: '190px',
                                 boxShadow: '2px 3px 4px lightblue',
                                 textAlign: 'center'
                             }}>
-                            <div style={{width: '200px'}}>
+                            <div style={{width: '190px'}}>
                                 <img src={`data:image/jpg;base64,${event.image}`} alt=''
                                      style={{height: 'auto', width: '100%'}}/>
                             </div>
