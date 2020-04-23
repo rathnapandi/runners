@@ -16,4 +16,8 @@ public class UnMatchedEventFeedService {
     public UnMatchedEventFeed findByActivityId(String activityId){
         return  unMatchedEventFeedRepository.findByActivityId(activityId);
     }
+
+    public void deleteByActivityId(String activityId){
+        unMatchedEventFeedRepository.deleteByActivityId(activityId);
+    }
 }

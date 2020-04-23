@@ -6,4 +6,5 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchCrudReposi
 
 public interface UnMatchedEventFeedRepository extends ElasticsearchCrudRepository<UnMatchedEventFeed, String> {
     UnMatchedEventFeed findByActivityId(String activityId);
+    void deleteByActivityId(String activityId);
 }
