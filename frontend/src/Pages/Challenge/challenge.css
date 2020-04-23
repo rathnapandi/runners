@@ -1,7 +1,17 @@
+.chl-div{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+
 .challenge-div{
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 90%;
+    margin-left: 20px;
+    margin-top: 20px;
 }
 .challenge-div2{
     margin-bottom: 20px;
@@ -11,6 +21,15 @@
     padding: 10px 0;
 
 }
+@media(max-width:480px){
+    .chl-div{
+        flex-direction: column;
+        margin-left:25px;
+        align-items:center;
+    }
+}
+
+
 /*
 .placeholder-div{
     padding: 10px 0;
@@ -20,11 +39,11 @@
     background-color: dodgerblue;
     color: lightcyan !important;
 }
-button{
+/*button{
     width:80px;
     background: dodgerblue;
     align-self: center;
     border: dodgerblue;
     padding: 10px 0;
     cursor: pointer;
-}
+}*/

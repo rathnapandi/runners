@@ -10,6 +10,7 @@ import {Redirect} from 'react-router-dom';
 import moment from 'moment-timezone';
 import './challenge.css'
 import './loader.css'
+import { Button } from 'react-bootstrap';
 
 class Challenge extends React.Component {
     state = {
@@ -98,6 +99,12 @@ class Challenge extends React.Component {
                 'Content-Type': 'application/json'
             },
         })
+
+        if(resp.redirected){
+            console.log("session expired")
+             window.location.reload();
+         }
+
         const data = await resp.json()
         const {email, id, firstName, lastName, countryCode, oauthToken} = data
         this.setState({
@@ -113,15 +120,14 @@ class Challenge extends React.Component {
         this.props.sentName({firstName, lastName})
         await this.eventCallFunc()
         this.setState({active:false});
-       /* setTimeout(() =>{
-
-                   this.props.history.push('/login.html');
+       /*setTimeout(() =>{
+console.log('Hello_01');
+               //    this.props.history.push('/login.html');
               // return <Redirect to='/login.html' />
-             //  document.location.replace('/login.html');
-             //  document.location.reload();
-                },
-                //5000)
-               moment(this.state.authToken).diff(moment().valueOf(),'seconds'))*/
+             document.location.replace('/login.html');
+               window.location.reload();
+                },5000)
+               //moment(this.state.authToken).diff(moment().valueOf(),'seconds'))*/
     }
 
     handleChoice = (choice) => this.setState({choice})
@@ -217,14 +223,16 @@ class Challenge extends React.Component {
         if(this.state.active)
                 return(
                     <div style={{display:'flex',textAlign:'center',justifyContent:'center'}}>
-                        <div class="loader"></div>
+                        <div className="loader"></div>
                     </div>
                 )
                 else
 
         return (
-            <div className='challenge-div'>
+        <div>
+ <div className='chl-div'>
                 {eventInfo && <ChallengeHead events={eventInfo} selectEvent={this.handleEvent} id={id}/>}
+              <div className='challenge-div'>
                 {selectedEvent && <Description description={selectedEvent.description}/>}
 
                 {selectedEvent && <Timing startDate={selectedEvent.startDate} endDate={selectedEvent.endDate}/>}
@@ -247,24 +255,39 @@ class Challenge extends React.Component {
                         }
 
                         <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
-                            {<button style={{
+                            {
+                            <button variant="outline-success" onClick={this.handleRedirect}>Connect to Strava</button>
+
+
+                            /*<button style={{
                                 background: '#005e85',
                                 color: 'white',
                                 fontsize: '12px',
                                 marginRight: '5px',
                                 width: 'max-content'
-                            }} onClick={this.handleRedirect}>Connect to Strava</button>}
+                            }} onClick={this.handleRedirect}>Connect to Strava</button>*/
+
+                            }
                             <span>&nbsp;&nbsp;</span>
-                            {<button style={{background: '#005e85', color: 'white', fontsize: '12px',width: 'max-content'}}
-                                     onClick={this.handleStravaDeAuthorize}>Disconnect from Strava</button>}
+                            {
+                            <button variant="outline-danger"
+                                     onClick={this.handleStravaDeAuthorize}>Disconnect from Strava</button>
+                            /* <button style={{background: '#005e85', color: 'white', fontsize: '12px',width: 'max-content'}}
+                                                                  onClick={this.handleStravaDeAuthorize}>Disconnect from Strava</button>   */
+
+                             }
                             <span>&nbsp;&nbsp;</span>
                             {
                                 isUpdate ?
-                                    <button style={{background: '#005e85', color: 'white', fontsize: '12px'}}
+                                  <button variant="outline-info" onClick={this.handleUpdate}>Update</button>
+                                   :
+                                  <button variant="outline-info" onClick={this.handleClick}>Save</button>
+
+                                  /*  <button style={{background: '#005e85', color: 'white', fontsize: '12px'}}
                                             onClick={this.handleUpdate}>Update</button>
                                     :
                                     <button style={{background: '#005e85', color: 'white', fontsize: '12px'}}
-                                            onClick={this.handleClick}>Save</button>
+                                            onClick={this.handleClick}>Save</button>*/
                             }
 
 
@@ -276,15 +299,7 @@ class Challenge extends React.Component {
                         }
                     </div>
                 }
-                {
-                    choice === 'runner' && this.state.items.length > 0 &&
-                    <WrapperCalendar
-                        groups={this.state.groups}
-                        items={this.state.items}
-                        startDate={selectedEvent.startDate}
-                        endDate={selectedEvent.endDate}
-                    />
-                }
+
 
                 {
                     choice === 'cheerer' &&
@@ -292,6 +307,19 @@ class Challenge extends React.Component {
                        target='_blank'>Checkout Teams Channel</a>
                 }
             </div>
+             </div>
+
+              {
+                                 choice === 'runner' && this.state.items.length > 0 &&
+                                 <WrapperCalendar
+                                     groups={this.state.groups}
+                                     items={this.state.items}
+                                     startDate={selectedEvent.startDate}
+                                     endDate={selectedEvent.endDate}
+                                 />
+                             }
+                             </div>
+
         )
     }
 }
@@ -340,7 +368,7 @@ const Description = ({description}) => {
 
 const Timing = ({startDate, endDate}) => {
     return (
-        <div style={{display:'flex',flexDirection:'row',justifyContent:'space-evenly', width:'50%',margin:'10px 0'}}>
+        <div style={{display:'flex',flexDirection:'row',justifyContent:'space-evenly', width:'100%',margin:'10px 0'}}>
             <span style={{fontWeight:'bold'}}>Start time: <span style={{fontWeight:'normal'}}>{moment(Number(startDate)).format('Do MMM YYYY, HH:mm')}</span></span>
             <span style={{fontWeight:'bold'}}>End time: <span style={{fontWeight:'normal'}}>{moment(Number(endDate)).format('Do MMM YYYY, HH:mm')}</span></span>
         </div>
