@@ -27,6 +27,7 @@ const Header2 = ({userName}) =>{
 		<NavLink className="button-folder" exact to='/Dashboard' activeClassName='active-button'>
 			Dashboard
 		</NavLink>
+
 		</div>
 		</div>
 	)
