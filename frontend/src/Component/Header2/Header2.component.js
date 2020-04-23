@@ -8,7 +8,7 @@ const Header2 = ({userName}) =>{
 		<div>
 		<div className="div-Header2">
 			<div>
-			<img src={logo} alt="logo"  height="80"/>
+			<img className="div-logo" src={logo} alt="logo"/>
 			</div>
 
 			<div className="div4-Header2">
