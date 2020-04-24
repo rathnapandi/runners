@@ -23,7 +23,7 @@ class WrapperTimePicker extends React.Component {
     render(){
 
         return(
-            <div style = {{display:'flex',flexDirection:'row',margin:'10px 0'}}>
+            <div style = {{display:'flex',flexDirection:'row',margin:'10px 0',justifyContent:'center'}}>
             <div><span style={{fontWeight:'bold'}}>Choose Your Start Time :</span></div>
             <DateTime required
                   value={this.state.datetime}

@@ -245,7 +245,9 @@ console.log('Hello_01');
                         {prevSetTime && <div style={{textAlign: 'center', color: 'green', padding: '5px 0'}}>
                             <span>* Your current run Schedule is </span>
                             <span>{`${moment(prevSetTime.startTime).format('MM/D/YYYY h:mm a')} to ${moment(prevSetTime.endTime).format('h:mm a')}`}</span>
-                        </div>}
+                        </div>
+                        }
+
                         {selectedEvent && <WrapperTimePicker
                             yourChoiceTime={this.handleTime}
                             startDate={selectedEvent.startDate}
@@ -368,9 +370,9 @@ const Description = ({description}) => {
 
 const Timing = ({startDate, endDate}) => {
     return (
-        <div style={{display:'flex',flexDirection:'row',justifyContent:'space-evenly', width:'100%',margin:'10px 0'}}>
+        <div style={{display:'flex',flexDirection:'row',justifyContent:'center', width:'100%',margin:'10px 0'}}>
             <span style={{fontWeight:'bold'}}>Start time: <span style={{fontWeight:'normal'}}>{moment(Number(startDate)).format('Do MMM YYYY, HH:mm')}</span></span>
-            <span style={{fontWeight:'bold'}}>End time: <span style={{fontWeight:'normal'}}>{moment(Number(endDate)).format('Do MMM YYYY, HH:mm')}</span></span>
+            <span style={{fontWeight:'bold',marginLeft:'25px'}}>End time: <span style={{fontWeight:'normal'}}>{moment(Number(endDate)).format('Do MMM YYYY, HH:mm')}</span></span>
         </div>
     )
 }
