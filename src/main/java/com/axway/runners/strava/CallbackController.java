@@ -116,6 +116,7 @@ public class CallbackController {
                 logger.info("Updating Activity  id {}", objectID);
                 unMatchedEventFeedRepository.delete(existingFeed);
                 existingFeed.setId(null);
+                existingFeed.setVersion(null);
                 updateActivities(existingFeed, user, objectID);
                 //existingFeed.setVersion(System.currentTimeMillis());
                 unMatchedEventFeedRepository.save(existingFeed);
