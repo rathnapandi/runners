@@ -80,10 +80,10 @@ public class ManagementController {
         return new ResponseEntity<Event>(HttpStatus.EXPECTATION_FAILED);
     }
 
-    @DeleteMapping("/management/feeds/{athleteId}")
-    public ResponseEntity<?> deleteFeed(@RequestHeader("Host") String host, @PathVariable String athleteId) {
+    @DeleteMapping("/management/feeds/{id}")
+    public ResponseEntity<?> deleteFeed(@RequestHeader("Host") String host, @PathVariable String id) {
         if (host.contains("localhost")) {
-            unMatchedEventFeedService.deleteByActivityId(athleteId);
+            unMatchedEventFeedService.deleteById(id);
             return new ResponseEntity<UnMatchedEventFeed>(HttpStatus.ACCEPTED);
         }
         return new ResponseEntity<UnMatchedEventFeed>(HttpStatus.EXPECTATION_FAILED);

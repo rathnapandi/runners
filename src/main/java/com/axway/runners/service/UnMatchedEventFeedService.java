@@ -24,4 +24,8 @@ public class UnMatchedEventFeedService {
     public void deleteByActivityId(String activityId){
         unMatchedEventFeedRepository.deleteByActivityId(activityId);
     }
+
+    public void deleteById(String id){
+        unMatchedEventFeedRepository.deleteById(id);
+    }
 }
