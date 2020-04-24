@@ -114,8 +114,10 @@ public class CallbackController {
                 axwayClient.postMessageToTeams(user, feed.getMessage(), stravaAthlete, date.toString(), activityDetail);
             } else if(aspectType.equals("update")){
                 logger.info("Updating Activity  id {}", objectID);
+                unMatchedEventFeedRepository.delete(existingFeed);
+                existingFeed.setId(null);
                 updateActivities(existingFeed, user, objectID);
-                existingFeed.setVersion(System.currentTimeMillis());
+                //existingFeed.setVersion(System.currentTimeMillis());
                 unMatchedEventFeedRepository.save(existingFeed);
                 logger.info("feed successfully updated");
             }

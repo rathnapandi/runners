@@ -17,6 +17,10 @@ public class UnMatchedEventFeedService {
         return  unMatchedEventFeedRepository.findByActivityId(activityId);
     }
 
+    public void delete(UnMatchedEventFeed unMatchedEventFeed){
+       unMatchedEventFeedRepository.delete(unMatchedEventFeed);
+    }
+
     public void deleteByActivityId(String activityId){
         unMatchedEventFeedRepository.deleteByActivityId(activityId);
     }
