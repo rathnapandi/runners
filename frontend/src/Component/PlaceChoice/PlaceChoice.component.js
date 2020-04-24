@@ -1,19 +1,34 @@
 import React from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 class PlaceChoice extends React.Component {
     state = {
-        choice:this.props.ch
+        choice: this.props.ch
     }
     handleClick = e => this.props.choiceClick(e.target.value)
-    render(){
+
+    render() {
         const {choice} = this.state;
-        return(
+        return (
             <div className='placeholder-div'>
                 <form>
-                    <div>
-                        <label htmlFor='choice'><b>Choice:</b></label>
-                        <span><input type='radio' name='choice' value='cheerer' onClick={this.handleClick} defaultChecked={choice === 'cheerer'}/>Cheerer</span>
-                        <span><input type='radio' name='choice' value='runner' onClick={this.handleClick} defaultChecked={choice === 'runner'}/>Runner</span>
+                    <div className='form-check'>
+
+                        <input className="form-check-input" type="radio" name='choice' value='cheerer'
+                               onClick={this.handleClick} defaultChecked={choice === 'cheerer'}/>
+                        <label className="form-check-label" htmlFor="cheerer">
+                            Cheerer
+                        </label>
+
+                    </div>
+
+                    <div className='form-check'>
+                        <input className="form-check-input" type="radio" name='choice' value='runner'
+                               onClick={this.handleClick} defaultChecked={choice === 'runner'}/>
+                        <label className="form-check-label" htmlFor="cheerer">
+                            Runner
+                        </label>
+
                     </div>
                 </form>
             </div>

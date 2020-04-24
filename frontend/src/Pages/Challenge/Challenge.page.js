@@ -361,7 +361,7 @@ const ChallengeHead = ({events, selectEvent, id}) => {
 const Description = ({description}) => {
     return (
        <div style={{display:'flex',flexDirection:'column',width:'max-content'}}>
-            <span>{description}</span>
+           <span><b>{description}</b></span>
         </div>
     )
 }
