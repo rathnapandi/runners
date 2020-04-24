@@ -24,9 +24,7 @@ class App extends React.Component{
 
             <Route path='/' render={({...props}) =><Challenge sentName ={this.handleName} {...props}/>}/>
             </Switch>
-          <br/>
-          <br/>
-          <br/>
+
         </div>
     )
     }

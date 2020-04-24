@@ -52,3 +52,14 @@ a span{
 	background: rgba(0, 93, 133);
 	color: white;
   }
+
+.div-logo{
+           height:80px;
+      }
+
+
+  media(max-width:480px){
+      .div-logo{
+           height:50px;
+      }
+  }
