@@ -14,7 +14,7 @@ class PlaceChoice extends React.Component {
     render() {
         const {choice} = this.state
 
-        // console.log(choice);
+        //   console.log(choice);
         return (
 
             <form>
@@ -38,40 +38,40 @@ class PlaceChoice extends React.Component {
                     </div>
                     <div className="form-check form-check-inline">
                         <input className="form-check-input" type="radio" name="choice"
-                               value="60" onClick={this.handleClick}/>
+                               value="60" onClick={this.handleClick} defaultChecked={choice === '60'}/>
                         <label className="form-check-label" htmlFor="inlineRadio2">1 Hour</label>
                     </div>
                     <div className="form-check form-check-inline">
                         <input className="form-check-input" type="radio" name="choice"
-                               value="90" onClick={this.handleClick}/>
+                               value="90" onClick={this.handleClick} defaultChecked={choice === '90'}/>
                         <label className="form-check-label" htmlFor="inlineRadio3">1.5 Hours</label>
                     </div>
 
 
                     <div className="form-check form-check-inline">
                         <input className="form-check-input" type="radio" name="choice"
-                               value="120" onClick={this.handleClick}/>
+                               value="120" onClick={this.handleClick} defaultChecked={choice === '120'}/>
                         <label className="form-check-label" htmlFor="inlineRadio1">2 Hours</label>
                     </div>
                     <div className="form-check form-check-inline">
                         <input className="form-check-input" type="radio" name="choice"
-                               value="150" onClick={this.handleClick}/>
+                               value="150" onClick={this.handleClick} defaultChecked={choice === '150'}/>
                         <label className="form-check-label" htmlFor="inlineRadio2">2.5 Hours</label>
                     </div>
                     <div className="form-check form-check-inline">
                         <input className="form-check-input" type="radio" name="choice"
-                               value="180" onClick={this.handleClick}/>
+                               value="180" onClick={this.handleClick} defaultChecked={choice === '180'}/>
                         <label className="form-check-label" htmlFor="inlineRadio3">3 Hours</label>
                     </div>
 
                     <div className="form-check form-check-inline">
                         <input className="form-check-input" type="radio" name="choice"
-                               value="210" onClick={this.handleClick}/>
+                               value="210" onClick={this.handleClick} defaultChecked={choice === '210'}/>
                         <label className="form-check-label" htmlFor="inlineRadio2">3.5 Hours</label>
                     </div>
                     <div className="form-check form-check-inline">
                         <input className="form-check-input" type="radio" name="choice"
-                               value="240" onClick={this.handleClick}/>
+                               value="240" onClick={this.handleClick} defaultChecked={choice === '240'}/>
                         <label className="form-check-label" htmlFor="inlineRadio3">4 Hours</label>
                     </div>
 
