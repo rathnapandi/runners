@@ -90,7 +90,7 @@ public class ManagementController {
     }
 
     @PostMapping("/management/feeds")
-    public ResponseEntity<?> addFeed(@RequestHeader("Host") String host, UnMatchedEventFeed unMatchedEventFeed) {
+    public ResponseEntity<?> addFeed(@RequestHeader("Host") String host, @RequestBody  UnMatchedEventFeed unMatchedEventFeed) {
         if (host.contains("localhost")) {
             unMatchedEventFeedService.save(unMatchedEventFeed);
             return new ResponseEntity<UnMatchedEventFeed>(HttpStatus.CREATED);
