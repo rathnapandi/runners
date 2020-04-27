@@ -88,4 +88,13 @@ public class ManagementController {
         }
         return new ResponseEntity<UnMatchedEventFeed>(HttpStatus.EXPECTATION_FAILED);
     }
+
+    @PostMapping("/management/feeds")
+    public ResponseEntity<?> addFeed(@RequestHeader("Host") String host, UnMatchedEventFeed unMatchedEventFeed) {
+        if (host.contains("localhost")) {
+            unMatchedEventFeedService.save(unMatchedEventFeed);
+            return new ResponseEntity<UnMatchedEventFeed>(HttpStatus.CREATED);
+        }
+        return new ResponseEntity<UnMatchedEventFeed>(HttpStatus.EXPECTATION_FAILED);
+    }
 }
