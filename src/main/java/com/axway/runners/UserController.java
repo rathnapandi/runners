@@ -48,11 +48,10 @@ public class UserController {
     @ResponseBody
     public User getUser(OAuth2AuthenticationToken authToken){
         Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
-        String email = (String) attributes.get("unique_name");
+        logger.debug("Azure attributes : {}", attributes);
+        String email = (String) attributes.get("email");
         User user = userService.getUser(email);
-
         if(user == null){
-
             String countryCode = (String) attributes.get("ctry");
             String firstName = (String) attributes.get("given_name");
             String lastName = (String) attributes.get("family_name");

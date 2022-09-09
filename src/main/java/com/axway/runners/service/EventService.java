@@ -28,11 +28,6 @@ public class EventService {
     }
 
     public Iterable<Event> findAll(){
-//        Iterable<Event> events = eventRepository.findAll();
-//        for(Event event : events){
-//            System.out.println(event.getName());
-//        }
-//        return  null;
         Iterable<Event> events = eventRepository.findAll();
         return events;
     }

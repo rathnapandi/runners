@@ -37,7 +37,7 @@ public class StravaController {
     @RequestMapping("/athlete/activities")
     public ResponseEntity<String> athleteActivities(OAuth2AuthenticationToken authToken) {
         Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
-        String email = (String) attributes.get("unique_name");
+        String email = (String) attributes.get("email");
 
         User user = userService.getUser(email);
         OAuthToken oAuthToken = user.getOAuthToken();

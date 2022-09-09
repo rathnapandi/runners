@@ -188,7 +188,6 @@ public class StravaClient {
         URI uri = UriComponentsBuilder.fromUriString(url).queryParam("client_id", stravaOauthClientConfig.getClient_id())
                 .queryParam("client_secret", stravaOauthClientConfig.getClient_secret()).build().toUri();
         try {
-
             ResponseEntity<String> response = restTemplate.getForEntity(uri, String.class);
             int statusCode = response.getStatusCodeValue();
             if (statusCode == 200) {

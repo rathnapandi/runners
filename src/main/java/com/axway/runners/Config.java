@@ -1,6 +1,5 @@
 package com.axway.runners;
 
-import com.axway.runners.strava.OAuthClientCredentialsRestTemplateInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,7 +25,7 @@ public class Config {
 
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-        configuration.addAllowedOrigin("*");
+        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
         configuration.addAllowedHeader("*");
         configuration.setAllowedMethods(Arrays.asList("GET", "PUT", "POST", "DELETE"));
         source.registerCorsConfiguration("/**", configuration);
@@ -41,7 +40,6 @@ public class Config {
     public RestTemplate restTemplateAxway(RestTemplateBuilder restTemplateBuilder){
 
         return restTemplateBuilder
-
                 .setReadTimeout(Duration.ofSeconds(5))
                 .setConnectTimeout(Duration.ofSeconds(1))
                 .errorHandler(new APIClientErrorHandler())

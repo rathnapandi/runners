@@ -42,7 +42,6 @@ public class OAuthClientCredentialsRestTemplateInterceptor implements ClientHttp
         ClientHttpResponse response = execution.execute(request, body);
         logger.info("Response status code : {} and Text : {}", response.getRawStatusCode(), response.getStatusText());
         logger.info("Response Headers     : {}", response.getHeaders());
-
         return response;
 
     }

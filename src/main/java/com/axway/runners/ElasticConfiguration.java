@@ -6,23 +6,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-import org.springframework.core.convert.support.DefaultConversionService;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.env.Environment;
 import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.convert.WritingConverter;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.RestClients;
 import org.springframework.data.elasticsearch.config.AbstractElasticsearchConfiguration;
-import org.springframework.data.elasticsearch.core.ElasticsearchEntityMapper;
-import org.springframework.data.elasticsearch.core.EntityMapper;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchCustomConversions;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 @Configuration
@@ -57,18 +54,22 @@ public class ElasticConfiguration extends  AbstractElasticsearchConfiguration {
         return RestClients.create(clientConfiguration).rest();
     }
 
+//    @Bean
+//    public ElasticsearchOperations elasticsearchTemplate() {
+//        return new ElasticsearchRestTemplate(elasticsearchClient());
+//    }
 
 
-    @Bean
-    @Override
-    public EntityMapper entityMapper() {
-
-        ElasticsearchEntityMapper entityMapper = new ElasticsearchEntityMapper(
-                elasticsearchMappingContext(), new DefaultConversionService());
-        entityMapper.setConversions(elasticsearchCustomConversions());
-
-        return entityMapper;
-    }
+//    @Bean
+//    @Override
+//    public EntityMapper entityMapper() {
+//
+//        ElasticsearchEntityMapper entityMapper = new ElasticsearchEntityMapper(
+//                elasticsearchMappingContext(), new DefaultConversionService());
+//        entityMapper.setConversions(elasticsearchCustomConversions());
+//
+//        return entityMapper;
+//    }
 
     @Bean
     @Override

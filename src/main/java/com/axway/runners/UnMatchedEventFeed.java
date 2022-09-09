@@ -6,7 +6,7 @@ import org.springframework.data.annotation.Version;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 @Data
-@Document(indexName = "unmatchedeventfeed", type = "unmatchedeventfeed")
+@Document(indexName = "unmatchedeventfeed")
 public class UnMatchedEventFeed extends Feed{
     @Id
     private String id;

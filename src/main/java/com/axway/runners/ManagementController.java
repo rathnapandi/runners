@@ -3,11 +3,9 @@ package com.axway.runners;
 import com.axway.runners.service.EventService;
 import com.axway.runners.service.ParticipantService;
 import com.axway.runners.service.UnMatchedEventFeedService;
-import io.swagger.models.parameters.PathParameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -56,7 +54,7 @@ public class ManagementController {
             existingEvent.setImage(event.getImage());
             existingEvent.setDescription(event.getDescription());
             Event updatedEvent = eventService.saveEvent(existingEvent);
-            return new ResponseEntity<Event>(updatedEvent, HttpStatus.OK);
+            return new ResponseEntity<>(updatedEvent, HttpStatus.OK);
         }
         return new ResponseEntity<Event>(HttpStatus.EXPECTATION_FAILED);
     }

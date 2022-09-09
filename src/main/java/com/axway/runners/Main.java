@@ -1,10 +1,13 @@
 package com.axway.runners;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.UUID;
 
 public class Main {
@@ -15,7 +18,7 @@ public class Main {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.DATE, 24);
+        calendar.set(Calendar.DATE, 06);
         calendar.set(Calendar.MILLISECOND, 1);
         //calendar.set(Calendar.AM_PM, Calendar.AM);
 
@@ -30,14 +33,16 @@ public class Main {
         calendar.set(Calendar.HOUR_OF_DAY, 23);
         calendar.set(Calendar.SECOND, 59);
         calendar.set(Calendar.MILLISECOND, 999);
-        calendar.set(Calendar.DATE, 24);
+       calendar.add(Calendar.DATE , 15);
        // calendar.set(Calendar.AM_PM, Calendar.PM);
 
         System.out.println(calendar.getTimeInMillis());
         System.out.println(calendar.getTime());
 
 
-        System.out.println(new Date(Long.parseLong("1587736800001")));
+       // System.out.println(new Date(Long.parseLong("1587736800001")));
+
+
         //system.out.println(UUID.randomUUID().toString());
 
 //        calendar = Calendar.getInstance();
@@ -56,4 +61,5 @@ public class Main {
        // Instant.now().
 
     }
+
 }

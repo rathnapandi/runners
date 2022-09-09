@@ -1,10 +1,9 @@
 package com.axway.runners.repo;
 
-import com.axway.runners.Participant;
 import com.axway.runners.UnMatchedEventFeed;
-import org.springframework.data.elasticsearch.repository.ElasticsearchCrudRepository;
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
-public interface UnMatchedEventFeedRepository extends ElasticsearchCrudRepository<UnMatchedEventFeed, String> {
+public interface UnMatchedEventFeedRepository extends ElasticsearchRepository<UnMatchedEventFeed, String> {
     UnMatchedEventFeed findByActivityId(String activityId);
     void deleteByActivityId(String activityId);
     void deleteById(String id);

@@ -13,11 +13,6 @@ public class ParticipantService {
     @Autowired
     private ParticipantRepository participantRepository;
 
-
-//    public Participant findParticipantByEvent(String id){
-//        return participantRepository.findParticipantByEventId();
-//    }
-
     public Participant findById(String id){
         return participantRepository.findById(id).get();
     }
@@ -26,10 +21,6 @@ public class ParticipantService {
         return participantRepository.findByEmail(email);
     }
 
-
-//    public Participant findByEmailAndEventId(String email, String eventId) {
-//        return participantRepository.findByEmailAndEventId(email, eventId);
-//    }
 
     public List<Participant> findParticipantsByEventId(String eventId){
         return participantRepository.findParticipantsByEventId(eventId);
