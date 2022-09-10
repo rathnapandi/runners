@@ -211,15 +211,46 @@ public class HomeController {
 
     }
 
+//    @PreAuthorize("hasRole('ROLE_USER')")
+//    @RequestMapping("/strava/authorized")
+//    public RedirectView stravaAuthorize(OAuth2AuthenticationToken authToken, @RequestParam String state, @RequestParam String code, @RequestParam String scope) {
+//
+//
+//        ResponseEntity<OAuthToken> token = stravaClient.createToken(code);
+//        if (token.getStatusCodeValue() != 200) {
+//            logger.error("Error in receiving oauth token");
+//            return new RedirectView("/error?msg=Unable to read token");
+//        }
+//        OAuthToken oAuthToken = token.getBody();
+//        Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
+//        String email = (String) attributes.get("email");
+//        User user = userService.getUser(email);
+//
+//        user.setOAuthToken(oAuthToken);
+//        long time = System.currentTimeMillis();
+//        String athleteId = stravaClient.getAthlete(user);
+//        user.setAthleteId(athleteId);
+//        user.setVersion(time);
+//
+//        boolean subscription = stravaClient.getSubscription();
+//        if (!subscription) {
+//            stravaClient.createSubscription(stravaKey);
+//        }
+//        userService.save(user);
+//        return new RedirectView("/success.html");
+//
+//    }
+
+
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping("/strava/authorized")
-    public RedirectView stravaAuthorize(OAuth2AuthenticationToken authToken, @RequestParam String state, @RequestParam String code, @RequestParam String scope) {
+    public String stravaAuthorize(OAuth2AuthenticationToken authToken, @RequestParam String state, @RequestParam String code, @RequestParam String scope, Model model) {
 
 
         ResponseEntity<OAuthToken> token = stravaClient.createToken(code);
         if (token.getStatusCodeValue() != 200) {
             logger.error("Error in receiving oauth token");
-            return new RedirectView("/error?msg=Unable to read token");
+           // return new RedirectView("/error?msg=Unable to read token");
         }
         OAuthToken oAuthToken = token.getBody();
         Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
@@ -237,7 +268,7 @@ public class HomeController {
             stravaClient.createSubscription(stravaKey);
         }
         userService.save(user);
-        return new RedirectView("/success.html");
+        return "participant";
 
     }
 
