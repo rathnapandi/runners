@@ -13,8 +13,6 @@
     .list-inline-item {
       margin-right: 25px;
     }
-
-
   </style>
 </head>
 <body>
@@ -28,11 +26,15 @@
             class="fas fa-user-plus ml-2">Register</i></a>
         </li>
         <li class="nav-item">
-          <a th:href="@{'/strava/login'}" class="nav-link"><i class="fa-brands fa-strava"></i>Connect to
+          <a th:href="@{'/strava/authz'}" th:if="${user.athleteId == null}" class="nav-link"><i class="fa-brands fa-strava"></i>Connect to
+            Strava</i></a>
+          <a th:href="@{'/strava/authz'}" th:if="${user.athleteId != null}" class="nav-link disabled"><i class="fa-brands fa-strava"></i>Connect to
             Strava</i></a>
         </li>
         <li class="nav-item">
-          <a th:href="@{'/strava/login'}" class="nav-link"><i class="fa-brands fa-strava"></i>Disonnect to
+          <a th:href="@{'/strava/login'}" th:if="${user.athleteId == null}" class="nav-link disabled"><i class="fa-brands fa-strava"></i>Disonnect to
+            Strava</i></a>
+          <a th:href="@{'/strava/login'}" th:if="${user.athleteId != null}" class="nav-link"><i class="fa-brands fa-strava"></i>Disonnect to
             Strava</i></a>
         </li>
       </ul>

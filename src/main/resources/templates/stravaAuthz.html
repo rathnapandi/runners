@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>FitTogether</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <link rel="stylesheet" href="/css/bootstrap.css"/>
+  <script src="/js/jquery-3.6.1.min.js"></script>
+  <script src="/js/bootstrap.js"></script>
+  <style>
+    .list-inline-item {
+      margin-right: 25px;
+    }
+  </style>
+</head>
+<body>
+<div th:insert="header.html :: header"/>
+<div class="d-flex">
+  <ul class="list-inline mx-auto justify-content-center">
+    <li class="list-inline-item">
+      <div class="card">
+        <div class="card-header">
+          <img src="/img/strava.png" class="card-img-top" alt="Connect to Strava">
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">Connect to Strava</h5>
+          <p class="card-text">Authorize Strava to send Activities to FitTogether App</p>
+          <a th:href="@{'/strava/authz?eventId='+ ${eventId}}" class="btn btn-primary">Authorize Strava</a>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
+<div th:insert="svg.html :: svg"/>
+<div th:insert="footer.html :: footer"/>
+</body>
+</html>

@@ -61,22 +61,22 @@ public class HomeController {
         User existingUser = userService.getUser(user.getEmail());
         if (existingUser == null) {
             logger.info("Storing the user : {}", user.getEmail());
-            userService.save(user);
+            existingUser =  userService.save(user);
 
         } else {
             logger.info("User {} already exists", user.getEmail());
         }
         Iterable<Event> events = eventService.findAll();
 
-        model.addAttribute("user", user);
+        model.addAttribute("user", existingUser);
         model.addAttribute("events", events);
         model.addAttribute("navbar", "events");
-       // return new RedirectView("/index.html");
+        // return new RedirectView("/index.html");
         return "events";
 
     }
 
-    public User getUser(OAuth2AuthenticationToken authToken){
+    public User getUser(OAuth2AuthenticationToken authToken) {
         Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
         logger.debug("Azure attributes : {}", attributes);
         String email = (String) attributes.get("email");
@@ -96,14 +96,30 @@ public class HomeController {
     @RequestMapping("/events/{eventId}/participant")
     public String getParticipantList(OAuth2AuthenticationToken authToken, @PathVariable String eventId, Model model) {
         User user = getUser(authToken);
-        model.addAttribute("user", user);
+        User existingUser = userService.getUser(user.getEmail());
+        if (existingUser == null) {
+
+        }
+        model.addAttribute("user", existingUser);
         List<Participant> participants = participantService.findParticipantsByEventId(eventId);
-       // Event event = eventService.findById(eventId);
+        // Event event = eventService.findById(eventId);
         model.addAttribute("eventId", eventId);
         model.addAttribute("participants", participants);
-       // model.addAttribute("navbar", "participants");
+        // model.addAttribute("navbar", "participants");
         model.addAttribute("navbar", "events");
         return "participant";
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping("/events/{eventId}/strava")
+    public String getStravaAuthzPage(OAuth2AuthenticationToken authToken, @PathVariable String eventId, Model model) {
+        User user = getUser(authToken);
+        model.addAttribute("user", user);
+        // Event event = eventService.findById(eventId);
+        model.addAttribute("eventId", eventId);
+        // model.addAttribute("navbar", "participants");
+        model.addAttribute("navbar", "events");
+        return "stravaAuthz";
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -113,33 +129,41 @@ public class HomeController {
         model.addAttribute("user", user);
         // model.addAttribute("navbar", "participants");
         model.addAttribute("navbar", "events");
-
         return "addParticipant";
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping("/events/{eventId}/add/participant")
     public String addParticipant(OAuth2AuthenticationToken authToken, @PathVariable String eventId, Participant participant, Model model) {
-        Participant savedParticipant = participantService.saveParticipant(participant);
+
 //        axwayClient.sendEmail(participant);
 //        return savedParticipant;
         User user = getUser(authToken);
-        model.addAttribute("user", user);
+        User existingUser = userService.getUser(user.getEmail());
+        if (existingUser == null) {
+
+        }
+        model.addAttribute("user", existingUser);
+        Participant savedParticipant = participantService.saveParticipant(participant);
         // model.addAttribute("navbar", "participants");
         model.addAttribute("navbar", "events");
-        return "addParticipant";
+        return "participant";
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/events/{eventId}/delete/participant/{id}")
-    public String deleteParticipant(OAuth2AuthenticationToken authToken, @PathVariable String eventId,@PathVariable String id, Model model) {
+    public String deleteParticipant(OAuth2AuthenticationToken authToken, @PathVariable String eventId, @PathVariable String id, Model model) {
         User user = getUser(authToken);
-        Participant existingParticipant =  participantService.findById(id);
-        if( existingParticipant == null){
+        User existingUser = userService.getUser(user.getEmail());
+        if (existingUser == null) {
+
+        }
+        Participant existingParticipant = participantService.findById(id);
+        if (existingParticipant == null) {
             //return new ResponseEntity<Event>(HttpStatus.EXPECTATION_FAILED);
         }
         participantService.deleteParticipant(existingParticipant);
-        model.addAttribute("user", user);
+        model.addAttribute("user", existingUser);
         // model.addAttribute("navbar", "participants");
         List<Participant> participants = participantService.findParticipantsByEventId(eventId);
         // Event event = eventService.findById(eventId);
@@ -152,18 +176,22 @@ public class HomeController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping("/events/{eventId}/update/participant/{id}")
-    public String updateParticipant(OAuth2AuthenticationToken authToken, @PathVariable String eventId,@PathVariable String id,Participant participant,  Model model) {
+    public String updateParticipant(OAuth2AuthenticationToken authToken, @PathVariable String eventId, @PathVariable String id, Participant participant, Model model) {
         User user = getUser(authToken);
-        Participant existingParticipant =  participantService.findById(id);
-        if( existingParticipant == null){
-           // return new ResponseEntity<Event>(HttpStatus.EXPECTATION_FAILED);
+        User existingUser = userService.getUser(user.getEmail());
+        if (existingUser == null) {
+
+        }
+        Participant existingParticipant = participantService.findById(id);
+        if (existingParticipant == null) {
+            // return new ResponseEntity<Event>(HttpStatus.EXPECTATION_FAILED);
         }
         existingParticipant.setEndTime(participant.getEndTime());
         existingParticipant.setStartTime(participant.getStartTime());
         existingParticipant.setVersion(System.currentTimeMillis());
         Participant updatedParticipant = participantService.saveParticipant(existingParticipant);
-       // axwayClient.sendEmail(existingParticipant);
-        model.addAttribute("user", user);
+        // axwayClient.sendEmail(existingParticipant);
+        model.addAttribute("user", existingUser);
         // model.addAttribute("navbar", "participants");
         List<Participant> participants = participantService.findParticipantsByEventId(eventId);
         // Event event = eventService.findById(eventId);
@@ -183,7 +211,6 @@ public class HomeController {
         model.addAttribute("navbar", "leaderboard");
         return "leaderboard";
     }
-
 
 
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -207,6 +234,23 @@ public class HomeController {
         String uri = UriComponentsBuilder.fromHttpUrl(stravaOauthClientConfig.getAuthorization_uri()).queryParam("client_id", stravaOauthClientConfig.getClient_id()).queryParam("redirect_uri", stravaOauthClientConfig.getRedirect_uri())
             .queryParam("response_type", stravaOauthClientConfig.getGrant_type()).queryParam("approval_prompt", "auto").queryParam("scope", stravaOauthClientConfig.getScope()).build().toUriString();
         return new RedirectView(uri);
+
+
+    }
+
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping("/strava/authz")
+    public String stravaAuthz(OAuth2AuthenticationToken authToken, @RequestParam(name = "eventId") String eventId) {
+
+        Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
+        String email = (String) attributes.get("email");
+        User user = userService.getUser(email);
+        // OAuthToken oAuthToken = user.getOAuthToken();
+
+        String uri = UriComponentsBuilder.fromHttpUrl(stravaOauthClientConfig.getAuthorization_uri()).queryParam("client_id", stravaOauthClientConfig.getClient_id()).queryParam("redirect_uri", stravaOauthClientConfig.getRedirect_uri())
+            .queryParam("response_type", stravaOauthClientConfig.getGrant_type()).queryParam("approval_prompt", "auto").queryParam("scope", stravaOauthClientConfig.getScope()).queryParam("state", eventId).build().toUriString();
+        return "redirect:" + uri;
 
 
     }
@@ -246,17 +290,19 @@ public class HomeController {
     @RequestMapping("/strava/authorized")
     public String stravaAuthorize(OAuth2AuthenticationToken authToken, @RequestParam String state, @RequestParam String code, @RequestParam String scope, Model model) {
 
-
+        // model.addAttribute("navbar", "participants");
+        model.addAttribute("navbar", "events");
+        model.addAttribute("eventId", scope);
         ResponseEntity<OAuthToken> token = stravaClient.createToken(code);
         if (token.getStatusCodeValue() != 200) {
             logger.error("Error in receiving oauth token");
-           // return new RedirectView("/error?msg=Unable to read token");
+            // return new RedirectView("/error?msg=Unable to read token");
         }
         OAuthToken oAuthToken = token.getBody();
         Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
         String email = (String) attributes.get("email");
         User user = userService.getUser(email);
-
+        model.addAttribute("user", user);
         user.setOAuthToken(oAuthToken);
         long time = System.currentTimeMillis();
         String athleteId = stravaClient.getAthlete(user);
@@ -267,6 +313,9 @@ public class HomeController {
         if (!subscription) {
             stravaClient.createSubscription(stravaKey);
         }
+        List<Participant> participants = participantService.findParticipantsByEventId(scope);
+        // Event event = eventService.findById(eventId);
+        model.addAttribute("participants", participants);
         userService.save(user);
         return "participant";
 

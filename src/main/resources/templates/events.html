@@ -22,7 +22,8 @@
         <div class="card-body">
           <h5 class="card-title" th:text="${event.name}"></h5>
           <p class="card-text" th:text="${event.description}"></p>
-          <a th:href="@{'/events/'+ ${event.id} + '/participant'}" class="btn btn-primary">Select Event</a>
+          <a th:href="@{'/events/'+ ${event.id} + '/participant'}" th:if="${user.athleteId != null}" class="btn btn-primary">Select Event</a>
+          <a th:href="@{'/events/'+ ${event.id} + '/strava'}" th:if="${user.athleteId == null}" class="btn btn-primary">Select Event</a>
         </div>
         <ul class="list-group list-group-flush">
           <li class="list-group-item">
