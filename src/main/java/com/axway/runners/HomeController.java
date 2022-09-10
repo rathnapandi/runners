@@ -1,9 +1,15 @@
 package com.axway.runners;
 
+import com.axway.runners.model.Event;
+import com.axway.runners.model.Participant;
+import com.axway.runners.model.User;
+import com.axway.runners.service.EventService;
+import com.axway.runners.service.ParticipantService;
 import com.axway.runners.service.UserService;
 import com.axway.runners.strava.OAuthToken;
 import com.axway.runners.strava.StravaClient;
 import com.axway.runners.strava.StravaOauthClientConfig;
+import com.azure.core.annotation.Delete;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,16 +18,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
 import java.util.Map;
 
-@RestController
+//@RestController
+@Controller
 public class HomeController {
 
 
@@ -40,10 +47,36 @@ public class HomeController {
     @Value("${strava.client.key}")
     private String stravaKey;
 
+    @Autowired
+    private EventService eventService;
+
+    @Autowired
+    private ParticipantService participantService;
+
     //@Autowired
     @PreAuthorize("hasRole('ROLE_USER')")
-    @RequestMapping("/")
-    public RedirectView home(OAuth2AuthenticationToken authToken) {
+    @GetMapping("/")
+    public /*RedirectView*/ String home(OAuth2AuthenticationToken authToken, Model model) {
+        User user = getUser(authToken);
+        User existingUser = userService.getUser(user.getEmail());
+        if (existingUser == null) {
+            logger.info("Storing the user : {}", user.getEmail());
+            userService.save(user);
+
+        } else {
+            logger.info("User {} already exists", user.getEmail());
+        }
+        Iterable<Event> events = eventService.findAll();
+
+        model.addAttribute("user", user);
+        model.addAttribute("events", events);
+        model.addAttribute("navbar", "events");
+       // return new RedirectView("/index.html");
+        return "events";
+
+    }
+
+    public User getUser(OAuth2AuthenticationToken authToken){
         Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
         logger.debug("Azure attributes : {}", attributes);
         String email = (String) attributes.get("email");
@@ -56,17 +89,101 @@ public class HomeController {
         user.setEmail(email);
         user.setFirstName(firstName);
         user.setLastName(lastName);
-        User existingUser = userService.getUser(email);
-        if (existingUser == null) {
-            logger.info("Storing the user : {}", email);
-            userService.save(user);
-
-        } else {
-            logger.info("User {} already exists", email);
-        }
-        return new RedirectView("/index.html");
-
+        return user;
     }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping("/events/{eventId}/participant")
+    public String getParticipantList(OAuth2AuthenticationToken authToken, @PathVariable String eventId, Model model) {
+        User user = getUser(authToken);
+        model.addAttribute("user", user);
+        List<Participant> participants = participantService.findParticipantsByEventId(eventId);
+       // Event event = eventService.findById(eventId);
+        model.addAttribute("eventId", eventId);
+        model.addAttribute("participants", participants);
+       // model.addAttribute("navbar", "participants");
+        model.addAttribute("navbar", "events");
+        return "participant";
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping("/events/{eventId}/add/participant/page")
+    public String addParticipantPage(OAuth2AuthenticationToken authToken, @PathVariable String eventId, Participant participant, Model model) {
+        User user = getUser(authToken);
+        model.addAttribute("user", user);
+        // model.addAttribute("navbar", "participants");
+        model.addAttribute("navbar", "events");
+
+        return "addParticipant";
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping("/events/{eventId}/add/participant")
+    public String addParticipant(OAuth2AuthenticationToken authToken, @PathVariable String eventId, Participant participant, Model model) {
+        Participant savedParticipant = participantService.saveParticipant(participant);
+//        axwayClient.sendEmail(participant);
+//        return savedParticipant;
+        User user = getUser(authToken);
+        model.addAttribute("user", user);
+        // model.addAttribute("navbar", "participants");
+        model.addAttribute("navbar", "events");
+        return "addParticipant";
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("/events/{eventId}/delete/participant/{id}")
+    public String deleteParticipant(OAuth2AuthenticationToken authToken, @PathVariable String eventId,@PathVariable String id, Model model) {
+        User user = getUser(authToken);
+        Participant existingParticipant =  participantService.findById(id);
+        if( existingParticipant == null){
+            //return new ResponseEntity<Event>(HttpStatus.EXPECTATION_FAILED);
+        }
+        participantService.deleteParticipant(existingParticipant);
+        model.addAttribute("user", user);
+        // model.addAttribute("navbar", "participants");
+        List<Participant> participants = participantService.findParticipantsByEventId(eventId);
+        // Event event = eventService.findById(eventId);
+        model.addAttribute("eventId", eventId);
+        model.addAttribute("participants", participants);
+        // model.addAttribute("navbar", "participants");
+        model.addAttribute("navbar", "events");
+        return "participant";
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping("/events/{eventId}/update/participant/{id}")
+    public String updateParticipant(OAuth2AuthenticationToken authToken, @PathVariable String eventId,@PathVariable String id,Participant participant,  Model model) {
+        User user = getUser(authToken);
+        Participant existingParticipant =  participantService.findById(id);
+        if( existingParticipant == null){
+           // return new ResponseEntity<Event>(HttpStatus.EXPECTATION_FAILED);
+        }
+        existingParticipant.setEndTime(participant.getEndTime());
+        existingParticipant.setStartTime(participant.getStartTime());
+        existingParticipant.setVersion(System.currentTimeMillis());
+        Participant updatedParticipant = participantService.saveParticipant(existingParticipant);
+       // axwayClient.sendEmail(existingParticipant);
+        model.addAttribute("user", user);
+        // model.addAttribute("navbar", "participants");
+        List<Participant> participants = participantService.findParticipantsByEventId(eventId);
+        // Event event = eventService.findById(eventId);
+        model.addAttribute("eventId", eventId);
+        model.addAttribute("participants", participants);
+        // model.addAttribute("navbar", "participants");
+        model.addAttribute("navbar", "events");
+        return "participant";
+    }
+
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping("/leaderboard")
+    public String getleaderboard(OAuth2AuthenticationToken authToken, Model model) {
+        User user = getUser(authToken);
+        model.addAttribute("user", user);
+        model.addAttribute("navbar", "leaderboard");
+        return "leaderboard";
+    }
+
 
 
     @PreAuthorize("hasRole('ROLE_USER')")

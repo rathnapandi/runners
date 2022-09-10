@@ -1,0 +1,35 @@
+<div>
+  <header class="d-flex flex-wrap justify-content-between align-items-center py-3 mb-4 border-bottom">
+
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+      <img class="bi me-2" width="150" height="30" src="/img/logo.png" alt="Axway FitTogether">
+    </a>
+    <ul class="nav nav-pills">
+      <li class="nav-item"><span class="nav-link fw-semibold">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+             class="bi bi-person-check-fill" viewBox="0 0 16 16">
+    <path fill-rule="evenodd"
+          d="M15.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L12.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
+  <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+    </svg>
+        <span class="font-weight-bold"
+              th:text="'Welcome '+${user.firstName} + ' ' + ${user.lastName}">name</span></span></li>
+      <li class="nav-item">
+        <a href="/" th:if="${navbar == 'events'}" class="nav-link active" aria-current="page">Events</a>
+        <a href="/" th:if="${navbar != 'events'}" class="nav-link" aria-current="page">Events</a>
+      </li>
+      <!--    <li class="nav-item">-->
+      <!--      <a href="/participants" th:if="${navbar == 'participants'}" class="nav-link active">Participants</a>-->
+      <!--      <a href="/participants" th:if="${navbar != 'participants'}" class="nav-link">Participants</a>-->
+      <!--    </li>-->
+      <li class="nav-item">
+        <a href="/leaderboard" th:if="${navbar == 'leaderboard'}" class="nav-link active" aria-current="page">LeaderBoard</a>
+        <a href="/leaderboard" th:if="${navbar != 'leaderboard'}" class="nav-link" aria-current="page">LeaderBoard</a>
+      </li>
+      <li clas="nav-item"><a class="nav-link" target="_blank" rel="noopener noreferrer"
+                             href="https://teams.microsoft.com/l/channel/19%3a83d56744389742bb8a1f544e1c4d024f%40thread.tacv2/General?groupId=22fa248e-04a6-4727-825e-5c31b8eb8234&tenantId=300f59df-78e6-436f-9b27-b64973e34f7d">Support</a>
+      </li>
+      <li class="nav-item"><a href="/logout" class="nav-link">Logout</a></li>
+    </ul>
+  </header>
+</div>

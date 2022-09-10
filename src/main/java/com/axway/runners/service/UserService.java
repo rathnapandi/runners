@@ -1,6 +1,6 @@
 package com.axway.runners.service;
 
-import com.axway.runners.User;
+import com.axway.runners.model.User;
 import com.axway.runners.repo.UserRepository;
 import org.springframework.stereotype.Service;
 

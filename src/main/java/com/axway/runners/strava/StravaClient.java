@@ -1,7 +1,7 @@
 package com.axway.runners.strava;
 
 import com.axway.runners.APIClientExcepton;
-import com.axway.runners.User;
+import com.axway.runners.model.User;
 import com.axway.runners.service.UserService;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;

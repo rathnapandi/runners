@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>FitTogether</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <link rel="stylesheet" href="/css/jquery-ui.min.css"/>
+  <link rel="stylesheet" href="/css/bootstrap.css"/>
+  <link rel="stylesheet" href="/css/fontawesome_all.css"/>
+
+  <script src="/js/jquery-3.6.1.min.js"></script>
+  <script src="/js/moment.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+  <script src="/js/jquery-ui.min.js"></script>
+  <style>
+    .list-inline-item {
+      margin-right: 25px;
+    }
+  </style>
+  <script>
+    $(function () {
+      $("#startTime").datetimepicker({
+        // defaultDate: "+1w",
+        // changeMonth: true,
+        // numberOfMonths: 3,
+        // onSelect: function( selectedDate ) {
+        //   $( "#endTime" ).datepicker( "option", "minDate", selectedDate );
+        // }
+      });
+      $("#endTime").datetimepicker({
+        // defaultDate: "+1w",
+        // changeMonth: true,
+        // numberOfMonths: 3,
+        // onSelect: function( selectedDate ) {
+        //   $( "#startTime" ).datepicker( "option", "maxDate", selectedDate );
+        // }
+      });
+    });
+  </script>
+</head>
+<body>
+<div th:insert="header.html :: header"/>
+<div class="container my-5">
+  <h3> Add Student</h3>
+  <div class="card">
+    <div class="card-body">
+      <div class="col-md-10">
+        <form action="#" th:action="@{/participants/add}" th:object="${participant}" method="post">
+          <div class="row">
+            <div class="form-group col-md-8">
+              <label for="startTime" class="col-form-label">Start Time</label> <input type="text"
+                                                                                      th:field="*{startTime}"
+                                                                                      class="form-control"
+                                                                                      id="startTime"
+                                                                                      placeholder="Start Time"> <span
+              th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-8">
+              <label for="endTime" class="col-form-label">End Time</label> <input type="text" th:field="*{endTime}"
+                                                                                  class="form-control" id="endTime"
+                                                                                  placeholder="End Time"> <span
+              th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}" class="text-danger"></span>
+            </div>
+
+            <div class="form-group col-md-8">
+              <label for="note" class="col-form-label">Note</label> <input type="text" th:field="*{note}"
+                                                                           class="form-control" id="note"
+                                                                           placeholder="Note"> <span
+              th:if="${#fields.hasErrors('note')}" th:errors="*{note}" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+              <input type="submit" class="btn btn-primary" value="Register">
+            </div>
+            <div class="form-group col-md-8"></div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div th:insert="svg.html :: svg"/>
+<div th:insert="footer.html :: footer"/>
+</body>
+</html>

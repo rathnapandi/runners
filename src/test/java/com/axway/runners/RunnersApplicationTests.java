@@ -1,17 +1,14 @@
 package com.axway.runners;
 
+import com.axway.runners.model.Event;
+import com.axway.runners.model.Feed;
 import com.axway.runners.service.EventService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.elasticsearch.core.query.IndexQuery;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 @SpringBootTest
 class RunnersApplicationTests {
@@ -60,7 +57,7 @@ class RunnersApplicationTests {
         feed.setDuration(5.6f);
         feed.setDescription("Test FiTogether App1");
         feed.setCountry("US");
-        feed.setEventTime(1587503352);
+        feed.setEventTime(Calendar.getInstance().getTime());
         feed.setEventDateTime(new Date());
         feed.setType("Run");
 
@@ -74,7 +71,7 @@ class RunnersApplicationTests {
         feed.setDuration(10.6f);
         feed.setDescription("Test FiTogether App1");
         feed.setCountry("US");
-        feed.setEventTime(1587503352);
+        feed.setEventTime(Calendar.getInstance().getTime());
         feed.setEventDateTime(new Date());
         feed.setType("Run");
         event.addFeed(feed);

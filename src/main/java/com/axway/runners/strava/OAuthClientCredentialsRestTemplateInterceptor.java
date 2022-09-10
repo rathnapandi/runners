@@ -1,6 +1,5 @@
 package com.axway.runners.strava;
 
-import com.axway.runners.User;
 import com.axway.runners.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,13 +8,9 @@ import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.time.Instant;
-import java.util.Date;
 
 public class OAuthClientCredentialsRestTemplateInterceptor implements ClientHttpRequestInterceptor {
     @Autowired

@@ -1,5 +1,8 @@
 package com.axway.runners;
 
+import com.axway.runners.model.Event;
+import com.axway.runners.model.Feed;
+import com.axway.runners.model.Participant;
 import com.axway.runners.service.EventService;
 import com.axway.runners.service.ParticipantService;
 import org.slf4j.Logger;
@@ -12,7 +15,6 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/events")
@@ -33,7 +35,7 @@ public class EventController {
     //@Autowired
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping(value = "/{id}", produces = "application/json")
-    public Event getEvents(@PathVariable String id,  OAuth2AuthenticationToken authToken) {
+    public Event getEvents(@PathVariable String id, OAuth2AuthenticationToken authToken) {
         return eventService.findById(id);
     }
 
@@ -66,7 +68,7 @@ public class EventController {
        existingParticipant.setVersion(System.currentTimeMillis());
        Participant updatedParticipant = participantService.saveParticipant(existingParticipant);
        axwayClient.sendEmail(existingParticipant);
-       return new ResponseEntity<Participant>(updatedParticipant, HttpStatus.OK);
+       return new ResponseEntity<>(updatedParticipant, HttpStatus.OK);
     }
 
 

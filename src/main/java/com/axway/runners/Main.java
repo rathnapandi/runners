@@ -26,7 +26,8 @@ public class Main {
 
         System.out.println(calendar.getTimeInMillis());
         System.out.println(calendar.getTime());
-
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        System.out.println(simpleDateFormat.format(calendar.getTime()));
 
         calendar = Calendar.getInstance();
         calendar.set(Calendar.MINUTE, 59);
@@ -38,6 +39,7 @@ public class Main {
 
         System.out.println(calendar.getTimeInMillis());
         System.out.println(calendar.getTime());
+        System.out.println(simpleDateFormat.format(calendar.getTime()));
 
 
        // System.out.println(new Date(Long.parseLong("1587736800001")));
