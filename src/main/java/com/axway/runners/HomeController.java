@@ -330,7 +330,7 @@ public class HomeController {
 
         // model.addAttribute("navbar", "participants");
         model.addAttribute("navbar", "events");
-        model.addAttribute("eventId", scope);
+        model.addAttribute("eventId", state);
         ResponseEntity<OAuthToken> token = stravaClient.createToken(code);
         if (token.getStatusCodeValue() != 200) {
             logger.error("Error in receiving oauth token");
@@ -351,24 +351,55 @@ public class HomeController {
         if (!subscription) {
             stravaClient.createSubscription(stravaKey);
         }
-        List<Participant> participants = participantService.findParticipantsByEventId(scope);
+        List<Participant> participants = participantService.findParticipantsByEventId(state);
         // Event event = eventService.findById(eventId);
         model.addAttribute("participants", participants);
         userService.save(user);
+        Event event = eventService.findById(state);
+        model.addAttribute("eventName", event.getName());
         return "participant";
 
     }
 
+//    @PreAuthorize("hasRole('ROLE_USER')")
+//    @GetMapping("/strava/deauthorize")
+//    public ResponseEntity<?> stravaDauthorize(OAuth2AuthenticationToken authToken) {
+//
+//
+//        Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
+//        String email = (String) attributes.get("email");
+//        User user = userService.getUser(email);
+//        stravaClient.deAuthorize(user);
+//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//
+//    }
+
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/strava/deauthorize")
-    public ResponseEntity<?> stravaDauthorize(OAuth2AuthenticationToken authToken) {
+    public String stravaDauthorize(OAuth2AuthenticationToken authToken,@RequestParam(name = "eventId")String eventId, Model model) {
 
 
         Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
         String email = (String) attributes.get("email");
+
         User user = userService.getUser(email);
+        user.setAthleteId(null);
+        user.setVersion(System.currentTimeMillis());
+        userService.save(user);
         stravaClient.deAuthorize(user);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+
+        model.addAttribute("user", user);
+        List<Participant> participants = participantService.findParticipantsByEventId(eventId);
+        // Event event = eventService.findById(eventId);
+        model.addAttribute("eventId", eventId);
+        model.addAttribute("participants", participants);
+        // model.addAttribute("navbar", "participants");
+        model.addAttribute("navbar", "events");
+        Event event = eventService.findById(eventId);
+        model.addAttribute("eventName", event.getName());
+        return "redirect:/events/"+eventId +"/participant";
+       // return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }
 

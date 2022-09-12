@@ -31,6 +31,11 @@
 </head>
 <body>
 <div th:insert="header.html :: header"/>
+<div class="span12 text-center">
+  <h4 class="text-center"><span class="placeholder col-12"
+                                th:text="'Axway Event - '+${eventName}"></span></h4>
+  <hr>
+</div>
 <div class="container my-5">
   <h3>Update Registration</h3>
   <div class="card">
