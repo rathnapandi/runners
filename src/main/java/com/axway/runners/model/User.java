@@ -12,7 +12,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.util.Map;
 
 @Data
-@Document(indexName = "user")
+@Document(indexName = "userv2")
 
 public class User {
     @Id

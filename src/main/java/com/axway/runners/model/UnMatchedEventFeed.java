@@ -1,13 +1,12 @@
 package com.axway.runners.model;
 
-import com.axway.runners.model.Feed;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 @Data
-@Document(indexName = "unmatchedeventfeed")
+@Document(indexName = "unmatchedeventfeedv2")
 public class UnMatchedEventFeed extends Feed {
     @Id
     private String id;

@@ -9,6 +9,11 @@
 
   <script src="/js/jquery-3.6.1.min.js"></script>
   <script src="/js/bootstrap.js"></script>
+  <script>
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
+  </script>
   <style>
     .list-inline-item {
       margin-right: 25px;
@@ -25,7 +30,7 @@
       <ul class="nav nav-pills card-header-pills">
         <li class="nav-item">
           <a th:href="@{'/events/'+ ${eventId} + '/add/participant/page'}" class="nav-link"><i
-            class="fas fa-user-plus ml-2">Register</i></a>
+            class="fa fa-user-plus">Register</i></a>
         </li>
         <li class="nav-item">
           <a th:href="@{'/strava/authz?eventId='+ ${eventId}}" th:if="${user.athleteId == null}" class="nav-link"><i class="fa-brands fa-strava"></i>Connect to
@@ -44,14 +49,6 @@
     <div class="card-body">
       <div th:switch="${participants}" class="flex-wrap justify-content-between align-items-center py-3 mb-4 border-bottom">
         <h5 class="card-title text-left" >Events participant list: </h5>
-        <!--        <p class="my-5">-->
-        <!--          <a th:href="@{'/events/'+ ${eventId} + '/add/participant/page'}" class="btn btn-primary"><i-->
-        <!--            class="fas fa-user-plus ml-2">Register</i></a>-->
-        <!--        </p>-->
-        <!--        <p class="my-5">-->
-        <!--          <a th:href="@{'/events/'+ ${eventId} + '/add/participant/page'}" class="btn btn-primary"><i-->
-        <!--            class="fa-brands fa-strava"></i>Connect to Strava</i></a>-->
-        <!--        </p>-->
         <div class="col-md-10">
           <h2 th:case="null">No Participants yet!</h2>
           <div th:case="*">
@@ -76,13 +73,13 @@
                 <td th:text="${participant.endTime}"></td>
                 <td>
                   <a th:href="@{/events/{eventId}/update/participant/page/{id}(eventId=${eventId}, id=${participant.id})}" th:if="${participant.email == user.email}"
-                       class="btn btn-primary"><i class="fas fa-user-edit ml-2"></i></a>
+                       class="btn btn-primary" data-toggle="tooltip" title="Update"><i class="fas fa-user-edit ml-2"></i></a>
                   <a th:href="@{/events/{eventId}/update/participant/page/{id}(eventId=${eventId}, id=${participant.id})}" th:if="${participant.email != user.email}"
                      class="btn btn-primary disabled"><i class="fas fa-user-edit ml-2"></i></a>
                 </td>
                 <td>
                   <a th:href="@{/events/{eventId}/delete/participant/{id}(eventId=${eventId}, id=${participant.id})}" th:if="${participant.email == user.email}"
-                       class="btn btn-primary"><i class="fas fa-user-times ml-2"></i></a>
+                       class="btn btn-primary" data-toggle="tooltip" title="Delete"><i class="fas fa-user-times ml-2"></i></a>
                   <a th:href="@{/events/{eventId}/delete/participant/{id}(eventId=${eventId}, id=${participant.id})}" th:if="${participant.email != user.email}"
                        class="btn btn-primary disabled"><i class="fas fa-user-times ml-2"></i></a>
                 </td>

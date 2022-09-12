@@ -1,7 +1,6 @@
 package com.axway.runners.model;
 
 
-import com.axway.runners.model.Feed;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
@@ -13,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @Data
-@Document(indexName = "event")
+@Document(indexName = "eventv2")
 public class Event{
 
     @Id

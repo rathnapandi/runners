@@ -10,7 +10,7 @@ import java.util.Date;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Document(indexName = "participant")
+@Document(indexName = "participantv2")
 public class Participant {
     @Id
     private String id;
