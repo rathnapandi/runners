@@ -3,76 +3,81 @@
 <head>
   <title>FitTogether</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <link rel="stylesheet" href="/css/jquery-ui.min.css"/>
+  <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/css/tempusdominus-bootstrap-4.min.css"
+        integrity="sha256-XPTBwC3SBoWHSmKasAk01c08M6sIA5gF5+sRxqak2Qs=" crossorigin="anonymous"/>
   <link rel="stylesheet" href="/css/bootstrap.css"/>
-  <link rel="stylesheet" href="/css/fontawesome_all.css"/>
-
   <script src="/js/jquery-3.6.1.min.js"></script>
-  <script src="/js/moment.js"></script>
-  <script src="/js/bootstrap.min.js"></script>
-  <script src="/js/jquery-ui.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+          integrity="sha256-98vAGjEDGN79TjHkYWVD4s87rvWkdWLHPs5MC3FvFX4=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/js/bootstrap.min.js"
+          integrity="sha256-xaF9RpdtRxzwYMWg4ldJoyPWqyDPCRD0Cv7YEEe6Ie8=" crossorigin="anonymous"></script>
+  <script type="text/javascript"
+          src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+  <script type="text/javascript"
+          src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.21/moment-timezone-with-data-2012-2022.min.js"></script>
+
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/js/tempusdominus-bootstrap-4.min.js"
+    integrity="sha256-z0oKYg6xiLq3yJGsp/LsY9XykbweQlHl42jHv2XTBz4=" crossorigin="anonymous"></script>
   <style>
     .list-inline-item {
       margin-right: 25px;
     }
   </style>
   <script>
-    $(function () {
-      $("#startTime").datetimepicker({
-        // defaultDate: "+1w",
-        // changeMonth: true,
-        // numberOfMonths: 3,
-        // onSelect: function( selectedDate ) {
-        //   $( "#endTime" ).datepicker( "option", "minDate", selectedDate );
-        // }
-      });
-      $("#endTime").datetimepicker({
-        // defaultDate: "+1w",
-        // changeMonth: true,
-        // numberOfMonths: 3,
-        // onSelect: function( selectedDate ) {
-        //   $( "#startTime" ).datepicker( "option", "maxDate", selectedDate );
-        // }
-      });
-    });
   </script>
 </head>
 <body>
 <div th:insert="header.html :: header"/>
 <div class="container my-5">
-  <h3> Add Student</h3>
+  <h3>Register</h3>
   <div class="card">
     <div class="card-body">
       <div class="col-md-10">
-        <form action="#" th:action="@{/participants/add}" th:object="${participant}" method="post">
-          <div class="row">
-            <div class="form-group col-md-8">
-              <label for="startTime" class="col-form-label">Start Time</label> <input type="text"
-                                                                                      th:field="*{startTime}"
-                                                                                      class="form-control"
-                                                                                      id="startTime"
-                                                                                      placeholder="Start Time"> <span
-              th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}" class="text-danger"></span>
+        <form action="#" th:action="@{'/events/'+ ${eventId} + '/add/participant'}" th:object="${participant}" method="post">
+          <input type="hidden" th:value="${user.email}" id="email" name="email"/>
+          <input type="hidden" th:value="${user.firstName}" id="firstName" name="firstName" />
+          <input type="hidden" th:value="${user.lastName}" id="lastName"  name="lastName"/>
+          <input type="hidden" th:value="${user.countryCode}" id="countryCode"  name="countryCode"/>
+          <div class="form-group">
+            <label for="startTime">Start Time</label>
+            <div class="input-group">
+              <input type="text" class="form-control datetimepicker-input" data-target="#startTime" id="startTime" th:field="*{startTime}">
+              <span th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}" class="text-danger"></span>
+              <div class="input-group-append" data-target="#startTime" data-toggle="datetimepicker">
+                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+              </div>
             </div>
-            <div class="form-group col-md-8">
-              <label for="endTime" class="col-form-label">End Time</label> <input type="text" th:field="*{endTime}"
-                                                                                  class="form-control" id="endTime"
-                                                                                  placeholder="End Time"> <span
-              th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}" class="text-danger"></span>
-            </div>
-
-            <div class="form-group col-md-8">
-              <label for="note" class="col-form-label">Note</label> <input type="text" th:field="*{note}"
-                                                                           class="form-control" id="note"
-                                                                           placeholder="Note"> <span
-              th:if="${#fields.hasErrors('note')}" th:errors="*{note}" class="text-danger"></span>
-            </div>
-
-            <div class="col-md-6">
-              <input type="submit" class="btn btn-primary" value="Register">
-            </div>
-            <div class="form-group col-md-8"></div>
           </div>
+          <div class="form-group">
+            <label for="endTime">End Time</label>
+            <div class="input-group">
+              <input type="text" class="form-control datetimepicker-input" data-target="#endTime" id="endTime" th:field="*{endTime}">
+              <span th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}" class="text-danger"></span>
+              <div class="input-group-append" data-target="#endTime" data-toggle="datetimepicker">
+                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="type">Department</label>
+            <select id="type" class="form-control" th:field="*{type}">
+              <option selected value="R&D">R&D</option>
+              <option value="PSO">PSO</option>
+              <option value="Support">Support</option>
+              <option value="Sales & Presales">Sales & Presales</option>
+              <option value="Product Management">Product Management</option>
+              <option value="People Management">People Management</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="note">Note</label>
+            <input type="text" class="form-control" placeholder="Optional note" id="note" th:field="*{note}"/>
+          </div>
+          <button type="submit" class="btn btn-primary">Register</button>
+          <a  th:href="@{'/events/'+ ${eventId} + '/participant'}" class="btn btn-warning">Cancel</a>
         </form>
       </div>
     </div>

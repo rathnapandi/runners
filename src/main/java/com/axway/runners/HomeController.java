@@ -20,10 +20,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -127,27 +129,50 @@ public class HomeController {
     public String addParticipantPage(OAuth2AuthenticationToken authToken, @PathVariable String eventId, Participant participant, Model model) {
         User user = getUser(authToken);
         model.addAttribute("user", user);
+        model.addAttribute("eventId", eventId);
         // model.addAttribute("navbar", "participants");
         model.addAttribute("navbar", "events");
         return "addParticipant";
     }
 
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping("/events/{eventId}/update/participant/page/{participantId}")
+    public String updateParticipantPage(OAuth2AuthenticationToken authToken, @PathVariable String eventId, @PathVariable String participantId, Participant participant, Model model) {
+        User user = getUser(authToken);
+        model.addAttribute("user", user);
+        model.addAttribute("eventId", eventId);
+        // model.addAttribute("navbar", "participants");
+        model.addAttribute("navbar", "events");
+        participant = participantService.findById(participantId);
+        // Event event = eventService.findById(eventId);
+        model.addAttribute("participant", participant);
+        return "updateParticipant";
+    }
+
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping("/events/{eventId}/add/participant")
-    public String addParticipant(OAuth2AuthenticationToken authToken, @PathVariable String eventId, Participant participant, Model model) {
+    public String addParticipant(OAuth2AuthenticationToken authToken, @PathVariable String eventId, @Valid Participant participant, BindingResult result, Model model) {
 
+        User user = getUser(authToken);
+        model.addAttribute("eventId", eventId);
+        model.addAttribute("navbar", "events");
+        if (result.hasErrors()) {
+            model.addAttribute("user", user);
+            return "addParticipant";
+        }
 //        axwayClient.sendEmail(participant);
 //        return savedParticipant;
-        User user = getUser(authToken);
         User existingUser = userService.getUser(user.getEmail());
         if (existingUser == null) {
 
         }
         model.addAttribute("user", existingUser);
         Participant savedParticipant = participantService.saveParticipant(participant);
+        List<Participant> participants = participantService.findParticipantsByEventId(eventId);
+        model.addAttribute("participants", participants);
         // model.addAttribute("navbar", "participants");
-        model.addAttribute("navbar", "events");
-        return "participant";
+        return "redirect:/events/"+eventId +"/participant";
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -171,7 +196,7 @@ public class HomeController {
         model.addAttribute("participants", participants);
         // model.addAttribute("navbar", "participants");
         model.addAttribute("navbar", "events");
-        return "participant";
+        return "redirect:/events/"+eventId +"/participant";
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -189,6 +214,8 @@ public class HomeController {
         existingParticipant.setEndTime(participant.getEndTime());
         existingParticipant.setStartTime(participant.getStartTime());
         existingParticipant.setVersion(System.currentTimeMillis());
+        existingParticipant.setType(participant.getType());
+        existingParticipant.setNote(participant.getNote());
         Participant updatedParticipant = participantService.saveParticipant(existingParticipant);
         // axwayClient.sendEmail(existingParticipant);
         model.addAttribute("user", existingUser);
@@ -199,7 +226,7 @@ public class HomeController {
         model.addAttribute("participants", participants);
         // model.addAttribute("navbar", "participants");
         model.addAttribute("navbar", "events");
-        return "participant";
+        return "redirect:/events/"+eventId +"/participant";
     }
 
 
