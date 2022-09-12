@@ -104,8 +104,9 @@ public class HomeController {
         }
         model.addAttribute("user", existingUser);
         List<Participant> participants = participantService.findParticipantsByEventId(eventId);
-        // Event event = eventService.findById(eventId);
+        Event event = eventService.findById(eventId);
         model.addAttribute("eventId", eventId);
+        model.addAttribute("eventName", event.getName());
         model.addAttribute("participants", participants);
         // model.addAttribute("navbar", "participants");
         model.addAttribute("navbar", "events");
@@ -117,7 +118,8 @@ public class HomeController {
     public String getStravaAuthzPage(OAuth2AuthenticationToken authToken, @PathVariable String eventId, Model model) {
         User user = getUser(authToken);
         model.addAttribute("user", user);
-        // Event event = eventService.findById(eventId);
+        Event event = eventService.findById(eventId);
+        model.addAttribute("eventName", event.getName());
         model.addAttribute("eventId", eventId);
         // model.addAttribute("navbar", "participants");
         model.addAttribute("navbar", "events");
@@ -130,7 +132,8 @@ public class HomeController {
         User user = getUser(authToken);
         model.addAttribute("user", user);
         model.addAttribute("eventId", eventId);
-        // model.addAttribute("navbar", "participants");
+        Event event = eventService.findById(eventId);
+        model.addAttribute("eventName", event.getName());
         model.addAttribute("navbar", "events");
         return "addParticipant";
     }
@@ -142,10 +145,10 @@ public class HomeController {
         User user = getUser(authToken);
         model.addAttribute("user", user);
         model.addAttribute("eventId", eventId);
-        // model.addAttribute("navbar", "participants");
         model.addAttribute("navbar", "events");
         participant = participantService.findById(participantId);
-        // Event event = eventService.findById(eventId);
+        Event event = eventService.findById(eventId);
+        model.addAttribute("eventName", event.getName());
         model.addAttribute("participant", participant);
         return "updateParticipant";
     }
@@ -157,6 +160,8 @@ public class HomeController {
         User user = getUser(authToken);
         model.addAttribute("eventId", eventId);
         model.addAttribute("navbar", "events");
+        Event event = eventService.findById(eventId);
+        model.addAttribute("eventName", event.getName());
         if (result.hasErrors()) {
             model.addAttribute("user", user);
             return "addParticipant";
@@ -168,6 +173,8 @@ public class HomeController {
 
         }
         model.addAttribute("user", existingUser);
+        participant.setEventId(eventId);
+        participant.setEventName(event.getName());
         Participant savedParticipant = participantService.saveParticipant(participant);
         List<Participant> participants = participantService.findParticipantsByEventId(eventId);
         model.addAttribute("participants", participants);
@@ -187,6 +194,8 @@ public class HomeController {
         if (existingParticipant == null) {
             //return new ResponseEntity<Event>(HttpStatus.EXPECTATION_FAILED);
         }
+        Event event = eventService.findById(eventId);
+        model.addAttribute("eventName", event.getName());
         participantService.deleteParticipant(existingParticipant);
         model.addAttribute("user", existingUser);
         // model.addAttribute("navbar", "participants");
@@ -211,6 +220,8 @@ public class HomeController {
         if (existingParticipant == null) {
             // return new ResponseEntity<Event>(HttpStatus.EXPECTATION_FAILED);
         }
+        Event event = eventService.findById(eventId);
+        model.addAttribute("eventName", event.getName());
         existingParticipant.setEndTime(participant.getEndTime());
         existingParticipant.setStartTime(participant.getStartTime());
         existingParticipant.setVersion(System.currentTimeMillis());
