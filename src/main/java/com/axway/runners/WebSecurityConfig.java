@@ -14,14 +14,9 @@ import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWrite
 @EnableGlobalMethodSecurity(securedEnabled = true,
     prePostEnabled = true)
 @EnableWebSecurity
-
 public class WebSecurityConfig extends AadWebSecurityConfigurerAdapter {
     @Autowired
     private OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService;
-
-//    @Autowired
-//    private  CorsFilter corsFilter;
-
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -35,7 +30,6 @@ public class WebSecurityConfig extends AadWebSecurityConfigurerAdapter {
             .referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)
             .and()
             .frameOptions().sameOrigin()
-//            .deny()
             .and()
             .authorizeRequests()
             .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -55,7 +49,6 @@ public class WebSecurityConfig extends AadWebSecurityConfigurerAdapter {
             .and()
             .oauth2Login()
             .defaultSuccessUrl("/")
-           // .loginPage("/login.html").defaultSuccessUrl("/")
             .userInfoEndpoint()
             .oidcUserService(oidcUserService);
     }
