@@ -76,7 +76,6 @@ public class CallbackController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         List<Participant> participants = participantService.findByEmail(user.getEmail());
-
         if (objType.trim().equals("athlete") && aspectType.equals("create")) {
             axwayClient.postMessageToTeams(user, stravaAthlete);
             logger.info("Athlete Registration  Notification sent out to the Teams for the user : {} ", user.getFirstName() + " " + user.getLastName());

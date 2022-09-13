@@ -14,16 +14,18 @@
 </head>
 <body>
 <div th:insert="header.html :: header"/>
-<div class="d-flex">
-  <ul th:each="event : ${events}" class="list-inline mx-auto justify-content-center">
-    <li class="list-inline-item">
-      <div class="card" style="width: 18rem;">
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-sm-4" th:each="event : ${events}">
+      <div class="card">
         <img src="img/axway_logo.png" class="card-img-top" alt="Axway Event">
         <div class="card-body">
           <h5 class="card-title" th:text="${event.name}"></h5>
           <p class="card-text" th:text="${event.description}"></p>
-          <a th:href="@{'/events/'+ ${event.id} + '/participant'}" th:if="${user.athleteId != null}" class="btn btn-primary">Select Event</a>
-          <a th:href="@{'/events/'+ ${event.id} + '/strava'}" th:if="${user.athleteId == null}" class="btn btn-primary">Select Event</a>
+          <a th:href="@{'/events/'+ ${event.id} + '/participant'}" th:if="${user.athleteId != null}"
+             class="btn btn-primary">Select Event</a>
+          <a th:href="@{'/events/'+ ${event.id} + '/strava'}" th:if="${user.athleteId == null}"
+             class="btn btn-primary">Select Event</a>
         </div>
         <ul class="list-group list-group-flush">
           <li class="list-group-item">
@@ -32,7 +34,7 @@
               <tr>
                 <td>Start Date</td>
                 <td><span
-                  th:text="${#dates.format(event.startDate,'dd MMM yyyy - HH:mm')}">event.startDate</span></td>
+                  th:text="${event.startDate}">event.startDate</span></td>
               </tr>
               </tbody>
             </table>
@@ -43,15 +45,15 @@
               <tr>
                 <td>End Date</td>
                 <td><span
-                  th:text="${#dates.format(event.endDate,'dd MMM yyyy - HH:mm')}">event.endDate</span>
+                  th:text="${event.endDate}">event.endDate</span>
               </tr>
               </tbody>
             </table>
           </li>
         </ul>
       </div>
-    </li>
-  </ul>
+    </div>
+  </div>
 </div>
 <div th:insert="svg.html :: svg"/>
 <div th:insert="footer.html :: footer"/>
