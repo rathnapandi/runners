@@ -33,7 +33,7 @@
 <div th:insert="header.html :: header"/>
 <div class="span12 text-center">
   <h4 class="text-center"><span class="placeholder col-12"
-                                th:text="'Axway Event - '+${eventName}"></span></h4>
+                                th:text="'Axway Event - '+${event.name}"></span></h4>
   <hr>
 </div>
 <div class="container my-5">
@@ -49,7 +49,7 @@
           <div class="form-group">
             <label for="startTime">Start Time</label>
             <div class="input-group">
-              <input type="text" class="form-control datetimepicker-input" data-target="#startTime" id="startTime" th:field="*{startTime}">
+              <input type="text" class="form-control datetimepicker-input" data-target="#startTime" id="startTime" name="startTime" th:value="${event.startDate}">
               <span th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}" class="text-danger"></span>
               <div class="input-group-append" data-target="#startTime" data-toggle="datetimepicker">
                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -59,7 +59,7 @@
           <div class="form-group">
             <label for="endTime">End Time</label>
             <div class="input-group">
-              <input type="text" class="form-control datetimepicker-input" data-target="#endTime" id="endTime" th:field="*{endTime}">
+              <input type="text" class="form-control datetimepicker-input" data-target="#endTime" id="endTime" name="endTime" th:value="${event.endDate}">
               <span th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}" class="text-danger"></span>
               <div class="input-group-append" data-target="#endTime" data-toggle="datetimepicker">
                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -75,6 +75,10 @@
               <option value="Sales & Presales">Sales & Presales</option>
               <option value="Product Line">Product Line</option>
               <option value="People & Culture">People & Culture</option>
+              <option value="Marketing">Marketing</option>
+              <option value="Legal">Legal</option>
+              <option value="IT/IS">IT/IS</option>
+              <option value="Other">Other</option>
             </select>
           </div>
           <div class="form-group">

@@ -63,7 +63,7 @@ public class HomeController {
         User existingUser = userService.getUser(user.getEmail());
         if (existingUser == null) {
             logger.info("Storing the user : {}", user.getEmail());
-            existingUser =  userService.save(user);
+            existingUser = userService.save(user);
 
         } else {
             logger.info("User {} already exists", user.getEmail());
@@ -103,12 +103,14 @@ public class HomeController {
 
         }
         model.addAttribute("user", existingUser);
+        String email = existingUser.getEmail();
         List<Participant> participants = participantService.findParticipantsByEventId(eventId);
+        List<Participant> participantsByEmail = participantService.findParticipantsByEmailAAndEventId(email, eventId);
         Event event = eventService.findById(eventId);
         model.addAttribute("eventId", eventId);
         model.addAttribute("eventName", event.getName());
         model.addAttribute("participants", participants);
-        // model.addAttribute("navbar", "participants");
+        model.addAttribute("participantsByEmail", participantsByEmail);
         model.addAttribute("navbar", "events");
         return "participant";
     }
@@ -133,7 +135,7 @@ public class HomeController {
         model.addAttribute("user", user);
         model.addAttribute("eventId", eventId);
         Event event = eventService.findById(eventId);
-        model.addAttribute("eventName", event.getName());
+        model.addAttribute("event", event);
         model.addAttribute("navbar", "events");
         return "addParticipant";
     }
@@ -158,11 +160,14 @@ public class HomeController {
     public String addParticipant(OAuth2AuthenticationToken authToken, @PathVariable String eventId, @Valid Participant participant, BindingResult result, Model model) {
 
         User user = getUser(authToken);
-        model.addAttribute("eventId", eventId);
-        model.addAttribute("navbar", "events");
+//        model.addAttribute("eventId", eventId);
+//        model.addAttribute("navbar", "events");
         Event event = eventService.findById(eventId);
-        model.addAttribute("eventName", event.getName());
+//        model.addAttribute("eventName", event.getName());
         if (result.hasErrors()) {
+            model.addAttribute("eventId", eventId);
+            model.addAttribute("navbar", "events");
+            model.addAttribute("eventName", event.getName());
             model.addAttribute("user", user);
             return "addParticipant";
         }
@@ -172,19 +177,19 @@ public class HomeController {
         if (existingUser == null) {
 
         }
-        model.addAttribute("user", existingUser);
+//        model.addAttribute("user", existingUser);
         participant.setEventId(eventId);
         participant.setEventName(event.getName());
         Participant savedParticipant = participantService.saveParticipant(participant);
-        List<Participant> participants = participantService.findParticipantsByEventId(eventId);
-        model.addAttribute("participants", participants);
+//        List<Participant> participants = participantService.findParticipantsByEventId(eventId);
+//        model.addAttribute("participants", participants);
         // model.addAttribute("navbar", "participants");
-        return "redirect:/events/"+eventId +"/participant";
+        return "redirect:/events/" + eventId + "/participant";
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/events/{eventId}/delete/participant/{id}")
-    public String deleteParticipant(OAuth2AuthenticationToken authToken, @PathVariable String eventId, @PathVariable String id, Model model) {
+    public String deleteParticipant(OAuth2AuthenticationToken authToken, @PathVariable String eventId, @PathVariable String id) {
         User user = getUser(authToken);
         User existingUser = userService.getUser(user.getEmail());
         if (existingUser == null) {
@@ -194,18 +199,9 @@ public class HomeController {
         if (existingParticipant == null) {
             //return new ResponseEntity<Event>(HttpStatus.EXPECTATION_FAILED);
         }
-        Event event = eventService.findById(eventId);
-        model.addAttribute("eventName", event.getName());
+
         participantService.deleteParticipant(existingParticipant);
-        model.addAttribute("user", existingUser);
-        // model.addAttribute("navbar", "participants");
-        List<Participant> participants = participantService.findParticipantsByEventId(eventId);
-        // Event event = eventService.findById(eventId);
-        model.addAttribute("eventId", eventId);
-        model.addAttribute("participants", participants);
-        // model.addAttribute("navbar", "participants");
-        model.addAttribute("navbar", "events");
-        return "redirect:/events/"+eventId +"/participant";
+        return "redirect:/events/" + eventId + "/participant";
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -229,15 +225,15 @@ public class HomeController {
         existingParticipant.setNote(participant.getNote());
         Participant updatedParticipant = participantService.saveParticipant(existingParticipant);
         // axwayClient.sendEmail(existingParticipant);
-        model.addAttribute("user", existingUser);
-        // model.addAttribute("navbar", "participants");
-        List<Participant> participants = participantService.findParticipantsByEventId(eventId);
-        // Event event = eventService.findById(eventId);
-        model.addAttribute("eventId", eventId);
-        model.addAttribute("participants", participants);
-        // model.addAttribute("navbar", "participants");
-        model.addAttribute("navbar", "events");
-        return "redirect:/events/"+eventId +"/participant";
+//        model.addAttribute("user", existingUser);
+//        // model.addAttribute("navbar", "participants");
+//        List<Participant> participants = participantService.findParticipantsByEventId(eventId);
+//        // Event event = eventService.findById(eventId);
+//        model.addAttribute("eventId", eventId);
+//        model.addAttribute("participants", participants);
+//        // model.addAttribute("navbar", "participants");
+//        model.addAttribute("navbar", "events");
+        return "redirect:/events/" + eventId + "/participant";
     }
 
 
@@ -346,13 +342,11 @@ public class HomeController {
         String athleteId = stravaClient.getAthlete(user);
         user.setAthleteId(athleteId);
         user.setVersion(time);
-
         boolean subscription = stravaClient.getSubscription();
         if (!subscription) {
             stravaClient.createSubscription(stravaKey);
         }
         List<Participant> participants = participantService.findParticipantsByEventId(state);
-        // Event event = eventService.findById(eventId);
         model.addAttribute("participants", participants);
         userService.save(user);
         Event event = eventService.findById(state);
@@ -376,7 +370,7 @@ public class HomeController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/strava/deauthorize")
-    public String stravaDauthorize(OAuth2AuthenticationToken authToken,@RequestParam(name = "eventId")String eventId, Model model) {
+    public String stravaDauthorize(OAuth2AuthenticationToken authToken, @RequestParam(name = "eventId") String eventId, Model model) {
 
 
         Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
@@ -398,8 +392,8 @@ public class HomeController {
         model.addAttribute("navbar", "events");
         Event event = eventService.findById(eventId);
         model.addAttribute("eventName", event.getName());
-        return "redirect:/events/"+eventId +"/participant";
-       // return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return "redirect:/events/" + eventId + "/participant";
+        // return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }
 

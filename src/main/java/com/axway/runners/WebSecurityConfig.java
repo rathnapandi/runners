@@ -39,6 +39,7 @@ public class WebSecurityConfig extends AadWebSecurityConfigurerAdapter {
             .antMatchers("/css/**").permitAll()
             .antMatchers("/js/**").permitAll()
             .antMatchers("/api/**").authenticated()
+            .antMatchers("/").authenticated()
             .antMatchers("/callback/**").permitAll()
             .antMatchers("/callback").permitAll()
             .antMatchers("/management/health").permitAll()

@@ -37,6 +37,9 @@ public class ParticipantService {
         return participantRepository.findParticipantsByEventId(eventId);
     }
 
+    public List<Participant> findParticipantsByEmailAAndEventId(String email, String eventId){
+        return participantRepository.findParticipantsByEmailAndEventId(email, eventId);
+    }
 
 
     public void deleteAll(){

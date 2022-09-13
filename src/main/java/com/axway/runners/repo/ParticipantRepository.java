@@ -12,7 +12,7 @@ public interface ParticipantRepository extends ElasticsearchRepository<Participa
     List<Participant> findByEmail(String email);
     List<Participant> findParticipantsByEventId(String eventId);
     //Participant findByEmailAndEventId(String email, String eventId);
-
+    List<Participant> findParticipantsByEmailAndEventId(String email, String eventId);
     @Query("select c from Contact c " +
         "where lower(c.firstName) like lower(concat('%', :searchTerm, '%')) " +
         "or lower(c.lastName) like lower(concat('%', :searchTerm, '%'))")
