@@ -78,6 +78,17 @@ public class HomeController {
 
     }
 
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("/help")
+    public String help(OAuth2AuthenticationToken authToken, Model model) {
+        User user = getUser(authToken);
+        model.addAttribute("user", user);
+        model.addAttribute("navbar", "help");
+        return "help";
+
+    }
+
     public User getUser(OAuth2AuthenticationToken authToken) {
         Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
         logger.debug("Azure attributes : {}", attributes);
