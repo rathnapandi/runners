@@ -1,5 +1,6 @@
 package com.axway.runners;
 
+import com.axway.runners.model.User;
 import com.axway.runners.service.UserService;
 import com.axway.runners.strava.OAuthToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +17,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.security.Principal;
 import java.util.Map;
 
 // https://stackoverflow.com/questions/19238715/how-to-set-an-accept-header-on-spring-resttemplate-request

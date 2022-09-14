@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>FitTogether</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <link rel="stylesheet" href="/css/bootstrap.css"/>
+  <script src="/js/jquery-3.6.1.min.js"></script>
+  <script src="/js/bootstrap.js"></script>
+  <style>
+    .list-inline-item {
+      margin-right: 25px;
+    }
+  </style>
+</head>
+<body>
+<div th:insert="header.html :: header"/>
+<div class="embed-responsive embed-responsive-16by9">
+  <iframe class="embed-responsive-item" src="http://fittogether.demo.axway.com:6080/goto/48975510-3069-11ed-984e-19c6ca2fd017%22" allowfullscreen></iframe>
+</div>
+<div th:insert="svg.html :: svg"/>
+<div th:insert="footer.html :: footer"/>
+</body>
+</html>

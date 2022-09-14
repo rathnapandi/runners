@@ -1,11 +1,8 @@
 package com.axway.runners.service;
 
-import com.axway.runners.Event;
+import com.axway.runners.model.Event;
 import com.axway.runners.repo.EventRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class EventService {

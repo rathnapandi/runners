@@ -1,6 +1,6 @@
 package com.axway.runners.service;
 
-import com.axway.runners.UnMatchedEventFeed;
+import com.axway.runners.model.UnMatchedEventFeed;
 import com.axway.runners.repo.UnMatchedEventFeedRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

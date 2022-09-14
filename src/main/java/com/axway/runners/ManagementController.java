@@ -1,5 +1,7 @@
 package com.axway.runners;
 
+import com.axway.runners.model.Event;
+import com.axway.runners.model.UnMatchedEventFeed;
 import com.axway.runners.service.EventService;
 import com.axway.runners.service.ParticipantService;
 import com.axway.runners.service.UnMatchedEventFeedService;

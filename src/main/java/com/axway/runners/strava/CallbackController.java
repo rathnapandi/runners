@@ -1,7 +1,10 @@
 package com.axway.runners.strava;
 
 
-import com.axway.runners.*;
+import com.axway.runners.AxwayClient;
+import com.axway.runners.model.UnMatchedEventFeed;
+import com.axway.runners.model.User;
+import com.axway.runners.model.Participant;
 import com.axway.runners.repo.UnMatchedEventFeedRepository;
 import com.axway.runners.service.EventService;
 import com.axway.runners.service.ParticipantService;
@@ -18,7 +21,6 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 public class CallbackController {
@@ -74,7 +76,6 @@ public class CallbackController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         List<Participant> participants = participantService.findByEmail(user.getEmail());
-
         if (objType.trim().equals("athlete") && aspectType.equals("create")) {
             axwayClient.postMessageToTeams(user, stravaAthlete);
             logger.info("Athlete Registration  Notification sent out to the Teams for the user : {} ", user.getFirstName() + " " + user.getLastName());
@@ -103,7 +104,7 @@ public class CallbackController {
                 Instant instant = Instant.ofEpochSecond(eventTime);
                 Date date = new Date();
                 date.setTime(instant.toEpochMilli());
-                feed.setEventTime(eventTime);
+                feed.setEventTime(Date.from(instant));
                 feed.setMessage(feed.getSenderName() + " completed the activity at: " + date);
                 feed.setTimeStamp(Long.toString(eventTime));
                 feed.setEventDateTime(date);

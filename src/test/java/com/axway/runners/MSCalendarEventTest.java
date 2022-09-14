@@ -5,6 +5,7 @@ package com.axway.runners;
 //
 //import java.util.Calendar;
 
+import com.axway.runners.model.Participant;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -68,6 +69,7 @@ DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
 
         participant.setFirstName("Rathna");
         participant.setLastName("Natarajan");
+        participant.setEventId("dUj1I4MBHEgOW7j5D5so");
 
         participant.setEmail("rnatarajan@axway.com");
 
@@ -81,7 +83,7 @@ DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
         calendar1.set(Calendar.DATE, 24);
         calendar1.set(Calendar.MILLISECOND, 1);
         //calendar.set(Calendar.AM_PM, Calendar.AM);
-        participant.setStartTime(calendar1.getTimeInMillis() + "");
+        participant.setStartTime(calendar1.getTime());
 
 
 
@@ -93,12 +95,12 @@ DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
         calendar1.set(Calendar.SECOND, 0);
         calendar1.set(Calendar.MILLISECOND, 0);
         calendar1.set(Calendar.DATE, 24);
-        participant.setEndTime(calendar1.getTimeInMillis()+"");
+        participant.setEndTime(calendar1.getTime());
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(Long.parseLong(participant.getStartTime()));
+        calendar.setTimeInMillis(participant.getStartTime().getTime());
         OffsetDateTime utcStartTime  = calendar.toInstant().atOffset(ZoneOffset.UTC);
 
-        calendar.setTimeInMillis(Long.parseLong(participant.getEndTime()));
+        calendar.setTimeInMillis(participant.getEndTime().getTime());
 
         OffsetDateTime utcEndTime  = calendar.toInstant().atOffset(ZoneOffset.UTC);
 

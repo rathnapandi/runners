@@ -1,5 +1,6 @@
 package com.axway.runners;
 
+import com.axway.runners.model.User;
 import com.axway.runners.service.UserService;
 import com.axway.runners.strava.OAuthToken;
 import org.slf4j.Logger;

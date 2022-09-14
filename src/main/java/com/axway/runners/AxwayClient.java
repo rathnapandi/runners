@@ -1,12 +1,13 @@
 package com.axway.runners;
 
+import com.axway.runners.model.Participant;
+import com.axway.runners.model.User;
 import com.axway.runners.strava.StravaAthlete;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -82,9 +83,9 @@ public class AxwayClient {
         logger.info(emailURL);
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(Long.parseLong(participant.getStartTime()));
+        calendar.setTime(participant.getStartTime());
         OffsetDateTime utcStartTime  = calendar.toInstant().atOffset(ZoneOffset.UTC);
-        calendar.setTimeInMillis(Long.parseLong(participant.getEndTime()));
+        calendar.setTime(participant.getEndTime());
         OffsetDateTime utcEndTime  = calendar.toInstant().atOffset(ZoneOffset.UTC);
         String msg = "Thank you " + participant.getFirstName() + " " + participant.getLastName() +
                 " for registering with FiTogether \\n\\nWe are very excited you signed up with us. We are looking forward to your participation with this challenge\\n\\n " +

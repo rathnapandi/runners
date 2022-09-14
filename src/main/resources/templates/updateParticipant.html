@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>FitTogether</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/css/tempusdominus-bootstrap-4.min.css"
+        integrity="sha256-XPTBwC3SBoWHSmKasAk01c08M6sIA5gF5+sRxqak2Qs=" crossorigin="anonymous"/>
+  <link rel="stylesheet" href="/css/bootstrap.css"/>
+  <script src="/js/jquery-3.6.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+          integrity="sha256-98vAGjEDGN79TjHkYWVD4s87rvWkdWLHPs5MC3FvFX4=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/js/bootstrap.min.js"
+          integrity="sha256-xaF9RpdtRxzwYMWg4ldJoyPWqyDPCRD0Cv7YEEe6Ie8=" crossorigin="anonymous"></script>
+  <script type="text/javascript"
+          src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+  <script type="text/javascript"
+          src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.21/moment-timezone-with-data-2012-2022.min.js"></script>
+
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/js/tempusdominus-bootstrap-4.min.js"
+    integrity="sha256-z0oKYg6xiLq3yJGsp/LsY9XykbweQlHl42jHv2XTBz4=" crossorigin="anonymous"></script>
+  <style>
+    .list-inline-item {
+      margin-right: 25px;
+    }
+  </style>
+  <script>
+  </script>
+</head>
+<body>
+<div th:insert="header.html :: header"/>
+<div class="span12 text-center">
+  <h4 class="text-center"><span class="placeholder col-12"
+                                th:text="'Axway Event - '+${eventName}"></span></h4>
+  <hr>
+</div>
+<div class="container my-5">
+  <h3>Update Registration</h3>
+  <div class="card">
+    <div class="card-body">
+      <div class="col-md-10">
+        <form action="#" th:action="@{'/events/'+ ${eventId} + '/update/participant/'+ ${participant.id}}" th:object="${participant}" method="post">
+          <input type="hidden" th:field="*{id}" id="id"/>
+          <input type="hidden" th:field="*{email}" id="email"/>
+          <input type="hidden" th:field="*{firstName}" id="firstName" />
+          <input type="hidden" th:field="*{lastName}" id="lastName" />
+          <input type="hidden" th:field="*{countryCode}" id="countryCode" />
+          <div class="form-group">
+            <label for="startTime">Start Time</label>
+            <div class="input-group">
+              <input type="text" class="form-control datetimepicker-input" data-target="#startTime" id="startTime" th:field="*{startTime}">
+              <span th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}" class="text-danger"></span>
+              <div class="input-group-append" data-target="#startTime" data-toggle="datetimepicker">
+                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="endTime">End Time</label>
+            <div class="input-group">
+              <input type="text" class="form-control datetimepicker-input" data-target="#endTime" id="endTime" th:field="*{endTime}">
+              <span th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}" class="text-danger"></span>
+              <div class="input-group-append" data-target="#endTime" data-toggle="datetimepicker">
+                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="type">Department</label>
+            <select id="type" class="form-control" th:field="*{type}">
+              <option th:selected="${type == 'R&D'}" value="R&D">R&D</option>
+              <option th:selected="${type == 'PSO & CSMs'}" value="PSO & CSMs">PSO & CSMs</option>
+              <option th:selected="${type == 'Global Support'}" value="Global Support">Global Support</option>
+              <option th:selected="${type == 'Sales & Presales'}" value="Sales & Presales">Sales & Presales</option>
+              <option th:selected="${type == 'Product Line'}" value="Product Line">Product Line</option>
+              <option th:selected="${type == 'People & Culture'}" value="People & Culture">People & Culture</option>
+              <option th:selected="${type == 'Marketing'}" value="Marketing">Marketing</option>
+              <option th:selected="${type == 'Legal'}"  value="Legal">Legal</option>
+              <option th:selected="${type == 'IT/IS'}" value="IT/IS">IT/IS</option>
+              <option th:selected="${type == 'Other'}" value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="note">Note</label>
+            <input type="text" class="form-control" placeholder="Optional note" id="note" th:field="*{note}">
+          </div>
+          <button type="submit" class="btn btn-primary">Update</button>
+          <a  th:href="@{'/events/'+ ${eventId} + '/participant'}" class="btn btn-warning">Cancel</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div th:insert="svg.html :: svg"/>
+<div th:insert="footer.html :: footer"/>
+</body>
+</html>

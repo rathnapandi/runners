@@ -18,7 +18,7 @@ public class Main {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.DATE, 06);
+        calendar.set(Calendar.DATE, 19);
         calendar.set(Calendar.MILLISECOND, 1);
         //calendar.set(Calendar.AM_PM, Calendar.AM);
 
@@ -26,18 +26,21 @@ public class Main {
 
         System.out.println(calendar.getTimeInMillis());
         System.out.println(calendar.getTime());
-
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        System.out.println(simpleDateFormat.format(calendar.getTime()));
 
         calendar = Calendar.getInstance();
         calendar.set(Calendar.MINUTE, 59);
         calendar.set(Calendar.HOUR_OF_DAY, 23);
         calendar.set(Calendar.SECOND, 59);
         calendar.set(Calendar.MILLISECOND, 999);
-       calendar.add(Calendar.DATE , 15);
+        calendar.set(Calendar.DATE, 19);
+        calendar.add(Calendar.DATE , 7);
        // calendar.set(Calendar.AM_PM, Calendar.PM);
 
         System.out.println(calendar.getTimeInMillis());
         System.out.println(calendar.getTime());
+        System.out.println(simpleDateFormat.format(calendar.getTime()));
 
 
        // System.out.println(new Date(Long.parseLong("1587736800001")));

@@ -14,14 +14,9 @@ import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWrite
 @EnableGlobalMethodSecurity(securedEnabled = true,
     prePostEnabled = true)
 @EnableWebSecurity
-
 public class WebSecurityConfig extends AadWebSecurityConfigurerAdapter {
     @Autowired
     private OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService;
-
-//    @Autowired
-//    private  CorsFilter corsFilter;
-
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -29,26 +24,22 @@ public class WebSecurityConfig extends AadWebSecurityConfigurerAdapter {
         super.configure(http);
         http
             .csrf().disable()
-            //.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-            //.and()
-            //.addFilterBefore(corsFilter, CsrfFilter.class)
             .exceptionHandling()
             .and()
             .headers()
-            // .contentSecurityPolicy("default-src 'self'; frame-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://storage.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:")
-            // .and()
             .referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)
             .and()
-            .frameOptions()
-            .deny()
+            .frameOptions().sameOrigin()
             .and()
             .authorizeRequests()
             .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .antMatchers("/app/**").permitAll()
             .antMatchers("/api/auth-info").permitAll()
             .antMatchers("/v2/api-docs").permitAll()
-            .antMatchers("/v2/api-docs").permitAll()
+            .antMatchers("/css/**").permitAll()
+            .antMatchers("/js/**").permitAll()
             .antMatchers("/api/**").authenticated()
+            .antMatchers("/").authenticated()
             .antMatchers("/callback/**").permitAll()
             .antMatchers("/callback").permitAll()
             .antMatchers("/management/health").permitAll()
@@ -58,7 +49,7 @@ public class WebSecurityConfig extends AadWebSecurityConfigurerAdapter {
             .antMatchers("/index.html").authenticated()
             .and()
             .oauth2Login()
-            .loginPage("/login.html").defaultSuccessUrl("/")
+            .defaultSuccessUrl("/")
             .userInfoEndpoint()
             .oidcUserService(oidcUserService);
     }

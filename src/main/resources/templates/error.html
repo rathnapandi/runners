@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>FitTogether</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <link rel="stylesheet" href="css/bootstrap.css"/>
+  <link rel="stylesheet" href="/css/fontawesome_all.css"/>
+  <script src="js/jquery-3.6.1.min.js"></script>
+  <script src="js/bootstrap.js"></script>
+  <style>
+    .list-inline-item {
+      margin-right: 25px;
+    }
+  </style>
+</head>
+<body>
+<div>
+  <header class="d-flex flex-wrap justify-content-between align-items-center py-3 mb-4 border-bottom">
+
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+      <img class="bi me-2" height="40" src="/img/logo.png" alt="Axway FitTogether">
+    </a>
+    <ul class="nav nav-pills">
+      <li class="nav-item"><span class="nav-link fw-semibold">
+        <span class="font-weight-bold">Unexpected Error</span></span></li>
+      <li class="nav-item">
+        <a href="/" th:if="${navbar == 'events'}" class="nav-link active" aria-current="page">Events</a>
+        <a href="/" th:if="${navbar != 'events'}" class="nav-link" aria-current="page">Events</a>
+      </li>
+      <!--    <li class="nav-item">-->
+      <!--      <a href="/participants" th:if="${navbar == 'participants'}" class="nav-link active">Participants</a>-->
+      <!--      <a href="/participants" th:if="${navbar != 'participants'}" class="nav-link">Participants</a>-->
+      <!--    </li>-->
+      <li class="nav-item">
+        <a href="/leaderboard" th:if="${navbar == 'leaderboard'}" class="nav-link active" aria-current="page">LeaderBoard</a>
+        <a href="/leaderboard" th:if="${navbar != 'leaderboard'}" class="nav-link" aria-current="page">LeaderBoard</a>
+      </li>
+      <li class="nav-item"><a class="nav-link" target="_blank" rel="noopener noreferrer"
+                              href="https://teams.microsoft.com/l/channel/19%3a83d56744389742bb8a1f544e1c4d024f%40thread.tacv2/General?groupId=22fa248e-04a6-4727-825e-5c31b8eb8234&tenantId=300f59df-78e6-436f-9b27-b64973e34f7d">Support</a>
+      </li>
+      <li class="nav-item"><a href="/logout" class="nav-link">Logout</a></li>
+    </ul>
+  </header>
+</div>
+<div class="span12 text-center">
+  <div class="alert alert-danger contain" role="alert">
+    <h4 class="alert-heading">Something went wrong!</h4>
+    <p>We are working on it</p>
+    <hr>
+    <p class="mb-0"><a href="/"><i class="fa-solid fa-house"></i> Go Home</a></p>
+  </div>
+</div>
+<div th:insert="svg.html :: svg"/>
+<div th:insert="footer.html :: footer"/>
+</body>
+</html>
