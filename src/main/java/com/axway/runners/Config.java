@@ -3,6 +3,7 @@ package com.axway.runners;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +19,9 @@ import java.util.Arrays;
 public class Config {
 
     private static Logger log =  LoggerFactory.getLogger(   Config.class);
+
+    @Value("${kibana.url}")
+    private String kibanaHost;
 
     @Bean
     public CorsFilter corsFilter() {
@@ -44,6 +48,11 @@ public class Config {
                 .setConnectTimeout(Duration.ofSeconds(1))
                 .errorHandler(new APIClientErrorHandler())
                 .build();
+    }
+
+    @Bean
+    public String  getKibanaHost(){
+        return kibanaHost;
     }
 
 }

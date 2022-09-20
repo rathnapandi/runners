@@ -38,6 +38,9 @@ public class HomeController {
 
 
     @Autowired
+    private String kibanaHost;
+
+    @Autowired
     private UserService userService;
 
     @Autowired
@@ -171,10 +174,7 @@ public class HomeController {
     public String addParticipant(OAuth2AuthenticationToken authToken, @PathVariable String eventId, @Valid Participant participant, BindingResult result, Model model) {
 
         User user = getUser(authToken);
-//        model.addAttribute("eventId", eventId);
-//        model.addAttribute("navbar", "events");
         Event event = eventService.findById(eventId);
-//        model.addAttribute("eventName", event.getName());
         if (result.hasErrors()) {
             model.addAttribute("eventId", eventId);
             model.addAttribute("navbar", "events");
@@ -182,19 +182,13 @@ public class HomeController {
             model.addAttribute("user", user);
             return "addParticipant";
         }
-//        axwayClient.sendEmail(participant);
-//        return savedParticipant;
         User existingUser = userService.getUser(user.getEmail());
         if (existingUser == null) {
 
         }
-//        model.addAttribute("user", existingUser);
         participant.setEventId(eventId);
         participant.setEventName(event.getName());
         Participant savedParticipant = participantService.saveParticipant(participant);
-//        List<Participant> participants = participantService.findParticipantsByEventId(eventId);
-//        model.addAttribute("participants", participants);
-        // model.addAttribute("navbar", "participants");
         return "redirect:/events/" + eventId + "/participant";
     }
 
@@ -253,8 +247,29 @@ public class HomeController {
     public String getleaderboard(OAuth2AuthenticationToken authToken, Model model) {
         User user = getUser(authToken);
         model.addAttribute("user", user);
+        model.addAttribute("kibanaUrl", "https://fittogether.demo.axway.com:6080/app/dashboards#/view/69205bc0-3397-11ed-984e-19c6ca2fd017?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3A'2022-09-19T07%3A00%3A00.000Z'%2Cto%3Anow))");
         model.addAttribute("navbar", "leaderboard");
         return "leaderboard";
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping("/activities")
+    public String getActivities(OAuth2AuthenticationToken authToken, Model model) {
+        User user = getUser(authToken);
+        model.addAttribute("user", user);
+        model.addAttribute("kibanaUrl", "https://fittogether.demo.axway.com:6080/app/dashboards#/view/f09fa6e0-3456-11ed-aaa9-61ce7bc08131?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3A'2022-09-19T07%3A00%3A00.000Z'%2Cto%3Anow))");
+        model.addAttribute("navbar", "leaderboard");
+        return "activities";
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping("/dashboard")
+    public String getDashboard(OAuth2AuthenticationToken authToken, Model model) {
+        User user = getUser(authToken);
+        model.addAttribute("user", user);
+        model.addAttribute("kibanaUrl", "https://fittogether.demo.axway.com:6080/app/dashboards#/view/842b00f0-348c-11ed-aaa9-61ce7bc08131?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3A'2022-09-19T07%3A00%3A00.000Z'%2Cto%3Anow))");
+        model.addAttribute("navbar", "leaderboard");
+        return "dashboard";
     }
 
 

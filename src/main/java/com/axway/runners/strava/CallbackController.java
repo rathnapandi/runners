@@ -130,10 +130,12 @@ public class CallbackController {
     }
 
     private  Map<String, String>  updateActivities(UnMatchedEventFeed feed, User user, long objectID){
+
         Map<String, String> activityDetail = stravaClient.getActivities(user, objectID);
         if( activityDetail == null){
             return null;
         }
+        logger.info("Distance : {} , Moving Time {}", activityDetail.get("distance"), activityDetail.get("moving_time"));
         feed.setSenderName(user.getFirstName() + " " + user.getLastName());
         feed.setActivityId(Long.toString(objectID));
         feed.setDistance(null == activityDetail.get("distance") ? 0 : Float.parseFloat(activityDetail.get("distance")) / 1000);

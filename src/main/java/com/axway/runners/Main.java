@@ -35,7 +35,7 @@ public class Main {
         calendar.set(Calendar.SECOND, 59);
         calendar.set(Calendar.MILLISECOND, 999);
         calendar.set(Calendar.DATE, 19);
-        calendar.add(Calendar.DATE , 7);
+        calendar.add(Calendar.DATE , 6);
        // calendar.set(Calendar.AM_PM, Calendar.PM);
 
         System.out.println(calendar.getTimeInMillis());

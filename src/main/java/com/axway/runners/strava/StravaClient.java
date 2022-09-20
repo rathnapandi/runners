@@ -134,10 +134,8 @@ public class StravaClient {
                 DocumentContext documentContext = JsonPath.parse(responseEntity.getBody());
                 String name = documentContext.read("name", String.class);
                 String distance = documentContext.read("distance", String.class);
-
                 String type = documentContext.read("type", String.class);
                 String locationcountry = documentContext.read("location_country", String.class);
-
                 String movingtime = documentContext.read("moving_time", String.class);
                 responseMap.put("name", name);
                 responseMap.put("distance", distance);

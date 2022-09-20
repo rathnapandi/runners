@@ -1,6 +1,7 @@
 package com.axway.runners;
 
 import com.axway.runners.model.Event;
+import com.axway.runners.model.Participant;
 import com.axway.runners.model.UnMatchedEventFeed;
 import com.axway.runners.service.EventService;
 import com.axway.runners.service.ParticipantService;
@@ -67,6 +68,29 @@ public class ManagementController {
         if (host.contains("localhost")) {
             participantService.deleteAll();
             return new ResponseEntity<Event>(HttpStatus.ACCEPTED);
+        }
+        return new ResponseEntity<Event>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @PutMapping("/management/participants/{id}")
+    public ResponseEntity<?> updateParticipant(@RequestHeader("Host") String host, @PathVariable String id, @RequestBody Participant participant) {
+
+        if (host.contains("localhost")) {
+            Participant existingParticipant = participantService.findById(id);
+            existingParticipant.setType(participant.getType());
+            participantService.saveParticipant(existingParticipant);
+            return new ResponseEntity<>(existingParticipant, HttpStatus.OK);
+        }
+        return new ResponseEntity<Event>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @PostMapping("/management/participants")
+    public ResponseEntity<?> createParticipant(@RequestHeader("Host") String host, @RequestBody Participant participant) {
+
+        if (host.contains("localhost")) {
+
+            participantService.saveParticipant(participant);
+            return new ResponseEntity<>(HttpStatus.CREATED);
         }
         return new ResponseEntity<Event>(HttpStatus.EXPECTATION_FAILED);
     }
