@@ -1,6 +1,8 @@
 package com.axway.runners.model;
 
 import lombok.Data;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.util.Date;
 
@@ -15,7 +17,9 @@ public class Feed {
     private float duration;
     private String description;
     private String country;
+    @Field(type= FieldType.Date)
     private Date eventTime;
+    @Field(type= FieldType.Date)
     private Date eventDateTime;
     private String type;
 }

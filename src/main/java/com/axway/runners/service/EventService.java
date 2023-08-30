@@ -4,12 +4,13 @@ import com.axway.runners.model.Event;
 import com.axway.runners.repo.EventRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class EventService {
 
-    private EventRepository eventRepository;
+    private final EventRepository eventRepository;
 
-    // @Autowired
     public EventService(EventRepository eventRepository){
         this.eventRepository = eventRepository;
     }
@@ -21,12 +22,12 @@ public class EventService {
 
 
     public Event findById(String id){
-        return eventRepository.findById(id).get();
+        Optional<Event> event = eventRepository.findById(id);
+        return event.orElse(null);
     }
 
     public Iterable<Event> findAll(){
-        Iterable<Event> events = eventRepository.findAll();
-        return events;
+        return eventRepository.findAll();
     }
 
     public void deleteAll(){

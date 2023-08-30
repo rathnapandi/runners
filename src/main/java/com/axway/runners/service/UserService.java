@@ -4,10 +4,12 @@ import com.axway.runners.model.User;
 import com.axway.runners.repo.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public UserService(UserRepository userRepository){
         this.userRepository = userRepository;
@@ -21,10 +23,6 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    public User findById(String id){
-        return userRepository.findById(id).get();
-    }
-
     public User findByAthleteId(String athleteId){
         return userRepository.findByAthleteId(athleteId);
     }
@@ -34,8 +32,9 @@ public class UserService {
     }
 
     public void deleteUser(String id){
-        User user = userRepository.findById(id).get();
-        userRepository.delete(user);
+
+        Optional<User> user = userRepository.findById(id);
+        user.ifPresent(userRepository::delete);
     }
 
 

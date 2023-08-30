@@ -13,6 +13,8 @@ import java.util.concurrent.Executor;
 public class RunnersApplication {
 
 	public static void main(String[] args) {
+        System.setProperty("javax.net.ssl.trustStore","/Users/rnatarajan/IdeaProjects/runners/myTrustStore");
+        System.setProperty("javax.net.ssl.trustStorePassword","changeme");
 		SpringApplication.run(RunnersApplication.class, args);
 	}
 
@@ -23,7 +25,7 @@ public class RunnersApplication {
 		executor.setCorePoolSize(2);
 		executor.setMaxPoolSize(5);
 		executor.setQueueCapacity(500);
-		executor.setThreadNamePrefix("APICentral-");
+		executor.setThreadNamePrefix("runners-");
 		executor.initialize();
 		return executor;
 	}

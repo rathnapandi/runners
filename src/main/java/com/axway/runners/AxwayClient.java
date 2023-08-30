@@ -26,7 +26,7 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class AxwayClient {
 
-    private static Logger logger = LoggerFactory.getLogger(AxwayClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(AxwayClient.class);
 
 
     @Autowired
@@ -42,7 +42,7 @@ public class AxwayClient {
     @Value("${ib.notify.email.url}")
     private String emailURL;
 
-    private  DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
+    private final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
 
     @Async
     public CompletableFuture<Void> postMessageToTeams(User user, String msg, StravaAthlete stravaAthlete, String dateStr, Map<String, String> activityDetail) {
@@ -95,21 +95,20 @@ public class AxwayClient {
                 + "\\n\\nEvent Name: " + participant.getEventName() + "\\n\\nCountry: "
                 + participant.getCountryCode() + "\\n\\n\\nSave the date!\\n\\n\\n#TogetherWeCan & #TogetherWeWill";
 
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("{\"from\":\"axwaydemo.dss@gmail.com\",");
-        stringBuilder.append("\"to\"");
-        stringBuilder.append(":\"");
-        stringBuilder.append(participant.getEmail());
-        stringBuilder.append("\",");
-        stringBuilder.append("\"bcc\":\"axwaydemo.dss@gmail.com\",");
-        stringBuilder.append("\"subject\": \"Welcome to "+ participant.getEventName() +"!\",");
-        stringBuilder.append("\"data\":\"");
-        stringBuilder.append(msg);
-        stringBuilder.append("\"}");
+       String stringBuilder = "{\"from\":\"axwaydemo.dss@gmail.com\"," +
+           "\"to\"" +
+           ":\"" +
+           participant.getEmail() +
+           "\"," +
+           "\"bcc\":\"axwaydemo.dss@gmail.com\"," +
+           "\"subject\": \"Welcome to " + participant.getEventName() + "!\"," +
+           "\"data\":\"" +
+           msg +
+           "\"}";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-        map.add("body", stringBuilder.toString());
+        map.add("body", stringBuilder);
 
         String ical = "BEGIN:VCALENDAR\n" +
                 "VERSION:2.0\n" +
@@ -145,17 +144,14 @@ public class AxwayClient {
         fileMap.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
         HttpEntity<byte[]> fileEntity = new HttpEntity<>(ical.getBytes(), fileMap);
         map.add("file", fileEntity);
-        HttpEntity requestEntity = new HttpEntity(map, headers);
+        HttpEntity<?> requestEntity = new HttpEntity<>(map, headers);
         ResponseEntity<String> response = restTemplateAxway.postForEntity(emailURL,requestEntity, String.class);
         int statusCode = response.getStatusCodeValue();
-        logger.info("Status code from IB : ", statusCode);
+        logger.info("Status code from IB : {}", statusCode);
         if(statusCode == 200) {
             logger.info("Email Successfully sent to user  : {}", participant.getEmail());
         }
        return CompletableFuture.completedFuture(null);
-        //return null;
-
-
     }
 
     private void postMessage(String url, Map<String, Object> map ,  HttpHeaders headers ){
@@ -163,7 +159,7 @@ public class AxwayClient {
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, headers);
             ResponseEntity<String> response = restTemplateAxway.postForEntity(url, entity, String.class);
             int statusCode = response.getStatusCodeValue();
-            logger.info("Status code from IB : ", statusCode);
+            logger.info("Status code from IB : {}", statusCode);
             if (statusCode == 200 || statusCode == 201) {
                 logger.info("Response from IB : {}", response.getBody());
             }

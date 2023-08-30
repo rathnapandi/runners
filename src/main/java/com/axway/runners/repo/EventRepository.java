@@ -7,8 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EventRepository extends ElasticsearchRepository<Event, String> {
-   // public Event findByParticipants(String email);
-
     @Query("{\"bool\": {\"must\": [{\"match\": {\"feeds.activityId\": \"?0\"}}]}}")
     Event findByFeedsUsingCustomQuery(String activityId);
 }

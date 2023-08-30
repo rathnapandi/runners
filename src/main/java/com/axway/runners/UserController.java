@@ -5,7 +5,6 @@ import com.axway.runners.service.UserService;
 import com.axway.runners.strava.OAuthToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,10 +15,13 @@ import java.util.Map;
 @RequestMapping("/api/users")
 public class UserController {
 
-    private static Logger logger = LoggerFactory.getLogger(UserController.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService){
+        this.userService = userService;
+    }
 
 //    @PostMapping
 //

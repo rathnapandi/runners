@@ -2,11 +2,10 @@ package com.axway.runners.strava;
 
 
 import com.axway.runners.AxwayClient;
+import com.axway.runners.model.Participant;
 import com.axway.runners.model.UnMatchedEventFeed;
 import com.axway.runners.model.User;
-import com.axway.runners.model.Participant;
 import com.axway.runners.repo.UnMatchedEventFeedRepository;
-import com.axway.runners.service.EventService;
 import com.axway.runners.service.ParticipantService;
 import com.axway.runners.service.UserService;
 import org.slf4j.Logger;
@@ -25,7 +24,7 @@ import java.util.Map;
 @RestController
 public class CallbackController {
 
-    private static Logger logger = LoggerFactory.getLogger(CallbackController.class);
+    private static final Logger logger = LoggerFactory.getLogger(CallbackController.class);
 
     @Autowired
     private UserService userService;
@@ -35,9 +34,6 @@ public class CallbackController {
 
     @Autowired
     private UnMatchedEventFeedRepository unMatchedEventFeedRepository;
-
-    @Autowired
-    private EventService eventService;
 
     @Value("${strava.client.key}")
     private String stravaKey;

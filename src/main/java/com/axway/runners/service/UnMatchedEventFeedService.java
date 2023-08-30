@@ -2,14 +2,16 @@ package com.axway.runners.service;
 
 import com.axway.runners.model.UnMatchedEventFeed;
 import com.axway.runners.repo.UnMatchedEventFeedRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UnMatchedEventFeedService {
 
-    @Autowired
-    private UnMatchedEventFeedRepository unMatchedEventFeedRepository;
+    private final UnMatchedEventFeedRepository unMatchedEventFeedRepository;
+
+    public UnMatchedEventFeedService(UnMatchedEventFeedRepository unMatchedEventFeedRepository){
+        this.unMatchedEventFeedRepository = unMatchedEventFeedRepository;
+    }
 
     public UnMatchedEventFeed save(UnMatchedEventFeed unMatchedEventFeed){
         return unMatchedEventFeedRepository.save(unMatchedEventFeed);
