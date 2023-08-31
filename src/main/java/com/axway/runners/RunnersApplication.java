@@ -13,8 +13,6 @@ import java.util.concurrent.Executor;
 public class RunnersApplication {
 
 	public static void main(String[] args) {
-        System.setProperty("javax.net.ssl.trustStore","/Users/rnatarajan/IdeaProjects/runners/myTrustStore");
-        System.setProperty("javax.net.ssl.trustStorePassword","changeme");
 		SpringApplication.run(RunnersApplication.class, args);
 	}
 
