@@ -42,7 +42,7 @@ public class ElasticConfiguration extends  AbstractElasticsearchConfiguration {
 
         String profile = environment.getProperty("spring.profiles.active");
 
-        ClientConfiguration clientConfiguration = null;
+        ClientConfiguration clientConfiguration;
         if( profile.equals("dev")){
             clientConfiguration = ClientConfiguration.builder().connectedTo(elasticsearchHost).usingSsl().withBasicAuth(username, password).build();
         }else{

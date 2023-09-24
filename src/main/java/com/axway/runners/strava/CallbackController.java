@@ -127,7 +127,7 @@ public class CallbackController {
 
     private  Map<String, String>  updateActivities(UnMatchedEventFeed feed, User user, long objectID){
 
-        Map<String, String> activityDetail = stravaClient.getActivities(user, objectID);
+        Map<String, String> activityDetail = stravaClient.getActivities(user, objectID+"");
         if( activityDetail == null){
             return null;
         }

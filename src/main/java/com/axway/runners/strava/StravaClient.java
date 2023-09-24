@@ -3,6 +3,9 @@ package com.axway.runners.strava;
 import com.axway.runners.APIClientExcepton;
 import com.axway.runners.model.User;
 import com.axway.runners.service.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
@@ -20,6 +23,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -36,6 +40,7 @@ public class StravaClient {
     private UserService userService;
 
     private static Logger logger = LoggerFactory.getLogger(StravaClient.class);
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     public String getAthlete(User user) {
 
@@ -63,10 +68,10 @@ public class StravaClient {
         URI uri = UriComponentsBuilder.fromUriString("https://www.strava.com/oauth/deauthorize").queryParam("access_token", user.getOAuthToken().getAccess_token()).build().toUri();
         //refreshToken()
         HttpEntity<String> request =
-                new HttpEntity<String>("");
+            new HttpEntity<String>("");
         //HttpEntity requestGet = new HttpEntity();
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(uri, request, String.class);
-        if(responseEntity.getStatusCodeValue() == 200){
+        if (responseEntity.getStatusCodeValue() == 200) {
             user.setVersion(System.currentTimeMillis());
             userService.save(user);
             user.setOAuthToken(null);
@@ -74,7 +79,7 @@ public class StravaClient {
         logger.info("DeAuthorize response : {}", responseEntity.getBody());
     }
 
-    public void refreshToken(User user, HttpHeaders httpHeaders){
+    public void refreshToken(User user, HttpHeaders httpHeaders) {
         OAuthToken oAuthToken = user.getOAuthToken();
 
         long expiry_at = oAuthToken.getExpires_at();
@@ -110,46 +115,70 @@ public class StravaClient {
         postParameters.add("grant_type", "refresh_token");
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(
-                postParameters, headers);
+            postParameters, headers);
         ResponseEntity<OAuthToken> token = restTemplate.exchange(stravaOauthClientConfig.getToken_uri(), HttpMethod.POST, request, OAuthToken.class);
 
         return token.getBody();
     }
 
 
-    public Map<String, String> getActivities(User user, long id) {
+    public Map<String, String> getActivities(User user, String id) {
         try {
-           // HttpHeaders headers = setHeader(oAuthToken, email);
+            // HttpHeaders headers = setHeader(oAuthToken, email);
             HttpHeaders headers = new HttpHeaders();
             refreshToken(user, headers);
             HttpEntity requestGet = new HttpEntity(headers);
-            URI uri = UriComponentsBuilder.fromUriString("https://www.strava.com/api/v3/activities/"+id).build().toUri();
-            logger.info("Strava uri : {}", uri.toString());
+            URI uri = UriComponentsBuilder.fromUriString("https://www.strava.com/api/v3/activities/" + id).build().toUri();
+            logger.info("Strava uri : {}", uri);
 
             ResponseEntity<String> responseEntity = restTemplate.exchange(uri, HttpMethod.GET, requestGet, String.class);
             int statusCode = responseEntity.getStatusCodeValue();
             logger.info("Get Activities Response code : {}", statusCode);
             if (statusCode == 200) {
-                Map<String, String > responseMap = new HashMap<>();
+                Map<String, String> responseMap = new HashMap<>();
                 DocumentContext documentContext = JsonPath.parse(responseEntity.getBody());
                 String name = documentContext.read("name", String.class);
                 String distance = documentContext.read("distance", String.class);
                 String type = documentContext.read("type", String.class);
-                String locationcountry = documentContext.read("location_country", String.class);
-                String movingtime = documentContext.read("moving_time", String.class);
+                String locationCountry = documentContext.read("location_country", String.class);
+                String movingTime = documentContext.read("moving_time", String.class);
                 responseMap.put("name", name);
                 responseMap.put("distance", distance);
                 responseMap.put("type", type);
-                responseMap.put("location_country", locationcountry);
-                responseMap.put("moving_time", movingtime);
+                responseMap.put("location_country", locationCountry);
+                responseMap.put("moving_time", movingTime);
                 return responseMap;
             }
-        } catch (APIClientExcepton  | PathNotFoundException e) {
+        } catch (APIClientExcepton | PathNotFoundException e) {
             logger.error("Error from strava : {}", e.getMessage());
             return null;
         }
         return null;
 
+    }
+
+    public List<StravaActivity> getActivitiesByDate(User user, long startDate, long endDate) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            refreshToken(user, headers);
+            HttpEntity requestGet = new HttpEntity(headers);
+            URI uri = UriComponentsBuilder.fromUriString("https://www.strava.com/api/v3/athlete/activities").
+                queryParam("before", startDate).queryParam("after", endDate)
+                .queryParam("per_page", 100).build().toUri();
+            logger.info("Strava uri : {}", uri);
+
+            ResponseEntity<String> responseEntity = restTemplate.exchange(uri, HttpMethod.GET, requestGet, String.class);
+            int statusCode = responseEntity.getStatusCodeValue();
+            logger.info("Get Activities  by date Response code : {}", statusCode);
+            if (statusCode == 200) {
+                return objectMapper.readValue(responseEntity.getBody(), new TypeReference<List<StravaActivity>>() {
+                });
+
+            }
+        } catch (APIClientExcepton | PathNotFoundException | JsonProcessingException e) {
+            logger.error("Error processing strava activities", e);
+        }
+        return null;
     }
 
     public boolean createSubscription(String uniqueKey) {
@@ -164,7 +193,7 @@ public class StravaClient {
         postParameters.add("callback_url", stravaOauthClientConfig.getCallback_url());
         postParameters.add("verify_token", uniqueKey);
         HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(
-                postParameters, headers);
+            postParameters, headers);
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
         int statusCode = response.getStatusCodeValue();
         if (statusCode == 200) {
@@ -178,7 +207,7 @@ public class StravaClient {
     public boolean getSubscription() {
         String url = "https://www.strava.com/api/v3/push_subscriptions";
         URI uri = UriComponentsBuilder.fromUriString(url).queryParam("client_id", stravaOauthClientConfig.getClient_id())
-                .queryParam("client_secret", stravaOauthClientConfig.getClient_secret()).build().toUri();
+            .queryParam("client_secret", stravaOauthClientConfig.getClient_secret()).build().toUri();
         try {
             ResponseEntity<String> response = restTemplate.getForEntity(uri, String.class);
             int statusCode = response.getStatusCodeValue();
@@ -208,7 +237,7 @@ public class StravaClient {
 
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(
-                postParameters, headers);
+            postParameters, headers);
         ResponseEntity<OAuthToken> token = restTemplate.exchange(stravaOauthClientConfig.getToken_uri(), HttpMethod.POST, request, OAuthToken.class);
         return token;
 
