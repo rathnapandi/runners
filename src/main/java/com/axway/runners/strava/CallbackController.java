@@ -137,7 +137,7 @@ public class CallbackController {
         feed.setDistance(null == activityDetail.get("distance") ? 0 : Float.parseFloat(activityDetail.get("distance")) / 1000);
         feed.setDuration(null == activityDetail.get("moving_time") ? 0 : Float.parseFloat(activityDetail.get("moving_time")) / 60);
         feed.setDescription(null == activityDetail.get("name") ? "Untitled" : activityDetail.get("name"));
-        feed.setCountry(null == activityDetail.get("location_country") ? "US" : activityDetail.get("location_country"));
+        feed.setCountry(null == activityDetail.get("location_country") ? user.getCountryCode() : activityDetail.get("location_country"));
         feed.setType(null == activityDetail.get("type") ? "" : activityDetail.get("type"));
         return activityDetail;
     }
