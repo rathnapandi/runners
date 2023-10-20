@@ -13,8 +13,6 @@ import org.springframework.data.convert.WritingConverter;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.RestClients;
 import org.springframework.data.elasticsearch.config.AbstractElasticsearchConfiguration;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchCustomConversions;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
@@ -44,7 +42,7 @@ public class ElasticConfiguration extends  AbstractElasticsearchConfiguration {
 
         String profile = environment.getProperty("spring.profiles.active");
 
-        ClientConfiguration clientConfiguration = null;
+        ClientConfiguration clientConfiguration;
         if( profile.equals("dev")){
             clientConfiguration = ClientConfiguration.builder().connectedTo(elasticsearchHost).usingSsl().withBasicAuth(username, password).build();
         }else{

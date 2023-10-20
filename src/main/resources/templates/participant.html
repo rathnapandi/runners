@@ -34,14 +34,17 @@
           <a th:href="@{'/events/'+ ${eventId} + '/add/participant/page'}" class="nav-link disabled" th:if="${not #lists.isEmpty(participantsByEmail)}"><i class="fa fa-user-plus">Register</i></a>
         </li>
         <li class="nav-item">
-          <a th:href="@{'/strava/authz?eventId='+ ${eventId}}" th:if="${user.athleteId == null}" class="nav-link"><i class="fa-brands fa-strava"></i>Connect to
-            Strava</i></a>
-          <a th:href="@{'/strava/authz?eventId='+ ${eventId}}" th:if="${user.athleteId != null}" class="nav-link disabled"><i class="fa-brands fa-strava"></i>Connect to
-            Strava</i></a>
+          <a th:href="@{'/strava/authz?eventId='+ ${eventId}}" th:if="${user.athleteId == null}" class="nav-link"><i class="fa-brands fa-strava"></i>Connect to Strava</i></a>
+<!--          <a th:href="@{'/strava/authz?eventId='+ ${eventId}}" th:if="${user.athleteId != null}" class="nav-link disabled"><i class="fa-brands fa-strava"></i>Connect to-->
+<!--            Strava</i></a>-->
+
         </li>
         <li class="nav-item">
-          <a th:href="@{'/strava/deauthorize?eventId='+ ${eventId}}" th:if="${user.athleteId == null}" class="nav-link disabled"><i class="fa-brands fa-strava"></i>Disconnect Strava</i></a>
+<!--          <a th:href="@{'/strava/deauthorize?eventId='+ ${eventId}}" th:if="${user.athleteId == null}" class="nav-link disabled"><i class="fa-brands fa-strava"></i>Disconnect Strava</i></a>-->
           <a th:href="@{'/strava/deauthorize?eventId='+ ${eventId}}" th:if="${user.athleteId != null}" class="nav-link"><i class="fa-brands fa-strava"></i>Disconnect Strava</i></a>
+        </li>
+        <li class="nav-item">
+          <a th:href="@{'/strava/sync/page?eventId='+ ${eventId}}" th:if="${user.athleteId != null}" class="nav-link"><i class="fa-brands fa-strava"></i>Sync Strava</i></a>
         </li>
       </ul>
     </div>
@@ -94,5 +97,4 @@
 <div th:insert="svg.html :: svg"/>
 <div th:insert="footer.html :: footer"/>
 </body>
-
 </html>

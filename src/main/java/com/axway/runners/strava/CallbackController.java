@@ -2,11 +2,10 @@ package com.axway.runners.strava;
 
 
 import com.axway.runners.AxwayClient;
+import com.axway.runners.model.Participant;
 import com.axway.runners.model.UnMatchedEventFeed;
 import com.axway.runners.model.User;
-import com.axway.runners.model.Participant;
 import com.axway.runners.repo.UnMatchedEventFeedRepository;
-import com.axway.runners.service.EventService;
 import com.axway.runners.service.ParticipantService;
 import com.axway.runners.service.UserService;
 import org.slf4j.Logger;
@@ -25,7 +24,7 @@ import java.util.Map;
 @RestController
 public class CallbackController {
 
-    private static Logger logger = LoggerFactory.getLogger(CallbackController.class);
+    private static final Logger logger = LoggerFactory.getLogger(CallbackController.class);
 
     @Autowired
     private UserService userService;
@@ -35,9 +34,6 @@ public class CallbackController {
 
     @Autowired
     private UnMatchedEventFeedRepository unMatchedEventFeedRepository;
-
-    @Autowired
-    private EventService eventService;
 
     @Value("${strava.client.key}")
     private String stravaKey;
@@ -131,7 +127,7 @@ public class CallbackController {
 
     private  Map<String, String>  updateActivities(UnMatchedEventFeed feed, User user, long objectID){
 
-        Map<String, String> activityDetail = stravaClient.getActivities(user, objectID);
+        Map<String, String> activityDetail = stravaClient.getActivities(user, objectID+"");
         if( activityDetail == null){
             return null;
         }
@@ -141,7 +137,7 @@ public class CallbackController {
         feed.setDistance(null == activityDetail.get("distance") ? 0 : Float.parseFloat(activityDetail.get("distance")) / 1000);
         feed.setDuration(null == activityDetail.get("moving_time") ? 0 : Float.parseFloat(activityDetail.get("moving_time")) / 60);
         feed.setDescription(null == activityDetail.get("name") ? "Untitled" : activityDetail.get("name"));
-        feed.setCountry(null == activityDetail.get("location_country") ? "US" : activityDetail.get("location_country"));
+        feed.setCountry(null == activityDetail.get("location_country") ? user.getCountryCode() : activityDetail.get("location_country"));
         feed.setType(null == activityDetail.get("type") ? "" : activityDetail.get("type"));
         return activityDetail;
     }

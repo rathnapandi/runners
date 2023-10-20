@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>FitTogether</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <link rel="stylesheet" href="/css/bootstrap.css"/>
+  <script src="/js/jquery-3.6.1.min.js"></script>
+  <script src="/js/popper.min.js"></script>
+  <script src="/js/bootstrap.js"></script>
+  <style>
+    .list-inline-item {
+      margin-right: 25px;
+    }
+  </style>
+</head>
+<body>
+<div th:insert="header.html :: header"/>
+
+<div class="span12 text-center">
+  <h4 class="text-center"><span class="placeholder col-12"
+                                th:text="'Axway Event - '+${event.name}"></span></h4>
+  <hr>
+</div>
+
+
+<div class="container my-5">
+
+  <div class="card">
+    <div class="card-body">
+      <div class="col-md-10">
+        <form action="#" th:action="@{'/strava/sync/'+ ${event.id} +'/submit'}" method="post">
+          <table class="table">
+            <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Activity Name</th>
+              <th scope="col">Activity Id</th>
+              <th scope="col">Type</th>
+              <th scope="col">Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="activity : ${activities}">
+              <td>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="activities" th:value="${activity.id}"
+                         name="activities">
+                </div>
+              </td>
+              <td th:text="${activity.name}"></td>
+              <td th:text="${activity.id}"></td>
+              <td th:text="${activity.type}"></td>
+              <td th:text="${activity.start_date}"></td>
+            </tr>
+            </tbody>
+          </table>
+          <button type="submit" class="btn btn-primary">Sync</button>
+          <a th:href="@{'/events/'+ ${event.id} + '/participant'}" class="btn btn-warning">Cancel</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div th:insert="svg.html :: svg"/>
+<div th:insert="footer.html :: footer"/>
+</body>
+</html>

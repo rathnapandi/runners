@@ -5,6 +5,8 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.util.Date;
 
@@ -20,7 +22,9 @@ public class Participant {
     private String eventName;
     private String eventId;
     private String countryCode;
+    @Field(type= FieldType.Date)
     private Date startTime;
+    @Field(type= FieldType.Date)
     private Date endTime;
     private String note;
     private String type;

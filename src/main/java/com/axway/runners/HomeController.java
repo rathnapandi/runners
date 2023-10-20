@@ -2,13 +2,13 @@ package com.axway.runners;
 
 import com.axway.runners.model.Event;
 import com.axway.runners.model.Participant;
+import com.axway.runners.model.UnMatchedEventFeed;
 import com.axway.runners.model.User;
+import com.axway.runners.repo.UnMatchedEventFeedRepository;
 import com.axway.runners.service.EventService;
 import com.axway.runners.service.ParticipantService;
 import com.axway.runners.service.UserService;
-import com.axway.runners.strava.OAuthToken;
-import com.axway.runners.strava.StravaClient;
-import com.axway.runners.strava.StravaOauthClientConfig;
+import com.axway.runners.strava.*;
 import com.azure.core.annotation.Delete;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +26,9 @@ import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.time.Instant;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -57,6 +60,10 @@ public class HomeController {
 
     @Autowired
     private ParticipantService participantService;
+
+
+    @Autowired
+    private UnMatchedEventFeedRepository unMatchedEventFeedRepository;
 
     //@Autowired
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -381,6 +388,83 @@ public class HomeController {
 
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping("/strava/sync/page")
+    public String getSyncStrava(OAuth2AuthenticationToken authToken, @RequestParam String eventId, SyncActivity syncActivity, Model model) {
+
+        model.addAttribute("navbar", "events");
+        model.addAttribute("eventId", eventId);
+        Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
+        String email = (String) attributes.get("email");
+        User user = userService.getUser(email);
+        model.addAttribute("user", user);
+        Event event = eventService.findById(eventId);
+        model.addAttribute("event", event);
+        return "sync";
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping("/strava/sync/{eventId}")
+    public String syncStrava(OAuth2AuthenticationToken authToken, @PathVariable String eventId, @Valid SyncActivity syncActivity, Model model) {
+
+        model.addAttribute("navbar", "events");
+        model.addAttribute("eventId", eventId);
+        Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
+        String email = (String) attributes.get("email");
+        User user = userService.getUser(email);
+        List<StravaActivity> activities = stravaClient.getActivitiesByDate(user, Instant.ofEpochMilli(syncActivity.getEndTime().getTime()).getEpochSecond(), Instant.ofEpochMilli(syncActivity.getStartTime().getTime()).getEpochSecond());
+        model.addAttribute("activities", activities);
+        model.addAttribute("user", user);
+        Event event = eventService.findById(eventId);
+        model.addAttribute("event", event);
+        return "stravaSync";
+
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping("/strava/sync/{eventId}/submit")
+    public String syncStravaSubmit(OAuth2AuthenticationToken authToken, @PathVariable String eventId, @RequestParam List<String> activities, Model model) {
+
+        model.addAttribute("navbar", "events");
+        model.addAttribute("eventId", eventId);
+        Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
+        String email = (String) attributes.get("email");
+        User user = userService.getUser(email);
+        Map<String, String> status = new HashMap<>();
+        for (String activityId : activities) {
+            Map<String, String> activityDetail = stravaClient.getActivities(user, activityId);
+            if (activityDetail == null) {
+                status.put(activityId, "Unable to find activity id");
+                continue;
+            }
+            UnMatchedEventFeed feed = unMatchedEventFeedRepository.findByActivityId(activityId);
+            if(feed != null){
+                feed.setVersion(System.currentTimeMillis());
+            }else {
+                feed = new UnMatchedEventFeed();
+            }
+            logger.info("Distance : {} , Moving Time {}", activityDetail.get("distance"), activityDetail.get("moving_time"));
+            feed.setSenderName(user.getFirstName() + " " + user.getLastName());
+            feed.setActivityId(activityId);
+            feed.setDistance(null == activityDetail.get("distance") ? 0 : Float.parseFloat(activityDetail.get("distance")) / 1000);
+            feed.setDuration(null == activityDetail.get("moving_time") ? 0 : Float.parseFloat(activityDetail.get("moving_time")) / 60);
+            feed.setDescription(null == activityDetail.get("name") ? "Untitled" : activityDetail.get("name"));
+            feed.setCountry(null == activityDetail.get("location_country") ? user.getCountryCode() : activityDetail.get("location_country"));
+            feed.setType(null == activityDetail.get("type") ? "" : activityDetail.get("type"));
+            Instant instant = Instant.now();
+            feed.setEventTime(Date.from(instant));
+            feed.setEventDateTime(Date.from(instant));
+            unMatchedEventFeedRepository.save(feed);
+            status.put(activityId, "Successfully synced");
+        }
+        Event event = eventService.findById(eventId);
+        model.addAttribute("event", event);
+        model.addAttribute("user", user);
+        model.addAttribute("status", status);
+        return "stravaSyncResponse";
+
+    }
+
 //    @PreAuthorize("hasRole('ROLE_USER')")
 //    @GetMapping("/strava/deauthorize")
 //    public ResponseEntity<?> stravaDauthorize(OAuth2AuthenticationToken authToken) {
@@ -422,11 +506,6 @@ public class HomeController {
         // return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }
-
-
-    ///strava/authorized
-
-    //UriComponentsBuilder.fromHttpUrl(stravaOauthClientConfig.getAuthorization_uri()).queryParam("client_id",stravaOauthClientConfig.getClient_id(), )
 
     //https://www.strava.com/oauth/mobile/authorize?client_id=1234321&redirect_uri= YourApp%3A%2F%2Fwww.yourapp.com%2Fen-US&response_type=code&approval_prompt=auto&scope=activity%3Awrite%2Cread&state=test
 

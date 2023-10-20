@@ -5,26 +5,20 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.3</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <version>2.7.15</version>
+        <relativePath/>
     </parent>
     <groupId>com.axway</groupId>
     <artifactId>runners</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.4</version>
     <name>runners</name>
-    <description>Axway Runners App</description>
-
-    <properties>
-        <java.version>1.8</java.version>
-        <azure.version>2.2.0</azure.version>
-        <vaadin.version>23.2.0</vaadin.version>
-    </properties>
+    <description>Axway Runners Application</description>
 
     <dependencies>
         <dependency>
             <groupId>com.azure.spring</groupId>
             <artifactId>spring-cloud-azure-starter-active-directory</artifactId>
-            <version>4.3.0</version>
+            <version>4.9.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -102,9 +96,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>7.3</version>
+        </dependency>
     </dependencies>
     <build>
-        <finalName>runners</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

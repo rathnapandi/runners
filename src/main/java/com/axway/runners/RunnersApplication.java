@@ -23,7 +23,7 @@ public class RunnersApplication {
 		executor.setCorePoolSize(2);
 		executor.setMaxPoolSize(5);
 		executor.setQueueCapacity(500);
-		executor.setThreadNamePrefix("APICentral-");
+		executor.setThreadNamePrefix("runners-");
 		executor.initialize();
 		return executor;
 	}

@@ -2,21 +2,25 @@ package com.axway.runners.service;
 
 import com.axway.runners.model.Participant;
 import com.axway.runners.repo.ParticipantRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
 public class ParticipantService {
 
-    @Autowired
-    private ParticipantRepository participantRepository;
+    private final ParticipantRepository participantRepository;
+
+    public ParticipantService(ParticipantRepository participantRepository){
+        this.participantRepository = participantRepository;
+    }
 
     public Participant findById(String id){
-        return participantRepository.findById(id).get();
+        Optional<Participant> participant = participantRepository.findById(id);
+        return participant.orElse(null);
     }
 
     public List<Participant> findByEmail(String email) {
